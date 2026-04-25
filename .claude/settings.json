@@ -1,0 +1,40 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".venv/Scripts/python .claude/hooks/session-start-context.py",
+            "timeout": 15,
+            "statusMessage": "Loading session context..."
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".venv/Scripts/python .claude/hooks/session-end-flush.py",
+            "timeout": 60,
+            "statusMessage": "Flushing session learnings..."
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".venv/Scripts/python .claude/hooks/pre-compact-flush.py",
+            "timeout": 30,
+            "statusMessage": "Snapshotting state before compaction..."
+          }
+        ]
+      }
+    ]
+  }
+}

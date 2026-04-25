@@ -1,0 +1,4 @@
+# Phase 4: Integration dependencies
+PyGithub>=2.1.1       # GitHub API
+requests>=2.31.0      # ComfyUI REST API (likely already installed)
+websocket-client>=1.7.0  # ComfyUI WebSocket monitoring

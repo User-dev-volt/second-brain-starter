@@ -137,6 +137,72 @@ Your choice in the requirements template shapes the entire system:
 | **Assistant** | Auto-organizes files, auto-logs decisions. Asks for anything external. |
 | **Partner** | Sends low-risk messages, completes routine tasks. Asks only for irreversible actions. |
 
+## Claude Code Session Manager
+
+A lightweight FastAPI service that lets you start, restart, and stop Claude Code sessions from your phone via Tailscale — filling the gap that `/remote-control` leaves open.
+
+### Prerequisites
+
+| Tool | Purpose | Install |
+|------|---------|---------|
+| [Tailscale](https://tailscale.com/download) | Private network so your phone reaches the desktop | `winget install Tailscale.Tailscale` |
+| [PowerShell 7](https://aka.ms/powershell) | Required to spawn Claude Code windows | `winget install Microsoft.PowerShell` |
+| [NSSM](https://nssm.cc/download) | Runs the server as a Windows service | Download `nssm.exe`, place in `C:\tools\` |
+
+### Quick start
+
+```powershell
+# 1 — First-run setup (no elevation needed)
+pwsh session_manager\setup.ps1
+
+# 2 — Install as a Windows service (run as Administrator)
+pwsh session_manager\install-service.ps1
+
+# 3 — Open on your phone
+#     http://voltreezy:8765
+```
+
+### Manual run (skip the service)
+
+```powershell
+.venv\Scripts\python session_manager\server.py
+```
+
+### Service management
+
+```powershell
+Get-Service ClaudeSessionManager          # status
+Restart-Service ClaudeSessionManager      # restart
+Get-Content session_manager\logs\service-stdout.log -Tail 30
+
+# Uninstall
+pwsh session_manager\uninstall-service.ps1
+```
+
+### Adding projects
+
+Edit `session_manager\config.json` and add an entry to the `projects` array:
+
+```json
+{
+  "id":   "my-project",
+  "name": "My Project",
+  "path": "C:/Users/Alec/code/my-project"
+}
+```
+
+Restart the service (or the manual process) to pick up the change.
+
+### How it works
+
+1. You tap **Start** on the mobile page.
+2. The server spawns `pwsh -NoExit -Command "Set-Location '<path>'; claude"` in a new visible window.
+3. Because Remote Control is enabled globally (`/config`), Claude Code is immediately reachable from the Claude mobile app → Code tab.
+4. The server tracks the process PID and reports live status on a 5-second poll.
+5. **One session at a time** — Remote Control supports a single active session per machine. The UI enforces this.
+
+---
+
 ## Learn More
 
 - **Full workshop:** Join the [Dynamous community](https://dynamous.ai) for a 4-hour hands-on workshop covering every module

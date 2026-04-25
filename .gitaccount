@@ -1,0 +1,7 @@
+{
+  "account": "alec-personal",
+  "auto_commit": true,
+  "auto_push": true,
+  "branch": "main",
+  "commit_prefix": "[AutoSave]"
+}

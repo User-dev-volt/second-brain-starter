@@ -1,0 +1,6 @@
+# Phase 3: Memory Search — Hybrid RAG
+# Install with: pip install -r .claude/scripts/memory/requirements-phase3.txt
+
+sentence-transformers>=3.0.0  # Embeddings — no Rust required, downloads model on first run
+sqlite-vec>=0.1.6       # sqlite-vec extension for vector KNN search
+numpy>=1.24.0           # Array ops (usually already present with fastembed)

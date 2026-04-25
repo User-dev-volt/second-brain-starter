@@ -9,6 +9,11 @@ Thumbs.db
 # Claude Code state
 .claude/data/
 *.db
+*.db-shm
+*.db-wal
+
+# FastEmbed model cache
+.fastembed_cache/
 
 # Python
 __pycache__/
@@ -16,3 +21,6 @@ __pycache__/
 
 # Generated plans
 .agent/
+
+# Session Manager
+session_manager/logs/*.log

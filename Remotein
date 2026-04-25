@@ -1,0 +1,179 @@
+# Build: Claude Code Session Manager (Phone → Windows Desktop)
+
+## Context
+
+Windows 11 desktop named `voltreezy` on Tailscale with MagicDNS enabled.
+Phone reaches it at `http://voltreezy:<port>`. I'm on Claude Pro.
+
+I use Anthropic's built-in `/remote-control` feature to drive local Claude
+Code sessions from the Code tab of the Claude mobile app. That feature
+works once a session is running — but it can't:
+
+- Start a new session in a specific project folder from my phone
+- Kill a stuck or context-bloated session and spin up a fresh one remotely
+- Switch between projects without walking back to my desk
+
+I need a small web-based control panel that fills exactly those gaps.
+Nothing more. No terminal emulator, no chat UI — the Claude mobile app is
+already both of those.
+
+## What to build
+
+A FastAPI service on `voltreezy` that serves a mobile-friendly web page.
+The page shows registered projects as cards with Start / Restart / Stop
+buttons. Tapping a button spawns, kills, or cycles a `claude` process in
+the project's folder. Once a session is running, I switch to the Claude
+mobile app Code tab to work with it.
+
+## Deliverables
+
+### 1. `session_manager/server.py`
+
+FastAPI service with these endpoints, all behind bearer-token auth:
+
+- `GET /` — serves the mobile web UI
+- `GET /api/projects` — list projects with current session state
+- `POST /api/projects/{project_id}/start` — spawn a new Claude Code
+  session in that folder. If something is already running for that
+  project, return an error (use /restart instead).
+- `POST /api/projects/{project_id}/restart` — kill the existing session
+  if any, wait 2s, spawn a fresh one.
+- `POST /api/projects/{project_id}/stop` — kill the session cleanly.
+- `GET /api/health` — uptime, Tailscale hostname, auth status.
+
+**Session spawn behavior:**
+- Open a new PowerShell 7 (`pwsh`) window via `subprocess.Popen` with
+  `CREATE_NEW_CONSOLE` so I can see it on the desktop if needed.
+- `cd` into the project folder.
+- Run `claude`. Remote Control is set to auto-enable globally (see setup
+  script), so no flag needed.
+- Track process by PID and project_id in an in-memory dict.
+
+**Kill behavior:**
+- `taskkill /PID <pid> /T /F` to kill the process tree.
+- Confirm termination before reporting success.
+
+**Auth & binding:**
+- Bearer token generated on first run, printed once, hash stored in
+  `config.json`.
+- Bind to the Tailscale interface only. Detect via `tailscale ip -4`.
+  Do not bind to `0.0.0.0`.
+- Reject requests from other interfaces.
+
+### 2. `session_manager/web/index.html`
+
+Single-page mobile UI. Vanilla HTML/CSS/JS, no framework.
+
+- Dark theme. Large tap targets (min 44px). Mobile-first.
+- Project cards stacked vertically, each showing:
+  - Project name and folder path (truncated on small screens)
+  - Status dot: green (running), gray (idle), yellow (transitioning)
+  - Uptime if running ("started 15m ago")
+  - Buttons: `Start` when idle, `Restart` + `Stop` when running
+- After Start/Restart, show a 3s "Session starting..." state, then refresh
+  status. Include hint: "Now switch to the Claude app → Code tab."
+- Poll `/api/projects` every 5s.
+- Auth token entered once and stored in sessionStorage. If missing or
+  invalid, show token entry screen.
+
+### 3. `session_manager/config.json`
+
+```json
+{
+  "bind_tailscale_only": true,
+  "port": 8765,
+  "hostname": "voltreezy",
+  "auth_token_hash": "",
+  "projects": [
+    {
+      "id": "chimera",
+      "name": "Project Chimera",
+      "path": "C:/path/to/chimera"
+    },
+    {
+      "id": "tracker",
+      "name": "AD/SB Tracker",
+      "path": "C:/path/to/tracker"
+    },
+    {
+      "id": "second-brain",
+      "name": "Second Brain",
+      "path": "C:/path/to/second-brain"
+    }
+  ]
+}
+```
+
+Paths are placeholders — I'll fill them in.
+
+### 4. Windows service wrapper
+
+Two PowerShell scripts using NSSM so the server starts on boot:
+- `install-service.ps1`
+- `uninstall-service.ps1`
+
+Document NSSM install in README if not already present.
+
+### 5. First-run setup script (`setup.ps1`)
+
+- Verify Claude Code is installed and ≥ v2.1.52.
+- Guide me through the manual step of running `/config` inside Claude Code
+  and setting "Enable Remote Control for all sessions" to true. Print the
+  exact instructions — this is interactive, not a CLI flag.
+- Generate the auth token, print it once.
+- Print the URL to bookmark on my phone:
+  `http://voltreezy:8765`
+
+### 6. Skill file: `.claude/skills/session-manager/SKILL.md`
+
+Cole Medin's progressive disclosure pattern. Front matter with short
+description and triggers. Body covers:
+- What the system does and why
+- Endpoints and expected responses
+- How to add a new project to `config.json`
+- Troubleshooting: session won't start, auth fails, process ghost
+  (tracked as running but actually dead), Tailscale disconnected
+
+## Constraints & gotchas
+
+- **One Remote Control session per machine.** UI must enforce this:
+  starting project B while project A is running requires stopping A first,
+  or Restart-ing A. Make it explicit in UI copy.
+- **10-minute network timeout** on Remote Control. Don't work around it —
+  surface it. If tracked PID is no longer alive on the OS, mark status as
+  dead and let me Restart.
+- `--dangerously-skip-permissions` doesn't work with Remote Control.
+  Don't pass it.
+- PowerShell 7 (`pwsh`), not Windows PowerShell. Fail fast if `pwsh`
+  isn't on PATH.
+- Never log the auth token. Never include it in errors.
+
+## Research first
+
+Before writing code, search for and summarize in `docs/research.md`:
+1. Spawning long-lived children via `subprocess.Popen` on Windows and
+   reliably killing their full process tree (pwsh → claude → MCP children).
+2. Current NSSM setup for FastAPI/uvicorn Windows services.
+3. Detecting the Tailscale interface IP on Windows programmatically.
+
+Show me `docs/research.md` before writing any server code.
+
+## Build order
+
+1. Research notes
+2. Server with project endpoints + auth (no UI yet)
+3. Test endpoints with curl from desktop, then from phone
+4. Web UI
+5. Service wrapper + setup script
+6. Skill file
+7. `docs/testing.md` — end-to-end phone test checklist
+
+## Explicit non-goals
+
+- No terminal emulator. Claude app is the interface.
+- No chat UI. Claude app is the chat.
+- No session output streaming. Remote Control streams to the Claude app.
+- No MCP server.
+- No multi-user, no OAuth, no database.
+
+Start with research. Show me `docs/research.md` before any code.

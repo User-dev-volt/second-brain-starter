@@ -1,0 +1,26 @@
+# Second Brain — Combined requirements
+# Install with: pip install -r requirements.txt
+#
+# Tested on Python 3.11+. On Windows, sqlite-vec ships as a wheel.
+# If you hit a build error on Python 3.14, pin to 3.11 or 3.12 via pyenv.
+
+# ── Anthropic ────────────────────────────────────────────────────────────────
+anthropic>=0.30.0
+
+# ── Memory / RAG (Phase 3) ───────────────────────────────────────────────────
+sentence-transformers>=3.0.0   # embeddings — downloads model on first run
+sqlite-vec>=0.1.6              # vector KNN search extension for SQLite
+numpy>=1.24.0
+
+# ── Integrations (Phase 4) ───────────────────────────────────────────────────
+PyGithub>=2.1.1
+requests>=2.31.0
+websocket-client>=1.7.0
+
+# ── Utilities ────────────────────────────────────────────────────────────────
+python-dotenv>=1.0.0
+
+# ── Session Manager ───────────────────────────────────────────────────────────
+fastapi>=0.110.0
+uvicorn[standard]>=0.27.0
+psutil>=5.9.0

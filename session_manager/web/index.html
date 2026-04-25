@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Session Manager</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #111214;
+      --surface:   #1c1e22;
+      --border:    #2e3035;
+      --text:      #e2e4e8;
+      --muted:     #7a7e8a;
+      --green:     #3ddc84;
+      --yellow:    #f5c542;
+      --red:       #ff5f57;
+      --accent:    #5b9cf6;
+      --purple:    #a855f7;
+      --btn-h:     44px;
+      --radius:    12px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 15px;
+      min-height: 100dvh;
+    }
+
+    /* ── Token screen ─────────────────────────────────────── */
+    #token-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100dvh;
+      padding: 2rem 1.5rem;
+      gap: 1rem;
+    }
+    #token-screen h1 { font-size: 1.2rem; }
+    #token-screen p  { color: var(--muted); font-size: 0.9rem; text-align: center; }
+    #token-input {
+      width: 100%; max-width: 380px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 1rem;
+      padding: 0.75rem 1rem;
+      outline: none;
+    }
+    #token-input:focus { border-color: var(--accent); }
+    #token-error { color: var(--red); font-size: 0.85rem; min-height: 1.2em; }
+
+    /* ── Main screen ──────────────────────────────────────── */
+    #main-screen { display: none; }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    header h1 { font-size: 1rem; font-weight: 600; }
+    #status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      display: inline-block;
+      margin-right: 0.4rem;
+    }
+    #logout-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.8rem;
+      padding: 0.25rem 0.5rem;
+    }
+    #logout-btn:hover { color: var(--text); }
+
+#projects { padding: 0.75rem 1.25rem 2rem; display: flex; flex-direction: column; gap: 0.75rem; }
+
+    /* ── Project card ─────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+    .card.running { border-color: #2a4a2e; }
+    .card.transitioning { border-color: #4a4020; }
+
+    .card-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem; }
+    .dot {
+      flex-shrink: 0;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: background 0.3s;
+    }
+    .dot.running      { background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .dot.transitioning { background: var(--yellow); }
+
+    .card-name { font-weight: 600; font-size: 0.95rem; }
+    .card-path { color: var(--muted); font-size: 0.75rem; margin-bottom: 0.4rem;
+                 white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card-meta { font-size: 0.8rem; color: var(--muted); min-height: 1.1em; margin-bottom: 0.8rem; }
+    .card-meta .hint { color: var(--accent); font-size: 0.75rem; margin-top: 0.25rem; }
+
+    .card-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+    .btn {
+      height: var(--btn-h);
+      padding: 0 1.1rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      flex: 1;
+      min-width: 80px;
+    }
+    .btn:active  { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .btn-start   { background: var(--green);  color: #0a1a0e; }
+    .btn-restart { background: var(--yellow); color: #1a1500; }
+    .btn-stop    { background: var(--red);    color: #1a0000; }
+    .btn-esc     { background: var(--purple); color: #0e0014; flex: 0 0 auto; min-width: 56px; }
+
+    /* ── Toast ────────────────────────────────────────────── */
+    #toast {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(6rem);
+      background: #2a2d34;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.65rem 1.2rem;
+      font-size: 0.85rem;
+      color: var(--text);
+      white-space: nowrap;
+      transition: transform 0.25s ease;
+      z-index: 100;
+      max-width: 90vw;
+      text-align: center;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+    #toast.error { border-color: var(--red); color: var(--red); }
+  </style>
+</head>
+<body>
+
+<!-- Token entry screen -->
+<div id="token-screen">
+  <h1>Claude Session Manager</h1>
+  <p>Enter the auth token shown when you first started the server.</p>
+  <input id="token-input" type="password" placeholder="Paste bearer token…" autocomplete="off">
+  <div id="token-error"></div>
+  <button class="btn btn-start" style="width:100%;max-width:380px" onclick="submitToken()">Connect</button>
+</div>
+
+<!-- Main screen -->
+<div id="main-screen">
+  <header>
+    <div><span id="status-dot"></span><span id="header-title">voltreezy</span></div>
+    <button id="logout-btn" onclick="logout()">Sign out</button>
+  </header>
+<div id="projects"></div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  const POLL_MS = 5000;
+  let token = null;
+  let pollTimer = null;
+  let projects = [];
+
+  // ── Token auth ──────────────────────────────────────────────────
+
+  function init() {
+    token = sessionStorage.getItem("sm_token");
+    if (token) showMain();
+  }
+
+  async function submitToken() {
+    const val = document.getElementById("token-input").value.trim();
+    if (!val) return;
+    const err = document.getElementById("token-error");
+    err.textContent = "";
+    try {
+      const r = await apiFetch("/api/health", "GET", val);
+      if (!r.ok) { err.textContent = "Invalid token. Try again."; return; }
+      token = val;
+      sessionStorage.setItem("sm_token", token);
+      showMain();
+    } catch (e) {
+      err.textContent = "Could not reach server. Check your connection.";
+    }
+  }
+
+  function logout() {
+    sessionStorage.removeItem("sm_token");
+    clearInterval(pollTimer);
+    token = null;
+    document.getElementById("main-screen").style.display = "none";
+    document.getElementById("token-screen").style.display = "flex";
+    document.getElementById("token-input").value = "";
+  }
+
+  document.getElementById("token-input").addEventListener("keydown", e => {
+    if (e.key === "Enter") submitToken();
+  });
+
+  // ── Main screen ─────────────────────────────────────────────────
+
+  function showMain() {
+    document.getElementById("token-screen").style.display = "none";
+    document.getElementById("main-screen").style.display = "block";
+    refreshProjects();
+    pollTimer = setInterval(refreshProjects, POLL_MS);
+  }
+
+  async function refreshProjects() {
+    try {
+      const r = await apiFetch("/api/projects");
+      if (r.status === 401) { logout(); return; }
+      projects = await r.json();
+      renderProjects();
+    } catch (_) { /* network glitch — keep showing last state */ }
+  }
+
+  function renderProjects() {
+    const el = document.getElementById("projects");
+    el.innerHTML = "";
+    for (const p of projects) {
+      el.appendChild(buildCard(p));
+    }
+  }
+
+  function buildCard(p) {
+    const running      = p.status === "running";
+    const transitioning = p.status === "transitioning";
+
+    const card = document.createElement("div");
+    card.className = "card" + (running ? " running" : transitioning ? " transitioning" : "");
+    card.id = "card-" + p.id;
+
+    const uptime = running && p.started_at
+      ? "started " + relativeTime(p.started_at)
+      : (transitioning ? "Starting…" : "Idle");
+
+    const hint = transitioning
+      ? `<div class="hint">Switch to the Claude app → Code tab to start working.</div>` : "";
+
+    card.innerHTML = `
+      <div class="card-header">
+        <span class="dot ${p.status}"></span>
+        <span class="card-name">${esc(p.name)}</span>
+      </div>
+      <div class="card-path" title="${esc(p.path)}">${esc(p.path)}</div>
+      <div class="card-meta">${esc(uptime)}${hint}</div>
+      <div class="card-actions" id="actions-${p.id}"></div>
+    `;
+
+    const actions = card.querySelector(`#actions-${p.id}`);
+    if (running || transitioning) {
+      actions.appendChild(makeBtn("Restart", "btn-restart", () => action(p.id, "restart")));
+      actions.appendChild(makeBtn("Stop",    "btn-stop",    () => action(p.id, "stop")));
+      actions.appendChild(makeBtn("ESC",     "btn-esc",     () => sendEsc(p.id)));
+    } else {
+      actions.appendChild(makeBtn("Start",   "btn-start",   () => action(p.id, "start")));
+    }
+
+    return card;
+  }
+
+  function makeBtn(label, cls, handler) {
+    const b = document.createElement("button");
+    b.className = "btn " + cls;
+    b.textContent = label;
+    b.onclick = handler;
+    return b;
+  }
+
+  // ── Actions ─────────────────────────────────────────────────────
+
+  async function action(projectId, verb) {
+    // Optimistic transitioning state
+    const p = projects.find(x => x.id === projectId);
+    if (p) p.status = "transitioning";
+    renderProjects();
+    disableCard(projectId, true);
+
+    try {
+      const r = await apiFetch(`/api/projects/${projectId}/${verb}`, "POST");
+      const body = await r.json();
+
+      if (!r.ok) {
+        showToast(body.detail || "Error", true);
+        await refreshProjects();
+        disableCard(projectId, false);
+        return;
+      }
+
+      if (verb === "start" || verb === "restart") {
+        // Hold transitioning state for 3s, then poll
+        setTimeout(async () => {
+          await refreshProjects();
+          disableCard(projectId, false);
+          showToast(`${p ? p.name : projectId} starting — switch to the Claude app → Code tab.`);
+        }, 3000);
+      } else {
+        await refreshProjects();
+        disableCard(projectId, false);
+        showToast("Session stopped.");
+      }
+    } catch (e) {
+      showToast("Network error", true);
+      await refreshProjects();
+      disableCard(projectId, false);
+    }
+  }
+
+  async function sendEsc(projectId) {
+    disableCard(projectId, true);
+    try {
+      const r = await apiFetch(`/api/projects/${projectId}/esc`, "POST");
+      const body = await r.json();
+      if (!r.ok) {
+        showToast(body.detail || "ESC failed", true);
+      } else {
+        showToast("ESC sent to terminal.");
+      }
+    } catch (e) {
+      showToast("Network error", true);
+    }
+    disableCard(projectId, false);
+  }
+
+  function disableCard(projectId, disabled) {
+    const card = document.getElementById("card-" + projectId);
+    if (card) card.querySelectorAll(".btn").forEach(b => b.disabled = disabled);
+  }
+
+  // ── Helpers ─────────────────────────────────────────────────────
+
+  function apiFetch(path, method = "GET", tok = token) {
+    return fetch(path, {
+      method,
+      headers: { Authorization: "Bearer " + tok }
+    });
+  }
+
+  function relativeTime(epochSecs) {
+    const diff = Math.floor(Date.now() / 1000 - epochSecs);
+    if (diff < 60)  return diff + "s ago";
+    if (diff < 3600) return Math.floor(diff / 60) + "m ago";
+    return Math.floor(diff / 3600) + "h ago";
+  }
+
+  function esc(s) {
+    return String(s)
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;");
+  }
+
+  let toastTimer = null;
+  function showToast(msg, isError = false) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.className = "show" + (isError ? " error" : "");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.className = "", isError ? 5000 : 3500);
+  }
+
+  init();
+</script>
+</body>
+</html>

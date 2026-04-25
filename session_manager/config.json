@@ -1,0 +1,68 @@
+{
+  "bind_tailscale_only": true,
+  "port": 8765,
+  "hostname": "voltreezy",
+  "auth_token_hash": "81caf6292f585b1ace3af2f6d02f21c5d506d769d240eac112e154de7f4fd267",
+  "projects": [
+    {
+      "id": "second-brain",
+      "name": "Second Brain",
+      "path": "D:/second-brain-starter"
+    },
+    {
+      "id": "chimera",
+      "name": "Project Chimera",
+      "path": "D:/Obsidian Brain/Brain/10_Active_Projects/Project_Chimera"
+    },
+    {
+      "id": "tracker",
+      "name": "AD/SB Tracker",
+      "path": "D:/Drive Return/Amentum Projects"
+    },
+    {
+      "id": "10-active-projects",
+      "name": "10 Active Projects",
+      "path": "D:/Obsidian Brain/Brain/10_Active_Projects"
+    },
+    {
+      "id": "obsidian-brain",
+      "name": "Obsidian Brain",
+      "path": "D:/Obsidian Brain/Brain"
+    },
+    {
+      "id": "amentum-projects",
+      "name": "Amentum Projects",
+      "path": "D:/Drive Return/Amentum Projects"
+    },
+    {
+      "id": "ai-projects",
+      "name": "AI Projects",
+      "path": "D:/AI Projects"
+    },
+    {
+      "id": "ai-video-gen",
+      "name": "AI Video Gen",
+      "path": "C:/Vid-Pic Gen Dump from C Drive/AI Video Generation"
+    },
+    {
+      "id": "moviebuilder-bmad",
+      "name": "MovieBuilder BMAD",
+      "path": "D:/Obsidian Brain/Brain/10_Active_Projects/moviebuilder - BMAD MODULE Update"
+    },
+    {
+      "id": "last-epoch",
+      "name": "Last Epoch Optimizer",
+      "path": "D:/Obsidian Brain/Brain/10_Active_Projects/LastEpochBuildOptimizer"
+    },
+    {
+      "id": "poe2-optimizer",
+      "name": "PoE2 Optimizer",
+      "path": "D:/Obsidian Brain/Brain/10_Active_Projects/poe2_optimizer_v6"
+    },
+    {
+      "id": "lebo",
+      "name": "LEBO v2",
+      "path": "D:/Obsidian Brain/Brain/10_Active_Projects/LastEpochBuildOptimizer/LEBOv2"
+    }
+  ]
+}
