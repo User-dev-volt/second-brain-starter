@@ -6,7 +6,8 @@
 .DS_Store
 Thumbs.db
 
-# Claude Code state
+# Claude Code state — settings.local.json contains secrets, never commit it
+.claude/settings.local.json
 .claude/data/
 *.db
 *.db-shm
