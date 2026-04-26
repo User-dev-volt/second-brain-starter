@@ -51,8 +51,9 @@ def count_user_messages(transcript_path: str) -> int:
                 if not line:
                     continue
                 try:
-                    msg = json.loads(line)
-                    if msg.get("role") == "user":
+                    entry = json.loads(line)
+                    # Claude Code format: {"type": "user", "message": {"role": "user", ...}}
+                    if entry.get("type") == "user" and "message" in entry:
                         count += 1
                 except json.JSONDecodeError:
                     pass
@@ -74,9 +75,15 @@ def read_transcript_tail(transcript_path: str, last_n: int = 20) -> str:
                 if not line:
                     continue
                 try:
-                    msg = json.loads(line)
-                    role = msg.get("role", "")
-                    content = msg.get("content", "")
+                    entry = json.loads(line)
+                    # Claude Code format: top-level "type" is "user" or "assistant"
+                    # with content nested inside "message"
+                    entry_type = entry.get("type", "")
+                    if entry_type not in ("user", "assistant"):
+                        continue
+                    message = entry.get("message", {})
+                    role = message.get("role", entry_type)
+                    content = message.get("content", "")
                     if isinstance(content, list):
                         content = " ".join(
                             c.get("text", "") for c in content
