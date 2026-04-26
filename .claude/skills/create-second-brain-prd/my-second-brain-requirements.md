@@ -98,7 +98,7 @@ What types of knowledge matter most to you? Check all that apply and add your ow
 - **Operating System:** [x] Windows [ ] macOS [ ] Linux
 - **Deployment:** [x] Local only [ ] Local + cloud server (VPS)
 - **Existing tools I already have set up:** Obsidian (3 vaults: Work Brain, GameCreation Brain, Project Brain)
-Claude Code via terminal (Antigravity IDE)
+Claude Code via terminal (Antigravity IDE / VS Code)
 Git/GitHub
 Godot 4.6.2 (.NET/C#) with MCP bridge
 

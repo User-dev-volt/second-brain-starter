@@ -22,7 +22,7 @@ A Claude Code skill that serves as an intelligent BMAD workflow conductor — a 
 
 ### 1.3 Target Users
 
-Developers using Claude Code (in any environment, including but not limited to Antigravity) who want to leverage the BMAD Method without memorizing its workflows, commands, or phase structure.
+Developers using Claude Code (in any environment, including but not limited to Antigravity or VS Code) who want to leverage the BMAD Method without memorizing its workflows, commands, or phase structure.
 
 ### 1.4 Success Criteria
 
