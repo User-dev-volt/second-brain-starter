@@ -30,7 +30,7 @@ TASKS = [
         "name": "SecondBrain\\Heartbeat",
         "script": SCRIPTS_DIR / "heartbeat.py",
         "schedule": "minute",
-        "interval": "30",
+        "interval": "150",   # every 2h30m = 6x per day (9am–10pm)
         "start": "09:00",
         "end": "22:00",      # kill-at-end so it doesn't run overnight
         "kill_at_end": True,
