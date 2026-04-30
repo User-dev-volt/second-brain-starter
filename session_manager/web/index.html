@@ -133,6 +133,7 @@
     .btn-restart { background: var(--yellow); color: #1a1500; }
     .btn-stop    { background: var(--red);    color: #1a0000; }
     .btn-esc     { background: var(--purple); color: #0e0014; flex: 0 0 auto; min-width: 56px; }
+    .btn-wait    { background: var(--accent);  color: #020e26; flex: 0 0 auto; min-width: 68px; }
 
     /* ── Toast ────────────────────────────────────────────── */
     #toast {
@@ -276,6 +277,7 @@
       actions.appendChild(makeBtn("Restart", "btn-restart", () => action(p.id, "restart")));
       actions.appendChild(makeBtn("Stop",    "btn-stop",    () => action(p.id, "stop")));
       actions.appendChild(makeBtn("ESC",     "btn-esc",     () => sendEsc(p.id)));
+      actions.appendChild(makeBtn("Wait RL", "btn-wait",    () => sendWait(p.id)));
     } else {
       actions.appendChild(makeBtn("Start",   "btn-start",   () => action(p.id, "start")));
     }
@@ -339,6 +341,22 @@
         showToast(body.detail || "ESC failed", true);
       } else {
         showToast("ESC sent to terminal.");
+      }
+    } catch (e) {
+      showToast("Network error", true);
+    }
+    disableCard(projectId, false);
+  }
+
+  async function sendWait(projectId) {
+    disableCard(projectId, true);
+    try {
+      const r = await apiFetch(`/api/projects/${projectId}/wait`, "POST");
+      const body = await r.json();
+      if (!r.ok) {
+        showToast(body.detail || "Wait failed", true);
+      } else {
+        showToast("Waiting for rate limit reset…");
       }
     } catch (e) {
       showToast("Network error", true);

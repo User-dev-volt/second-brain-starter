@@ -180,23 +180,26 @@ def _spawn(project_id: str, path: str) -> int:
     return proc.pid
 
 
-def _send_esc(project_id: str) -> bool:
-    """Send ESC keystroke to the terminal window owned by this session's PID."""
+def _send_keys(project_id: str, keys: str) -> bool:
+    """Focus the terminal window for this session and inject a SendKeys sequence."""
     entry = sessions.get(project_id)
     if not entry or not _is_alive(project_id):
         return False
     pid = entry["pid"]
     pwsh = _find_pwsh()
-    # WScript.Shell.AppActivate focuses the window by PID, then SendKeys injects ESC.
     script = (
         f"$ws = New-Object -ComObject WScript.Shell; "
         f"if ($ws.AppActivate({pid})) {{ Start-Sleep -Milliseconds 150; "
-        f"$ws.SendKeys('{{ESC}}'); exit 0 }} else {{ exit 1 }}"
+        f"$ws.SendKeys('{keys}'); exit 0 }} else {{ exit 1 }}"
     )
     result = subprocess.run(
         [pwsh, "-Command", script], capture_output=True, timeout=5
     )
     return result.returncode == 0
+
+
+def _send_esc(project_id: str) -> bool:
+    return _send_keys(project_id, "{ESC}")
 
 
 def _running_sessions() -> list[str]:
@@ -341,6 +344,28 @@ async def send_esc(project_id: str, request: Request, _=Depends(require_auth)):
             detail="Could not focus the terminal window — it may be minimized or behind another app",
         )
     return {"status": "esc_sent", "project_id": project_id}
+
+
+@app.post("/api/projects/{project_id}/wait")
+async def send_wait(project_id: str, request: Request, _=Depends(require_auth)):
+    """Send '1' to dismiss the rate-limit dialog (option 1 = wait for reset)."""
+    require_tailscale(request)
+    config = load_config()
+
+    proj = next((p for p in config["projects"] if p["id"] == project_id), None)
+    if not proj:
+        raise HTTPException(status_code=404, detail=f"Project '{project_id}' not found")
+
+    if not _is_alive(project_id):
+        raise HTTPException(status_code=409, detail="No running session to send to")
+
+    sent = _send_keys(project_id, "1")
+    if not sent:
+        raise HTTPException(
+            status_code=500,
+            detail="Could not focus the terminal window — it may be minimized or behind another app",
+        )
+    return {"status": "wait_sent", "project_id": project_id}
 
 
 # ── Startup ───────────────────────────────────────────────────────────────────
