@@ -134,6 +134,44 @@
     .btn-stop    { background: var(--red);    color: #1a0000; }
     .btn-esc     { background: var(--purple); color: #0e0014; flex: 0 0 auto; min-width: 56px; }
     .btn-wait    { background: var(--accent);  color: #020e26; flex: 0 0 auto; min-width: 68px; }
+    .btn-resume  { background: #0891b2; color: #001a1f; }
+
+    /* ── Sessions panel ───────────────────────────────────── */
+    .sessions-panel {
+      margin-top: 0.75rem;
+      border-top: 1px solid var(--border);
+      padding-top: 0.75rem;
+    }
+    .sessions-panel-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .sessions-list { display: flex; flex-direction: column; gap: 0.4rem; }
+    .session-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      color: var(--text);
+      transition: border-color 0.15s;
+    }
+    .session-item:hover { border-color: #0891b2; }
+    .session-item:active { transform: scale(0.98); }
+    .session-item .s-title {
+      font-size: 0.82rem;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .session-item .s-date { font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; }
+    .sessions-msg { font-size: 0.82rem; color: var(--muted); padding: 0.3rem 0; }
 
     /* ── Toast ────────────────────────────────────────────── */
     #toast {
@@ -280,6 +318,7 @@
       actions.appendChild(makeBtn("Wait RL", "btn-wait",    () => sendWait(p.id)));
     } else {
       actions.appendChild(makeBtn("Start",   "btn-start",   () => action(p.id, "start")));
+      actions.appendChild(makeBtn("Resume",  "btn-resume",  () => toggleSessions(p.id, card)));
     }
 
     return card;
@@ -362,6 +401,68 @@
       showToast("Network error", true);
     }
     disableCard(projectId, false);
+  }
+
+  // ── Session history ─────────────────────────────────────────────
+
+  async function toggleSessions(projectId, card) {
+    // If panel already open, close it
+    const existing = card.querySelector(".sessions-panel");
+    if (existing) { existing.remove(); return; }
+
+    const panel = document.createElement("div");
+    panel.className = "sessions-panel";
+    panel.innerHTML = `<div class="sessions-panel-label">Recent sessions</div><div class="sessions-list"><div class="sessions-msg">Loading…</div></div>`;
+    card.appendChild(panel);
+
+    try {
+      const r = await apiFetch(`/api/projects/${projectId}/sessions`);
+      const list = panel.querySelector(".sessions-list");
+      if (!r.ok) { list.innerHTML = `<div class="sessions-msg">Could not load sessions.</div>`; return; }
+      const sessions = await r.json();
+      if (!sessions.length) { list.innerHTML = `<div class="sessions-msg">No sessions found for this project.</div>`; return; }
+      list.innerHTML = "";
+      for (const s of sessions) {
+        const btn = document.createElement("button");
+        btn.className = "session-item";
+        btn.innerHTML = `<div class="s-title">${esc(s.title)}</div><div class="s-date">${relativeTime(s.timestamp)}</div>`;
+        btn.onclick = () => resumeSession(projectId, s.session_id, s.title, card);
+        list.appendChild(btn);
+      }
+    } catch (e) {
+      panel.querySelector(".sessions-list").innerHTML = `<div class="sessions-msg">Network error.</div>`;
+    }
+  }
+
+  async function resumeSession(projectId, sessionId, title, card) {
+    const p = projects.find(x => x.id === projectId);
+    if (p) p.status = "transitioning";
+    renderProjects();
+    disableCard(projectId, true);
+
+    try {
+      const r = await fetch(`/api/projects/${projectId}/resume`, {
+        method: "POST",
+        headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
+        body: JSON.stringify({ session_id: sessionId }),
+      });
+      const body = await r.json();
+      if (!r.ok) {
+        showToast(body.detail || "Resume failed", true);
+        await refreshProjects();
+        disableCard(projectId, false);
+        return;
+      }
+      setTimeout(async () => {
+        await refreshProjects();
+        disableCard(projectId, false);
+        showToast(`Resumed "${title}" — switch to the Claude app → Code tab.`);
+      }, 3000);
+    } catch (e) {
+      showToast("Network error", true);
+      await refreshProjects();
+      disableCard(projectId, false);
+    }
   }
 
   function disableCard(projectId, disabled) {

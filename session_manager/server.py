@@ -160,24 +160,87 @@ def _preseed_trust(path: str) -> None:
         settings.write_text("{}\n", encoding="utf-8")
 
 
-def _spawn(project_id: str, path: str) -> int:
+def _spawn(project_id: str, path: str, resume_session_id: Optional[str] = None) -> int:
     """Spawn pwsh → claude in path. Returns PID."""
     pwsh = _find_pwsh()
 
     CREATE_NEW_CONSOLE = 0x00000010
     CREATE_NEW_PROCESS_GROUP = 0x00000200
 
-    # Pre-create .claude/settings.json so Claude Code skips the folder trust dialog.
-    # This is equivalent to the user having already accepted trust for that directory.
     _preseed_trust(path)
 
+    if resume_session_id:
+        claude_cmd = f"claude --resume {resume_session_id} --dangerously-skip-permissions"
+    else:
+        claude_cmd = "claude --dangerously-skip-permissions"
+
     proc = subprocess.Popen(
-        [pwsh, "-NoExit", "-Command", f"Set-Location '{path}'; claude --dangerously-skip-permissions"],
+        [pwsh, "-NoExit", "-Command", f"Set-Location '{path}'; {claude_cmd}"],
         creationflags=CREATE_NEW_CONSOLE | CREATE_NEW_PROCESS_GROUP,
         close_fds=True,
     )
     sessions[project_id] = {"pid": proc.pid, "started_at": time.time()}
     return proc.pid
+
+
+# ── Session history ───────────────────────────────────────────────────────────
+
+def _encode_project_path(path: str) -> str:
+    """Encode a project path to the ~/.claude/projects/ subdirectory name."""
+    return path.replace(":", "-").replace("\\", "-").replace("/", "-").replace(" ", "-")
+
+
+def _list_sessions(project_path: str, limit: int = 10) -> list[dict]:
+    """Return recent sessions for a project, sorted newest-first."""
+    sessions_dir = Path.home() / ".claude" / "projects" / _encode_project_path(project_path)
+    if not sessions_dir.exists():
+        return []
+
+    files = sorted(
+        sessions_dir.glob("*.jsonl"),
+        key=lambda f: f.stat().st_mtime,
+        reverse=True,
+    )[:limit]
+
+    result = []
+    for f in files:
+        session_id = f.stem
+        mtime = f.stat().st_mtime
+        title = None
+        preview = None
+        try:
+            with open(f, encoding="utf-8-sig") as fh:
+                for i, line in enumerate(fh):
+                    if i > 30:
+                        break
+                    try:
+                        entry = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue
+                    if entry.get("type") == "ai-title" and not title:
+                        title = entry.get("aiTitle", "")
+                    if entry.get("type") == "user" and not preview:
+                        content = entry.get("message", {}).get("content", "")
+                        if isinstance(content, str):
+                            preview = content[:120]
+                        elif isinstance(content, list):
+                            for c in content:
+                                if isinstance(c, dict) and c.get("type") == "text":
+                                    preview = c.get("text", "")[:120]
+                                    break
+                    if title and preview:
+                        break
+        except OSError:
+            continue
+
+        result.append({
+            "session_id": session_id,
+            "timestamp": mtime,
+            "title": title or preview or (session_id[:8] + "…"),
+            "preview": preview or "",
+        })
+
+    return result
 
 
 def _send_keys(project_id: str, keys: str) -> bool:
@@ -366,6 +429,41 @@ async def send_wait(project_id: str, request: Request, _=Depends(require_auth)):
             detail="Could not focus the terminal window — it may be minimized or behind another app",
         )
     return {"status": "wait_sent", "project_id": project_id}
+
+
+@app.get("/api/projects/{project_id}/sessions")
+async def list_project_sessions(project_id: str, request: Request, _=Depends(require_auth)):
+    require_tailscale(request)
+    config = load_config()
+    proj = next((p for p in config["projects"] if p["id"] == project_id), None)
+    if not proj:
+        raise HTTPException(status_code=404, detail=f"Project '{project_id}' not found")
+    return _list_sessions(proj["path"])
+
+
+@app.post("/api/projects/{project_id}/resume")
+async def resume_session(project_id: str, request: Request, _=Depends(require_auth)):
+    require_tailscale(request)
+    config = load_config()
+    proj = next((p for p in config["projects"] if p["id"] == project_id), None)
+    if not proj:
+        raise HTTPException(status_code=404, detail=f"Project '{project_id}' not found")
+
+    body = await request.json()
+    session_id = body.get("session_id", "").strip()
+    if not session_id:
+        raise HTTPException(status_code=400, detail="session_id required")
+
+    if _is_alive(project_id):
+        _kill(project_id)
+        time.sleep(2)
+
+    try:
+        pid = _spawn(project_id, proj["path"], resume_session_id=session_id)
+    except RuntimeError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return {"status": "resumed", "pid": pid, "project_id": project_id, "session_id": session_id}
 
 
 # ── Startup ───────────────────────────────────────────────────────────────────
