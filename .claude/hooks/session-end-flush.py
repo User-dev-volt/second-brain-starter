@@ -98,9 +98,22 @@ def read_transcript_tail(transcript_path: str, last_n: int = 20) -> str:
         return ""
 
 
+def _get_api_key() -> str:
+    """Read ANTHROPIC_API_KEY from env, then Windows user registry as fallback."""
+    key = os.environ.get("ANTHROPIC_API_KEY", "")
+    if not key:
+        try:
+            import winreg
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment") as reg:
+                key, _ = winreg.QueryValueEx(reg, "ANTHROPIC_API_KEY")
+        except Exception:
+            pass
+    return key
+
+
 def extract_with_claude(transcript_text: str) -> str:
     """Call Claude API to extract session summary."""
-    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    api_key = _get_api_key()
     if not api_key:
         return "⚠️ ANTHROPIC_API_KEY not set — skipped AI extraction."
 
