@@ -73,9 +73,9 @@ def read_transcript(data: dict) -> str:
 
 def extract_with_claude(transcript_text: str) -> str:
     """Call Claude API to extract key learnings from the transcript."""
-    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    api_key = os.environ.get("SECOND_BRAIN_API_KEY") or os.environ.get("ANTHROPIC_API_KEY", "")
     if not api_key:
-        return "⚠️ ANTHROPIC_API_KEY not set — skipped AI extraction."
+        return "⚠️ SECOND_BRAIN_API_KEY not set — skipped AI extraction."
 
     try:
         import anthropic

@@ -141,16 +141,19 @@ def reflect(target_date: date | None = None):
         _archive_and_reset_habits(yesterday)
         return
 
-    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    api_key = os.environ.get("SECOND_BRAIN_API_KEY") or os.environ.get("ANTHROPIC_API_KEY", "")
     if not api_key:
         try:
             import winreg
             with winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment") as reg:
-                api_key, _ = winreg.QueryValueEx(reg, "ANTHROPIC_API_KEY")
+                try:
+                    api_key, _ = winreg.QueryValueEx(reg, "SECOND_BRAIN_API_KEY")
+                except FileNotFoundError:
+                    api_key, _ = winreg.QueryValueEx(reg, "ANTHROPIC_API_KEY")
         except Exception:
             pass
     if not api_key:
-        print("[reflect] ANTHROPIC_API_KEY not set — skipped.", file=sys.stderr)
+        print("[reflect] SECOND_BRAIN_API_KEY not set — skipped.", file=sys.stderr)
         _archive_and_reset_habits(yesterday)
         return
     client = anthropic.Anthropic(api_key=api_key)

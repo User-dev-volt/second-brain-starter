@@ -99,13 +99,16 @@ def read_transcript_tail(transcript_path: str, last_n: int = 20) -> str:
 
 
 def _get_api_key() -> str:
-    """Read ANTHROPIC_API_KEY from env, then Windows user registry as fallback."""
-    key = os.environ.get("ANTHROPIC_API_KEY", "")
+    """Read API key from env (SECOND_BRAIN_API_KEY preferred, ANTHROPIC_API_KEY fallback), then registry."""
+    key = os.environ.get("SECOND_BRAIN_API_KEY") or os.environ.get("ANTHROPIC_API_KEY", "")
     if not key:
         try:
             import winreg
             with winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment") as reg:
-                key, _ = winreg.QueryValueEx(reg, "ANTHROPIC_API_KEY")
+                try:
+                    key, _ = winreg.QueryValueEx(reg, "SECOND_BRAIN_API_KEY")
+                except FileNotFoundError:
+                    key, _ = winreg.QueryValueEx(reg, "ANTHROPIC_API_KEY")
         except Exception:
             pass
     return key

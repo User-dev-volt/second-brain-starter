@@ -25,7 +25,7 @@ ENV_PATH = REPO_ROOT / ".env"
 SCRIPTS = REPO_ROOT / ".claude" / "scripts"
 DB_PATH = REPO_ROOT / ".claude" / "data" / "memory.db"
 
-REQUIRED_ENV_KEYS = ["ANTHROPIC_API_KEY", "GITHUB_PAT", "VAULT_ROOT"]
+REQUIRED_ENV_KEYS = ["SECOND_BRAIN_API_KEY", "GITHUB_PAT", "VAULT_ROOT"]
 REQUIRED_PACKAGES = [
     "anthropic",
     "sentence_transformers",
