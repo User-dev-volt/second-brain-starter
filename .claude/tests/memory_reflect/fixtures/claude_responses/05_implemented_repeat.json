@@ -1,0 +1,16 @@
+{
+  "proposals": [
+    {
+      "target": "soul.md",
+      "type": "add",
+      "proposed": "Prefers CLI interfaces over GUI when working alone.",
+      "current_value": null,
+      "evidence": [
+        "2026-05-14: Chose claude CLI over web interface — 'faster iteration, stays keyboard-native'",
+        "2026-05-14: Picked jq over Python JSON viewer — 'stays in terminal, composable with other tools'"
+      ],
+      "source_logs": ["2026-05-14"],
+      "confidence": "medium"
+    }
+  ]
+}

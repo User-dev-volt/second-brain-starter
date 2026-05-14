@@ -1,0 +1,16 @@
+{
+  "proposals": [
+    {
+      "target": "user.md",
+      "type": "add",
+      "proposed": "Most productive in late evening sessions (9pm–1am).",
+      "current_value": null,
+      "evidence": [
+        "2026-05-14: Session wrapped up in 9pm-midnight window — 'productive window'",
+        "2026-05-14: Pushed session past midnight — 'late night coding sessions produce the most sustained focused work'"
+      ],
+      "source_logs": ["2026-05-14"],
+      "confidence": "medium"
+    }
+  ]
+}
