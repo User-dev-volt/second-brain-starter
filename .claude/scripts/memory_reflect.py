@@ -26,6 +26,7 @@ sys.path.insert(0, str(SCRIPTS_DIR / "integrations"))
 import vault_router
 
 VAULT_ROOT = vault_router.VAULT_ROOT
+PROPOSALS_PATH = VAULT_ROOT / "00_Meta" / "proposals" / "identity_proposals.md"
 
 
 # ---------------------------------------------------------------------------
@@ -229,7 +230,18 @@ Return an empty array if nothing is worth promoting."""
                 capture_idea(content, source)
                 print(f"[reflect] Promoted idea (source: {source or 'unknown'})", file=sys.stderr)
 
-    # 4. Archive HABITS and reset for today
+    # 4. Run identity proposal extractor (soul.md / user.md suggestions)
+    try:
+        sys.path.insert(0, str(SCRIPTS_DIR))
+        from proposal_extractor import ProposalExtractor
+        extractor = ProposalExtractor(vault_path=VAULT_ROOT, proposals_path=PROPOSALS_PATH)
+        proposals = extractor.extract(log_text, log_date=yesterday.isoformat())
+        formatted = extractor.format_proposals(proposals, log_date=yesterday.isoformat())
+        extractor.write_proposals(formatted)
+    except Exception as e:
+        print(f"[reflect] Proposal extraction failed: {e}", file=sys.stderr)
+
+    # 5. Archive HABITS and reset for today
     _archive_and_reset_habits(yesterday)
     print("[reflect] Done.", file=sys.stderr)
 
