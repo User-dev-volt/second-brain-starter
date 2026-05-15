@@ -385,6 +385,90 @@ Session type should be tagged and the extractor should weight designing sessions
 
 ---
 
+## Research Findings & Additional Intent Signals
+
+### What research validates about this approach
+
+**Revealed preference is formally recognized.** Active arxiv research (2026) builds alignment frameworks specifically around revealed preference — modeling humans from their *choices* rather than their *stated preferences*. The academic work confirms this is the right foundation, not an intuition.
+
+**Memory staleness is an open unsolved problem.** Research explicitly identifies it: a highly-retrieved preference memory becomes *confidently wrong* rather than just outdated when it goes stale. This makes confidence decay a critical early requirement, not a Phase 3 nice-to-have.
+
+**LinkedIn's Cognitive Memory Agent (CMA)** built the same three-layer structure at enterprise scale — episodic (interaction history), semantic (structured preferences), procedural (learned workflows and behavioral patterns). Procedural memory is the layer currently missing from this design — `intent.md` covers semantic preferences but not *how* Alec structures and executes work.
+
+**Dark Factory is operational in 2026.** Companies like StrongDM are running fully automated development pipelines where agents handle implementation, testing, review, and deployment. The capability threshold has been crossed. The missing layer is the intent model that makes it *Alec's* factory, not a generic one.
+
+---
+
+### New concepts from research worth adopting
+
+**Procedural memory — separate track from intent.md**
+LinkedIn separates *what you prefer* (semantic) from *how you work* (procedural). `intent.md` is semantic. A `workflow.md` or procedural section is needed — capturing execution patterns: how Alec structures a build session, approaches debugging, handles scope creep. These are behavioral workflows, not value preferences.
+
+```markdown
+### Debug workflow
+Pattern: Reads error, checks the line, immediately looks upstream
+at what called it — rarely reads the error message twice.
+Confirmed: 4 sessions
+```
+
+**"Dreaming" — weekly consolidation pass**
+OpenClaw (personal AI agent platform) runs a dedicated "Dreaming" pass — 3-stage memory consolidation during off-hours, separate from the daily reflect. Our daily 8 AM reflect is episodic consolidation. A weekly pass is needed to find cross-session patterns that don't surface as single-day signals. The daily cycle can't see cross-week patterns. A weekly cycle can.
+
+**Gap tracking — Claude default vs. Alec choice**
+The revealed preference research frames AI choices as a mixture of its own defaults and the human's preferences. Every time Claude suggested direction A and Alec went direction B, that delta is the purest intent signal available — the AI's trained default diverging from actual preference. Currently that gap is lost every session.
+
+Should be stored explicitly:
+```
+Claude default: use established framework
+Alec chose: build custom
+Gap type: ownership vs. convenience
+Project: second-brain-starter
+```
+Accumulate enough gaps of the same type → high-confidence intent pattern.
+
+**Standing Orders — the Dark Factory promotion path**
+OpenClaw's "Standing Orders" are persistent behavioral directives that agents always follow without asking. This is what mature `intent.md` entries eventually become. The explicit promotion path:
+
+```
+Evidence → Pattern → Proposal → Implemented in intent.md
+       → Confirmed N times → Promoted to Standing Order
+       → Agent operates on it without surfacing to Alec
+```
+
+That is Dark Factory behavior made explicit as a pipeline stage.
+
+**MemMachine's ground-truth preservation principle**
+MemMachine avoids lossy extraction — stores raw episodes and re-extracts from them, rather than extracting once and discarding the source. If the extraction was lossy, the signal is permanently lost. Apply this principle: maintain a rolling 30-day window of enriched session logs that the extractor can re-process if extraction logic improves. Never discard a raw signal before confident everything useful was extracted.
+
+**Double monotonicity — consistency checking**
+From the revealed preference research: when AI interprets human choices, verify internal consistency — if A>B and B>C, then A>C must hold. Apply to `intent.md`: if the model says "prefers control over convenience" AND "prefers speed over setup cost," those can contradict depending on context. The system should run consistency checks and flag entries that produce contradictory predictions for the same scenario type.
+
+---
+
+### Additional intent signals to capture
+
+**Git history as parallel behavioral signal**
+Auto-commit is already wired. The commit history is unused for intent. Signals available:
+- Commit messages → what Alec considered worth naming
+- Commit timing → when deep work happens
+- What gets committed together → how work is mentally grouped
+- What gets refactored → what he couldn't live with the first time
+The delta between first implementation and refactored implementation is pure taste signal — no one refactors something they were satisfied with.
+
+**What Alec doesn't ask**
+When Claude explains something and Alec doesn't follow up, that area is understood. Accumulated across sessions, this builds a competence map — what Alec knows deeply vs. where he's still learning. Agents use this to calibrate explanation depth. Explaining something already deeply understood is friction and erodes trust in the agent.
+
+**The "actually" and "wait" moments — highest-tier evidence**
+When Alec says "actually" or "wait" mid-session, the real preference is overriding the initially stated one. These are the highest-quality intent moments in any session — the correction reveals what was non-negotiable. Should be flagged as a distinct evidence tier above normal clarifying question responses. A mid-session self-correction is stronger signal than an answer to a choice question.
+
+**Scope expansion as interest signal**
+When Alec expands scope unprompted — adds something to the design that wasn't requested — that's an interest leak. What he can't resist adding across multiple sessions reveals what he actually cares about most. Consistent scope expansion in a particular direction (e.g., always adding auditability, always adding manual override gates) is a strong intent signal.
+
+**What never gets deferred**
+The inverse of deferral tracking. Some things Alec always handles immediately regardless of stated scope. Those are non-negotiable values expressed through prioritization, not words. If governance, auditability, and manual review gates appear in every session regardless of whether they were in scope, they are foundational — not preferences.
+
+---
+
 ## Key Terminology
 
 - **Behavioral memory** — storing how Alec decides, not what he decided
