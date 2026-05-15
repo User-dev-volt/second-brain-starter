@@ -258,6 +258,133 @@ This enriched format is what the extractor reads. Without project context and AI
 
 ---
 
+## Session Flush Analysis — What to Capture and Why
+
+### What session-end-flush.py currently gathers
+
+| Field | Why it exists | Intent value |
+|---|---|---|
+| **Decisions** | Records what was built or committed to | Low — captures the *what*, not the tradeoff structure |
+| **Lessons** | Feeds LEARNINGS.md — technical pattern accumulation | None — intentionally strips project context |
+| **Next Actions** | Updates project Snapshot.md for session continuity | None — pure task tracking |
+| **Last Touched timestamp** | Keeps snapshot current, shows project activity | Indirect — useful for cross-referencing pattern timing |
+
+**Core problem:** The extraction uses Claude Haiku with a 512-token limit and a prompt designed for a task tracker, not a behavioral observer. It records the *what* and discards the *how you decided* — which is the only part that matters for intent modeling.
+
+---
+
+### What's missing — ranked by intent value
+
+**1. AI clarifying questions + user responses** ← highest priority
+When Claude offered A or B and the user picked one — that's the richest signal in the session. Revealed preference under mild pressure, no self-presentation. The transcript has it. The current extraction throws it away every session.
+
+```
+**AI choices + responses:**
+- Offered: SQLite vs. markdown for proposals storage
+  → Chose: markdown — "needs to be readable in Obsidian, auditable in git"
+  → Tradeoff: inspectability vs. convenience
+```
+
+**2. Course corrections**
+When Claude was heading in direction A and the user redirected without being asked. "Actually, let's do it this way." Strong signal — the preference was strong enough to interrupt mid-session.
+
+```
+**Course corrections:**
+- Claude drafted auto-approval logic → redirected to manual review gate
+  → "I want to understand what's going in there"
+  → Tradeoff: automation vs. oversight
+```
+
+**3. Explicit rejections of Claude suggestions**
+When Claude suggested something and the user said no. Different from course correction — a specific proposal being declined. The reason for rejection is the signal.
+
+```
+**Rejected suggestions:**
+- Claude suggested LangChain → rejected — "hides too much"
+- Claude suggested MemGPT → rejected — "prefer to own every layer"
+```
+
+**4. Project + session goal**
+Without this, every evidence point is context-free. "Chose markdown" means something different building a throwaway prototype versus a system intended for years of maintenance.
+
+```
+**Project:** second-brain-starter
+**Session goal:** Design proposal extraction for identity documents
+**Session type:** designing | building | debugging | exploring
+```
+
+**5. Scope decisions**
+Did the user expand or constrain scope during the session? Consistent scope discipline is a behavioral pattern. So is expansion — it reveals what can't be resisted.
+
+```
+**Scope decisions:**
+- Constrained: deferred cross-session pattern detection to Phase 2
+- Expanded: added intent.md as proposal target (unprompted)
+```
+
+**6. What was explicitly deferred**
+"We'll do that later" reveals prioritization instincts. What gets consistently pushed? What never gets deferred? Both patterns are meaningful.
+
+```
+**Deferred:**
+- Governance/drift layer — "Phase 3, after foundation works"
+- Multi-agent ecology — "premature for now"
+```
+
+**7. Confidence signals in language**
+"Definitely X" vs. "let's try X and see" vs. "I think X" — tells the system whether a decision was settled or exploratory. Instinctive certainty on a tradeoff is stronger evidence than a tentative choice.
+
+---
+
+### Revised separation of concerns
+
+| Hook | Model | Job |
+|---|---|---|
+| `session-end-flush.py` | Haiku | Accurately capture raw signals — decisions, AI choices, course corrections, rejections, project context. Fast, cheap, factual. |
+| `memory_reflect.py` (daily 8 AM) | Sonnet | Higher-order analysis — identify tradeoff patterns, cross-reference intent.md, generate proposals. |
+
+Haiku captures. Sonnet interprets. Currently Haiku is doing both and doing neither well for intent purposes.
+
+---
+
+### Revised daily log format (target state)
+
+```markdown
+**Project:** [name]
+**Session goal:** [what this session was trying to accomplish]
+**Session type:** designing | building | debugging | exploring
+
+**AI choices + responses:**
+- [what Claude offered] → [what user chose] — "[reason if stated]"
+  (Tradeoff: [type])
+
+**Course corrections:**
+- [what Claude was doing] → [what user redirected to] — "[reason]"
+
+**Rejected suggestions:**
+- [what Claude suggested] → rejected — "[reason]"
+
+**Scope decisions:**
+- Expanded: [what was added unprompted]
+- Constrained: [what was explicitly deferred]
+
+**Decisions:** [existing — keep]
+**Lessons:** [existing — keep]
+**Next Actions:** [existing — keep]
+```
+
+The top half feeds intent. The bottom half is what already exists.
+
+---
+
+### Session type weighting note
+
+The most valuable sessions for intent modeling are **designing** sessions — that's when Claude is offering options and the user is choosing. Building sessions have fewer tradeoff moments. Debugging sessions have almost none. Design sessions are dense with revealed preference.
+
+Session type should be tagged and the extractor should weight designing sessions more heavily — a decision made while architecting something reveals more about how the user thinks than one made while fixing a syntax error.
+
+---
+
 ## Key Terminology
 
 - **Behavioral memory** — storing how Alec decides, not what he decided
