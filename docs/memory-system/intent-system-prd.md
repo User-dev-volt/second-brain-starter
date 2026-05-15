@@ -277,7 +277,7 @@ Claude Code reads this, calls the loader script (file reads only), receives the 
 
 ---
 
-#### `/weekly-dream` slash command (`.claude/commands/weekly-dream.md`) — PHASE 2
+#### `/weekly-dream` slash command (`.claude/commands/weekly-dream.md`) ✓
 
 Same pattern but loads 7 days and instructs Claude to use deeper cross-session synthesis. Claude Code's extended thinking is available through the subscription — no separate API configuration needed.
 
@@ -370,7 +370,7 @@ response = client.messages.create(
 
 ---
 
-### `consistency_check.py` — PHASE 2
+### `consistency_check.py` ✓
 
 **Purpose:** Double monotonicity check on `intent.md` entries. Prevents the intent model from accumulating logically contradictory heuristics.
 
