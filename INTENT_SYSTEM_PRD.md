@@ -219,13 +219,88 @@ Stage 2 — existing capture (unchanged):
 
 ---
 
-### `memory_reflect.py` — OVERHAUL
+### `memory_reflect.py` — SPLIT INTO TWO MODES
 
-**Changes:**
-1. Load last 30 days of raw daily logs (not just yesterday) — raw preservation window per MemMachine principle. Re-processable if extraction logic improves.
-2. Pass enriched log to `proposal_extractor.py` with tradeoff-structured evidence format.
-3. After proposal extraction, run double monotonicity consistency check on `intent.md`.
-4. Log check results — contradictions surface as `update` proposals, not silent overwrites.
+The daily synthesis and weekly dream **do not make API calls**. Instead they become prompt assemblers — Python scripts that read files and structure context, then hand off to Claude Code running in a manual terminal session. This routes the expensive AI work through the subscription rather than the API.
+
+#### Token routing decision
+
+| Job | Mechanism | Model | Tokens |
+|---|---|---|---|
+| Session flush | Automated hook — must be headless | Haiku API | API (cheap, keep as-is) |
+| Daily reflect | Manual: `/daily-reflect` slash command | Sonnet (subscription) | Subscription |
+| Weekly dream | Manual: `/weekly-dream` slash command | Sonnet + High thinking | Subscription |
+
+Session flush stays as API because hooks run headless — there is no Claude Code session available. Daily and weekly synthesis require you to open a terminal and trigger them manually, which is intentional.
+
+**Optional fallback:** The Task Scheduler jobs (`SecondBrain\DailyReflect`, `SecondBrain\WeeklyDream`) can remain as lower-quality Haiku API fallbacks for days when the manual command isn't run. On days you run the slash command, it supersedes the scheduled job.
+
+---
+
+#### `memory_reflect_loader.py` — NEW (replaces the AI call in memory_reflect.py)
+
+A pure Python file-reader. No AI call. Assembles and prints the full synthesis prompt to stdout so Claude Code can consume it.
+
+**What it loads:**
+- Yesterday's enriched daily log
+- Last 30 days of daily logs (raw preservation window)
+- Current `intent.md`, `workflow.md`, `soul.md`, `user.md`
+- Existing `identity_proposals.md` (implemented + rejected — for suppression context)
+
+**Output:** Structured prompt text piped into the `/daily-reflect` slash command context.
+
+---
+
+#### `/daily-reflect` slash command (`.claude/commands/daily-reflect.md`)
+
+```markdown
+Run the daily memory synthesis for the second brain intent system.
+
+1. Execute: python "D:\second-brain-starter\.claude\scripts\memory_reflect_loader.py"
+2. Using the assembled context output, identify intent proposals following
+   the tradeoff-structured evidence model in INTENT_SYSTEM_PRD.md.
+3. For each proposal, check against existing implemented and rejected proposals
+   — suppress duplicates.
+4. Write new proposals to:
+   D:\Obsidian Brain\Brain\00_Meta\proposals\identity_proposals.md
+   using the PROP-YYYY-MM-DD-NNN schema.
+5. Run a double monotonicity consistency check on the current intent.md.
+   Write any contradictions as 'contradiction' type proposals.
+```
+
+Claude Code reads this, calls the loader script (file reads only), receives the assembled context, and processes everything using subscription tokens. Writes proposals directly using its Write tool.
+
+---
+
+#### `/weekly-dream` slash command (`.claude/commands/weekly-dream.md`)
+
+Same pattern but loads 7 days and instructs Claude to use deeper cross-session synthesis. Claude Code's extended thinking is available through the subscription — no separate API configuration needed.
+
+```markdown
+Run the weekly dream synthesis for the second brain intent system.
+
+This is a deep cross-session analysis. Take your time — look for patterns
+that don't appear in any single day but emerge across the full week.
+
+1. Execute: python "D:\second-brain-starter\.claude\scripts\weekly_dream_loader.py"
+2. Using the 7-day assembled context, identify:
+   - Tradeoff patterns that resolved the same way 3+ times this week
+   - AI gap patterns — where Claude's defaults consistently diverged from Alec's choices
+   - Scope expansion patterns — what Alec kept adding unprompted
+   - Procedural workflow patterns for workflow.md
+   - Cross-session signals invisible to the daily cycle
+3. Suppress duplicates against existing proposals.
+4. Write proposals to identity_proposals.md.
+5. Run full double monotonicity consistency check across all of intent.md.
+   Flag any logical contradictions as 'contradiction' proposals.
+```
+
+**Changes to memory_reflect.py (remaining automated portion):**
+1. Remove the Claude API call — synthesis moves to the slash commands.
+2. Keep: HABITS archive + reset (no AI needed).
+3. Keep: project snapshot timestamp update (no AI needed).
+4. Keep: git auto-commit trigger.
+5. Optional: run Haiku fallback synthesis if manual command hasn't run today (check for today's proposals in identity_proposals.md as a marker).
 
 ---
 
@@ -447,26 +522,31 @@ Per the MemMachine ground-truth preservation principle: extraction is lossy. If 
 ### Phase 1 — Intent foundation
 - [ ] Create `intent.md` and `workflow.md` in vault `00_Meta/`
 - [ ] Overhaul `session-end-flush.py` extraction prompt — add enriched intent-signal sections
+- [ ] Build `memory_reflect_loader.py` — file reader, no AI call, outputs structured prompt
+- [ ] Build `/daily-reflect` slash command (`.claude/commands/daily-reflect.md`)
+- [ ] Strip AI call from `memory_reflect.py` — keep HABITS, snapshot, git auto-commit
 - [ ] Overhaul `proposal_extractor.py` — add intent.md/workflow.md targets, tradeoff-structured evidence, new prompt
 - [ ] Update test fixtures — enriched log format, tradeoff-structured Claude responses
 - [ ] Add `intent.md` and `workflow.md` to fixture vault
 
 ### Phase 2 — Weekly Dreaming
-- [ ] Build `weekly_dream.py` — Sonnet + High thinking, 7-day cross-session synthesis
-- [ ] Register `SecondBrain\WeeklyDream` in Windows Task Scheduler (Sundays 6 AM)
-- [ ] Build `consistency_check.py` — double monotonicity check, contradiction proposals
-- [ ] Wire consistency check into both memory_reflect.py (daily) and weekly_dream.py (weekly)
+- [ ] Build `weekly_dream_loader.py` — 7-day file loader, no AI call, outputs structured prompt
+- [ ] Build `/weekly-dream` slash command (`.claude/commands/weekly-dream.md`)
+- [ ] Build `consistency_check.py` — double monotonicity check logic, contradiction proposals
+- [ ] Wire consistency check into both slash commands
+- [ ] Remove `SecondBrain\WeeklyDream` Task Scheduler job (replaced by manual slash command)
+- [ ] Optional: keep `SecondBrain\DailyReflect` as Haiku fallback on days `/daily-reflect` isn't run manually
 
 ### Phase 3 — Gap tracking
 - [ ] Add AI gap capture section to session-end-flush.py enriched prompt
-- [ ] Add gap evidence tier to proposal_extractor.py prompt (High tier, below Critical)
-- [ ] Add weekly gap pattern synthesis to weekly_dream.py
+- [ ] Add gap evidence tier to slash command synthesis instructions (High tier, below Critical)
+- [ ] Add weekly gap pattern synthesis to `/weekly-dream` instructions
 - [ ] Add gap accumulation tracking to intent.md entries
 
 ### Phase 4 — Standing Orders
 - [ ] Add `standing-order` proposal type to proposal schema
 - [ ] Add Standing Order section to intent.md format
-- [ ] Build Standing Order reader — agents load Standing Orders at session start
+- [ ] Build Standing Order reader — agents load Standing Orders at session start via context hook
 - [ ] Define escalation logic — when does an agent override a Standing Order and ask
 
 ### Phase 5 — Dark Factory
