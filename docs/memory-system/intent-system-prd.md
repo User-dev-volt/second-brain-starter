@@ -2,7 +2,7 @@
 **Project:** second-brain-starter
 **Created:** 2026-05-14
 **Updated:** 2026-05-15
-**Status:** Phase 1 complete — Phase 2 pending
+**Status:** Phase 2 complete — Phase 3 pending
 
 ---
 
@@ -545,6 +545,23 @@ Per the MemMachine ground-truth preservation principle: extraction is lossy. If 
 
 ## Implementation Log
 
+### 2026-05-15 — Phase 2 complete
+
+**Phase 2 built in same session as Phase 1.** All 4 Phase 2 items complete.
+
+**Files added:**
+- `weekly_dream_loader.py` — mirrors daily loader; 7-day primary window + 8–30 day supporting context; loads full proposal history (not just suppression context) so weekly synthesis can avoid re-proposing pending items
+- `consistency_check.py` — pure Python; parses intent.md entries, groups by tradeoff type, formats structured input for Claude Code's monotonicity check; no API calls; also runnable standalone for inspection
+- `/weekly-dream` slash command — calls both loaders, instructs Claude Code on cross-session synthesis, gap patterns, workflow patterns, and contradiction detection
+- Task Scheduler jobs confirmed never registered — nothing to retire
+
+**Design notes:**
+- `consistency_check.py` is a prompt assembler, not an AI caller — Claude Code does the actual contradiction reasoning during the slash command session
+- Weekly loader loads full proposal history (all statuses) vs. daily loader which loads only implemented/rejected for suppression; weekly synthesis needs to see pending proposals to avoid duplicating them
+- `/weekly-dream` calls `consistency_check.py` as a second script before synthesis so contradiction context arrives pre-structured
+
+**Testing plan:** Run `/weekly-dream` in ~1 week once enriched Stage 1 logs have accumulated.
+
 ### 2026-05-15 — Phase 1 complete, first daily reflect run
 
 **Phase 1 built in one session.** All 8 Phase 1 items complete. Tests: 6/6 pass.
@@ -572,10 +589,10 @@ All changes land inside the existing structure. Nothing is moved, renamed, or re
 | `.claude/scripts/memory_reflect.py` | **Modify** | ✓ Done |
 | `.claude/scripts/proposal_extractor.py` | **Modify** | ✓ Done |
 | `.claude/scripts/memory_reflect_loader.py` | **New** | ✓ Done |
-| `.claude/scripts/weekly_dream_loader.py` | **New** | Phase 2 |
-| `.claude/scripts/consistency_check.py` | **New** | Phase 2 |
+| `.claude/scripts/weekly_dream_loader.py` | **New** | ✓ Done |
+| `.claude/scripts/consistency_check.py` | **New** | ✓ Done |
 | `.claude/commands/daily-reflect.md` | **New** | ✓ Done |
-| `.claude/commands/weekly-dream.md` | **New** | Phase 2 |
+| `.claude/commands/weekly-dream.md` | **New** | ✓ Done |
 | `.claude/tests/memory_reflect/` | **Modify** | ✓ Done |
 | `00_Meta/intent.md` *(vault)* | **New** | ✓ Done |
 | `00_Meta/workflow.md` *(vault)* | **New** | ✓ Done |
@@ -597,13 +614,13 @@ All changes land inside the existing structure. Nothing is moved, renamed, or re
 - [x] Update test fixtures — enriched log format, tradeoff-structured Claude responses
 - [x] Add `intent.md` and `workflow.md` to fixture vault
 
-### Phase 2 — Weekly Dreaming
-- [ ] Build `weekly_dream_loader.py` — 7-day file loader, no AI call, outputs structured prompt
-- [ ] Build `/weekly-dream` slash command (`.claude/commands/weekly-dream.md`)
-- [ ] Build `consistency_check.py` — double monotonicity check logic, contradiction proposals
-- [ ] Wire consistency check into both slash commands
-- [ ] Retire `SecondBrain\WeeklyDream` Task Scheduler job
-- [ ] Retire `SecondBrain\DailyReflect` Task Scheduler job
+### Phase 2 — Weekly Dreaming ✓ COMPLETE (2026-05-15)
+- [x] Build `weekly_dream_loader.py` — 7-day file loader, no AI call, outputs structured prompt
+- [x] Build `/weekly-dream` slash command (`.claude/commands/weekly-dream.md`)
+- [x] Build `consistency_check.py` — double monotonicity check logic, contradiction proposals
+- [x] Wire consistency check into both slash commands
+- [x] Retire `SecondBrain\WeeklyDream` Task Scheduler job — confirmed never registered
+- [x] Retire `SecondBrain\DailyReflect` Task Scheduler job — confirmed never registered
 
 ### Phase 3 — Gap tracking
 - [ ] Add AI gap capture section to session-end-flush.py enriched prompt
