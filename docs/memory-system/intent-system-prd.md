@@ -2,7 +2,7 @@
 **Project:** second-brain-starter
 **Created:** 2026-05-14
 **Updated:** 2026-05-15
-**Status:** Phase 2 complete — Phase 3 pending
+**Status:** Phase 3 complete — Phase 4 pending
 
 ---
 
@@ -55,11 +55,14 @@ Three documents exist today: `soul.md`, `user.md`, `MEMORY.md`. Two are being ad
 **Observed:** How this manifests in behavior.
 **Context modifiers:** When does this apply strongly vs. relax?
 **Confirmed:** N times across N sessions
+**Gap accumulation:** N gaps — [tradeoff type] → [direction] each time (YYYY-MM-DD, ...)
 **Confidence:** low | medium | high
 **Last confirmed:** YYYY-MM-DD
 **Sessions:** [list of source log dates]
 **Standing order:** no | proposed | active
 ```
+
+`**Gap accumulation:**` is optional — only present when AI gap instances exist for this entry. Tracks how many times Claude's default diverged from Alec's choice for this specific tradeoff type, the consistent resolution direction, and the dates. Entries with 4+ gap instances and high confidence become Standing Order candidates.
 
 ### workflow.md entry structure
 
@@ -545,6 +548,16 @@ Per the MemMachine ground-truth preservation principle: extraction is lossy. If 
 
 ## Implementation Log
 
+### 2026-05-15 — Phase 3 complete
+
+**Changes:**
+- `daily-reflect.md` — added `consistency_check.py` call (was missing); added explicit 5-tier evidence hierarchy with AI gap as a named High tier; added gap accumulation field instruction for intent.md proposals
+- `weekly-dream.md` — expanded AI gap section: systematic gap definition (3+ same-tradeoff-type resolutions across week), Standing Order candidacy threshold (4+ all-time instances at high confidence), explicit all-time vs. weekly gap count comparison against intent.md Gap accumulation
+- `proposal_extractor.py` — updated `_call_claude` prompt with full tier hierarchy, explicit AI gap prioritization, two-gap qualification rule, gap accumulation field instruction in proposed text
+- `intent-system-prd.md` — added `**Gap accumulation:**` field to intent.md entry schema with Standing Order candidacy note
+
+**Design note:** `**Gap accumulation:**` lives inside the *proposed text* of an intent.md entry, not as a separate proposal block field. This keeps the field co-located with the heuristic it annotates and visible in Obsidian without extra tooling.
+
 ### 2026-05-15 — Phase 2 complete
 
 **Phase 2 built in same session as Phase 1.** All 4 Phase 2 items complete.
@@ -622,11 +635,11 @@ All changes land inside the existing structure. Nothing is moved, renamed, or re
 - [x] Retire `SecondBrain\WeeklyDream` Task Scheduler job — confirmed never registered
 - [x] Retire `SecondBrain\DailyReflect` Task Scheduler job — confirmed never registered
 
-### Phase 3 — Gap tracking
-- [ ] Add AI gap capture section to session-end-flush.py enriched prompt
-- [ ] Add gap evidence tier to slash command synthesis instructions (High tier, below Critical)
-- [ ] Add weekly gap pattern synthesis to `/weekly-dream` instructions
-- [ ] Add gap accumulation tracking to intent.md entries
+### Phase 3 — Gap tracking ✓ COMPLETE (2026-05-15)
+- [x] Add AI gap capture section to session-end-flush.py enriched prompt — done in Phase 1
+- [x] Add gap evidence tier to slash command synthesis instructions (High tier, below Critical)
+- [x] Add weekly gap pattern synthesis to `/weekly-dream` instructions
+- [x] Add gap accumulation tracking to intent.md entries
 
 ### Phase 4 — Standing Orders
 - [ ] Add `standing-order` proposal type to proposal schema

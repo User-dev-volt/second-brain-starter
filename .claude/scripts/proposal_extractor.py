@@ -184,17 +184,31 @@ Identify tradeoff patterns and behavioral signals that belong in one of these do
 - **soul.md**: Stable identity values — who Alec is
 - **user.md**: Profile facts — stack, projects, communication style
 
+Evidence tiers (rank each piece of evidence before assessing thresholds):
+- **Critical**: "actually", "wait", "stop", or mid-session self-correction. One instance
+  qualifies for proposal if the tradeoff type matches an existing intent.md pattern.
+- **Highest**: Response to an AI clarifying question — instinctive, unguarded choice.
+- **High (AI gap)**: Claude heading toward X → Alec redirected to Y. The strongest
+  *passive* signal — no self-reflection required. AI gaps from the **AI gaps** section
+  of the log are automatically High tier. Two gaps resolving the same tradeoff type
+  the same way qualify for a proposal even without other evidence.
+- **High**: Unprompted scope expansion — adding something not requested.
+- **Medium**: Explicit rejection of AI suggestion with stated reason.
+- **Low**: Single mention, no decision attached — accumulate only, never promote alone.
+
 For each session, identify:
 1. What binary or multiple-choice questions did the AI ask? What did the user pick?
    Classify the tradeoff type (control vs. convenience, ownership vs. delegation,
    speed vs. durability, depth vs. breadth, manual vs. automated, local vs. cloud, explicit vs. implicit).
 2. Were there any "actually", "wait", "stop" moments? What was corrected?
-3. Where did Claude's default direction diverge from what the user chose?
+3. Check the **AI gaps** section: for each gap, classify the tradeoff type and resolution
+   direction. This is the most reliable signal in the log — prioritize it.
 4. Did the user expand scope unprompted? In what direction?
 5. Do these signals confirm an existing intent.md pattern or suggest a new one?
 
 Proposal rules:
 - Require 2+ evidence points of the same tradeoff type (same session), OR 1+ confirming an existing intent.md pattern
+- Two AI gap instances resolving the same tradeoff type the same way → qualifies regardless of other evidence
 - Do not re-propose anything already listed above (implemented or rejected)
 - type "add": new entry that does not exist in the current document
 - type "update": meaningfully more accurate than current — not a rewording
@@ -205,9 +219,14 @@ Proposal rules:
 - source is always "daily-reflect"
 - Return empty proposals array if nothing meets the threshold
 
+For intent.md proposals that include AI gap evidence: include a **Gap accumulation:** line
+in the proposed text to track gap instances:
+  **Gap accumulation:** N gaps — [tradeoff type] → [direction] each time (YYYY-MM-DD, ...)
+Omit this line for proposals with no AI gap evidence.
+
 Evidence format for intent.md proposals:
   "YYYY-MM-DD [project] [tradeoff type] [tier]: [offered] → [chosen] — \\"reason\\""
-  Tiers: Critical | Highest | High | Medium | Low
+  Tiers: Critical | Highest | High (AI gap) | High | Medium | Low
 
 Respond ONLY with valid JSON:
 {{
