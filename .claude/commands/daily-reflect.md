@@ -21,6 +21,13 @@ Run the daily memory synthesis for the second brain intent system.
    Include a **Gap accumulation:** line in the proposed text:
      **Gap accumulation:** N gaps — [tradeoff type] → [direction] each time (YYYY-MM-DD, ...)
 
+   If an existing intent.md entry has confidence "high" and 10+ confirmed instances
+   (check **Confirmed:** and **Gap accumulation:** fields combined), propose
+   type "standing-order" instead of "strengthen". The proposed text is the exact
+   **Agent instruction:** directive Alec should add to the entry — a single
+   actionable sentence an agent can follow without asking. Set current_value to
+   the entry name being promoted. Evidence needs only 1 line referencing the entry.
+
 5. Suppress implemented and rejected duplicates.
 
 6. Write new proposals to:

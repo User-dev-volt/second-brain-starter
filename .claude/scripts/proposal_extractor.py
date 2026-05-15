@@ -16,7 +16,7 @@ from pathlib import Path
 PROP_ID_RE = re.compile(r"PROP-\d{4}-\d{2}-\d{2}-\d{3}")
 
 VALID_TARGETS = {"soul.md", "user.md", "intent.md", "workflow.md"}
-VALID_TYPES = {"add", "update", "deprecate", "strengthen", "contradiction"}
+VALID_TYPES = {"add", "update", "deprecate", "strengthen", "contradiction", "standing-order"}
 
 
 def parse_proposal_blocks(text: str) -> list[dict]:

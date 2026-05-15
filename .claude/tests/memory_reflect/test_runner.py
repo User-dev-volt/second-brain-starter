@@ -28,7 +28,7 @@ EXPECTED_DIR = TESTS_DIR / "expected_outputs"
 PROP_ID_RE = re.compile(r"PROP-\d{4}-\d{2}-\d{2}-\d{3}")
 REQUIRED_FIELDS = {"target", "type", "source", "proposed", "confidence", "status"}
 UPDATE_DEPRECATE_FIELDS = {"current_value"}  # additionally required for update/deprecate
-VALID_TYPES = {"add", "update", "deprecate", "strengthen", "contradiction"}
+VALID_TYPES = {"add", "update", "deprecate", "strengthen", "contradiction", "standing-order"}
 
 
 # ---------------------------------------------------------------------------
@@ -203,14 +203,15 @@ def validate_proposal_fields(p: dict, idx: int) -> list[str]:
             errors.append(f"  proposal {idx}: missing required field '{f}'")
     if p.get("type") not in VALID_TYPES:
         errors.append(f"  proposal {idx}: invalid type '{p.get('type')}'; expected one of {VALID_TYPES}")
-    if p.get("type") in ("update", "deprecate"):
+    if p.get("type") in ("update", "deprecate", "standing-order"):
         if "current_value" not in p:
-            errors.append(f"  proposal {idx}: update/deprecate must include 'current_value'")
+            errors.append(f"  proposal {idx}: {p.get('type')} must include 'current_value'")
     if p.get("status") != "pending":
         errors.append(f"  proposal {idx}: new proposals must have status 'pending', got '{p.get('status')}'")
     evidence = p.get("evidence", [])
-    if len(evidence) < 2:
-        errors.append(f"  proposal {idx}: too few evidence entries ({len(evidence)}); minimum 2")
+    min_evidence = 1 if p.get("type") == "standing-order" else 2
+    if len(evidence) < min_evidence:
+        errors.append(f"  proposal {idx}: too few evidence entries ({len(evidence)}); minimum {min_evidence}")
     return errors
 
 

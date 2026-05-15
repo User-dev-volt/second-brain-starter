@@ -2,7 +2,7 @@
 **Project:** second-brain-starter
 **Created:** 2026-05-14
 **Updated:** 2026-05-15
-**Status:** Phase 3 complete — Phase 4 pending
+**Status:** Phase 4 complete — Phase 5 pending (requires data)
 
 ---
 
@@ -548,6 +548,22 @@ Per the MemMachine ground-truth preservation principle: extraction is lossy. If 
 
 ## Implementation Log
 
+### 2026-05-15 — Phase 4 complete
+
+**Changes:**
+- `proposal_extractor.py` + `test_runner.py` — added `standing-order` to `VALID_TYPES`; validation rule: standing-order requires `current_value` and only 1 evidence line minimum (vs. 2 for other types)
+- `00_Meta/intent.md` (vault) + fixture `intent.md` — added `## Standing Orders` section with format template; `**Standing order:** active | proposed | no` field added to entry schema
+- `standing_order_reader.py` (new — `scripts/utils/`) — reads intent.md, extracts entries where `**Standing order:** active`, formats directives with 4-condition escalation protocol embedded in output
+- `context_builder.py` — injects Standing Orders after core memory, before project snapshot; fails silently if reader unavailable
+- Escalation protocol: (1) novel context not covered by any order, (2) two orders conflict for same scenario, (3) critical override ("actually/wait/stop"), (4) genuine ambiguity after best-effort inference
+- Test validation: 6/6 pass with new types; standing_order_reader confirmed extracting fixture active order correctly
+
+**Design notes:**
+- Reader placed in `scripts/utils/` (not `scripts/`) because it is a utility function consumed by `context_builder`, not a standalone runnable
+- Standing Orders injected early in context (before project snapshot) so agents see directives before project-specific noise
+- Escalation protocol embedded in reader output — agents never need to read the PRD to know when to ask
+- `standing-order` proposals require only 1 evidence line to reduce friction: at this stage the entry being promoted is itself the evidence; the confirming instance count is in `Gap accumulation:` within the entry
+
 ### 2026-05-15 — Phase 3 complete
 
 **Changes:**
@@ -610,6 +626,8 @@ All changes land inside the existing structure. Nothing is moved, renamed, or re
 | `00_Meta/intent.md` *(vault)* | **New** | ✓ Done |
 | `00_Meta/workflow.md` *(vault)* | **New** | ✓ Done |
 | `00_Meta/proposals/identity_proposals.md` *(vault)* | **Modify** | ✓ Done |
+| `.claude/scripts/utils/standing_order_reader.py` | **New** | ✓ Done |
+| `.claude/scripts/utils/context_builder.py` | **Modify** | ✓ Done |
 | `SecondBrain\DailyReflect` *(Task Scheduler)* | **Retire** | Pending |
 | `SecondBrain\WeeklyDream` *(Task Scheduler)* | **Retire** | Phase 2 |
 
@@ -641,11 +659,11 @@ All changes land inside the existing structure. Nothing is moved, renamed, or re
 - [x] Add weekly gap pattern synthesis to `/weekly-dream` instructions
 - [x] Add gap accumulation tracking to intent.md entries
 
-### Phase 4 — Standing Orders
-- [ ] Add `standing-order` proposal type to proposal schema
-- [ ] Add Standing Order section to intent.md format
-- [ ] Build Standing Order reader — agents load Standing Orders at session start via context hook
-- [ ] Define escalation logic — when does an agent override a Standing Order and ask
+### Phase 4 — Standing Orders ✓ COMPLETE (2026-05-15)
+- [x] Add `standing-order` proposal type to proposal schema
+- [x] Add Standing Order section to intent.md format
+- [x] Build Standing Order reader — agents load Standing Orders at session start via context hook
+- [x] Define escalation logic — when does an agent override a Standing Order and ask
 
 ### Phase 5 — Dark Factory
 - [ ] Agents default to Alec-preference baseline for known tradeoff types

@@ -19,6 +19,9 @@ that don't appear in any single day but emerge across the full week.
        - Determine whether to add a new intent.md entry, strengthen an existing one,
          or propose a Standing Order if confidence is high and count ≥ threshold
      Systematic gaps with 4+ all-time instances at high confidence are Standing Order candidates.
+     For Standing Order proposals: type "standing-order", current_value is the entry name,
+     proposed text is the exact **Agent instruction:** directive (one actionable sentence).
+     Evidence needs only 1 line referencing the promoted entry and its confirmation count.
 
    - **Scope expansion patterns** — what Alec kept adding unprompted across sessions.
      Recurring expansions in the same direction indicate deep values, not tactical choices.
