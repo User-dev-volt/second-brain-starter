@@ -7,6 +7,7 @@ current identity documents, and existing proposals, then prints a structured pro
 to stdout for Claude Code to consume via the /daily-reflect slash command.
 """
 import sys
+sys.stdout.reconfigure(encoding="utf-8")
 from datetime import date, timedelta
 from pathlib import Path
 

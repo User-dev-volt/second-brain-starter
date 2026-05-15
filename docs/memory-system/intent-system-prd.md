@@ -2,7 +2,7 @@
 **Project:** second-brain-starter
 **Created:** 2026-05-14
 **Updated:** 2026-05-15
-**Status:** Finalized — ready to build
+**Status:** Phase 1 complete — Phase 2 pending
 
 ---
 
@@ -139,25 +139,22 @@ session-end-flush.py  [OVERHAUL]
     ↓
 Daily log: 00_Meta/daily/YYYY-MM-DD.md
     ↓
-memory_reflect.py  [OVERHAUL — daily at 8 AM]
-    → Reads yesterday's enriched log
-    → Reads last 30 days of logs (raw preservation window)
-    → Calls proposal_extractor.py
-    → Runs consistency check on intent.md
-    → Archives HABITS / resets for today
+memory_reflect_loader.py  [NEW — pure file reader, no AI]
+    → Loads yesterday's enriched log + last 30 days
+    → Loads intent.md, workflow.md, soul.md, user.md
+    → Loads existing proposals (for suppression context)
+    → Prints structured prompt to stdout
     ↓
-proposal_extractor.py  [OVERHAUL]
-    → Targets: soul.md, user.md, intent.md, workflow.md
-    → Evidence structured as tradeoff pairs, not surface decisions
-    → Suppresses implemented and rejected proposals
-    → Writes to 00_Meta/proposals/identity_proposals.md
+/daily-reflect slash command  [NEW — manual, subscription tokens]
+    → Calls memory_reflect_loader.py
+    → Identifies intent proposals (tradeoff-structured evidence)
+    → Runs double monotonicity consistency check on intent.md
+    → Writes proposals to identity_proposals.md
     ↓
-weekly_dream.py  [NEW — weekly, Sonnet + High thinking]
-    → Reads 7 days of enriched logs
-    → Runs cross-session pattern synthesis
-    → Identifies patterns invisible to daily cycle
-    → Generates higher-confidence proposals
-    → Runs double monotonicity consistency check across intent.md
+/weekly-dream slash command  [PHASE 2 — manual, subscription + extended thinking]
+    → 7-day cross-session synthesis
+    → Finds patterns invisible to daily cycle
+    → Deeper double monotonicity check
     ↓
 identity_proposals.md  [Obsidian — manual review]
     → Alec reviews: pending → implemented | rejected — <reason>
@@ -176,7 +173,7 @@ Dark Factory
 
 ## Files Being Modified or Created
 
-### `session-end-flush.py` — OVERHAUL
+### `session-end-flush.py` — OVERHAUL ✓
 
 **Current extraction prompt (Haiku, 512 tokens):**
 Produces Decisions / Lessons / Next Actions.
@@ -216,10 +213,11 @@ Stage 2 — existing capture (unchanged):
 ```
 
 **Model:** Keep Haiku for cost. The prompt is more structured, not more expensive.
+**Note:** Enriched Stage 1 format begins capturing from 2026-05-15 onward. Logs before this date contain Decisions/Lessons/Next Actions only.
 
 ---
 
-### `memory_reflect.py` — SPLIT INTO TWO MODES
+### `memory_reflect.py` — SPLIT INTO TWO MODES ✓
 
 The daily synthesis and weekly dream **do not make API calls**. Instead they become prompt assemblers — Python scripts that read files and structure context, then hand off to Claude Code running in a manual terminal session. This routes the expensive AI work through the subscription rather than the API.
 
@@ -235,9 +233,11 @@ Session flush stays as API because hooks run headless — there is no Claude Cod
 
 The Task Scheduler job `SecondBrain\DailyReflect` will be retired — synthesis runs only when `/daily-reflect` is triggered manually. No fallback.
 
+`memory_reflect.py` now handles only HABITS archive + reset. The Claude API call and proposal extractor call have been removed.
+
 ---
 
-#### `memory_reflect_loader.py` — NEW (replaces the AI call in memory_reflect.py)
+#### `memory_reflect_loader.py` — NEW ✓
 
 A pure Python file-reader. No AI call. Assembles and prints the full synthesis prompt to stdout so Claude Code can consume it.
 
@@ -249,9 +249,11 @@ A pure Python file-reader. No AI call. Assembles and prints the full synthesis p
 
 **Output:** Structured prompt text piped into the `/daily-reflect` slash command context.
 
+**Note:** Script sets `sys.stdout.reconfigure(encoding="utf-8")` to handle Unicode in vault documents (→, —, etc.) without requiring `PYTHONIOENCODING` env var.
+
 ---
 
-#### `/daily-reflect` slash command (`.claude/commands/daily-reflect.md`)
+#### `/daily-reflect` slash command (`.claude/commands/daily-reflect.md`) ✓
 
 ```markdown
 Run the daily memory synthesis for the second brain intent system.
@@ -272,7 +274,7 @@ Claude Code reads this, calls the loader script (file reads only), receives the 
 
 ---
 
-#### `/weekly-dream` slash command (`.claude/commands/weekly-dream.md`)
+#### `/weekly-dream` slash command (`.claude/commands/weekly-dream.md`) — PHASE 2
 
 Same pattern but loads 7 days and instructs Claude to use deeper cross-session synthesis. Claude Code's extended thinking is available through the subscription — no separate API configuration needed.
 
@@ -295,23 +297,18 @@ that don't appear in any single day but emerge across the full week.
    Flag any logical contradictions as 'contradiction' proposals.
 ```
 
-**Changes to memory_reflect.py (remaining automated portion):**
-1. Remove the Claude API call — synthesis moves to the slash commands.
-2. Keep: HABITS archive + reset (no AI needed).
-3. Keep: project snapshot timestamp update (no AI needed).
-4. Keep: git auto-commit trigger.
-5. Task Scheduler job `SecondBrain\DailyReflect` is retired — no fallback.
-
 ---
 
-### `proposal_extractor.py` — OVERHAUL
+### `proposal_extractor.py` — OVERHAUL ✓
 
-**Changes:**
-1. Add `intent.md` and `workflow.md` as valid proposal targets alongside `soul.md` and `user.md`.
-2. Rewrite Claude prompt to extract tradeoff patterns and procedural patterns, not surface preferences.
+**Changes implemented:**
+1. Added `intent.md` and `workflow.md` as valid proposal targets alongside `soul.md` and `user.md`.
+2. Rewrote Claude prompt to extract tradeoff patterns and procedural patterns, not surface preferences.
 3. Evidence format uses tradeoff structure (offered/chosen/type/origin) not quoted reasons.
-4. Read and pass existing `intent.md` entries to Claude so it knows what's already captured.
+4. Reads and passes existing `intent.md` entries to Claude so it knows what's already captured.
 5. Suppression checks extended to cover all four target documents.
+6. Added `**Source:**` field to all proposals (daily-reflect | weekly-dream | consistency-check).
+7. Added new types: `strengthen`, `contradiction`.
 
 **New extraction prompt focus:**
 ```
@@ -333,7 +330,7 @@ Only propose if:
 
 ---
 
-### `weekly_dream.py` — NEW
+### `weekly_dream.py` — PHASE 2
 
 **Purpose:** Cross-session pattern synthesis. Finds patterns invisible to the daily cycle — things that appear 2-3 times per week but never 4 times in one day.
 
@@ -370,7 +367,7 @@ response = client.messages.create(
 
 ---
 
-### `consistency_check.py` — NEW (called by both memory_reflect and weekly_dream)
+### `consistency_check.py` — PHASE 2
 
 **Purpose:** Double monotonicity check on `intent.md` entries. Prevents the intent model from accumulating logically contradictory heuristics.
 
@@ -383,9 +380,11 @@ These can contradict for the same decision scenario. The check identifies pairs 
 
 **Output:** Contradiction pairs written to `identity_proposals.md` as `update` type with target `intent.md`.
 
+Note: The double monotonicity check is currently performed inline by Claude Code during `/daily-reflect`. `consistency_check.py` as a standalone script is a Phase 2 artifact.
+
 ---
 
-### `identity_proposals.md` — EXTENDED
+### `identity_proposals.md` — EXTENDED ✓
 
 **New proposal types for intent.md and workflow.md:**
 
@@ -409,7 +408,7 @@ These can contradict for the same decision scenario. The check identifies pairs 
 For intent.md — adds a new confirming instance to an existing pattern without changing the heuristic text. Increases confirmation count and updates `last confirmed` date.
 
 **New type: `contradiction`**
-Generated by consistency_check.py when two intent.md entries produce contradictory predictions. Alec resolves which version is current.
+Generated by consistency check when two intent.md entries produce contradictory predictions. Alec resolves which version is current.
 
 **New source field:** Tracks whether the proposal came from daily-reflect, weekly-dream, or consistency-check. Weekly-dream proposals carry higher cross-session confidence.
 
@@ -479,7 +478,7 @@ Per the MemMachine ground-truth preservation principle: extraction is lossy. If 
 
 **Implementation:**
 - Daily logs in `00_Meta/daily/` are never deleted within 30 days
-- `memory_reflect.py` loads the past 30 days of logs on each run (not just yesterday)
+- `memory_reflect_loader.py` loads the past 30 days of logs on each run (not just yesterday)
 - If a new tradeoff type is added to the extractor, the 30-day window allows back-filling without lost signal
 - After 30 days, logs remain in the vault as historical record but are no longer actively re-processed
 
@@ -502,18 +501,64 @@ Per the MemMachine ground-truth preservation principle: extraction is lossy. If 
 - 6 scenario fixtures covering: strong pattern, single session, contradiction, rejected repeat, implemented repeat, deprecate trigger
 - Deterministic stubbed Claude responses — no API calls in tests
 - `test_runner.py` — auto-detects real vs stub extractor; validates field structure, suppression logic, confidence filtering
+- Updated for new `Source` field, `VALID_TYPES` enum (add, update, deprecate, strengthen, contradiction)
+- Fixture vault includes `intent.md` and `workflow.md`
 
 ### `proposal_extractor.py` (`/.claude/scripts/`)
-- Loads existing proposals, soul.md, user.md as Claude context
-- Calls Claude Sonnet with extraction prompt
-- Suppression: blocks re-proposal of implemented/rejected items
-- `format_proposals()` — sequential IDs, no collisions with existing
+- Loads existing proposals, soul.md, user.md, intent.md, workflow.md as Claude context
+- Calls Claude Sonnet with tradeoff-structured extraction prompt
+- Suppression: blocks re-proposal of implemented/rejected items across all 4 target documents
+- `format_proposals()` — sequential IDs, Source field, no collisions with existing
 - `write_proposals()` — appends to identity_proposals.md
 - Mock injection interface for test compatibility
 
-### `memory_reflect.py` (updated)
-- Runs proposal extractor as step 4 after existing promotions
-- Targets: `VAULT_ROOT/00_Meta/proposals/identity_proposals.md`
+### `memory_reflect_loader.py` (`/.claude/scripts/`)
+- Pure Python file reader — no API calls
+- Loads 30-day log window, all 4 identity documents, existing proposals
+- UTF-8 output (sys.stdout.reconfigure) — handles vault Unicode characters
+- Prints structured synthesis prompt to stdout for `/daily-reflect`
+
+### `memory_reflect.py` (stripped)
+- Claude API call removed — synthesis moved to slash commands
+- Proposal extractor call removed
+- Keeps: HABITS archive + reset
+- Task Scheduler job `SecondBrain\DailyReflect` retired — no fallback
+
+### `/daily-reflect` slash command (`.claude/commands/daily-reflect.md`)
+- Calls `memory_reflect_loader.py`
+- Claude Code (subscription) identifies proposals from tradeoff-structured evidence
+- Runs double monotonicity check inline
+- Writes proposals to `identity_proposals.md`
+
+### `session-end-flush.py` (overhauled hook)
+- Two-stage extraction: Stage 1 captures intent signals, Stage 2 captures existing summary
+- Enriched format begins capturing from 2026-05-15 onward
+- Passes `cwd` for project name inference
+- Stage 2 sections (Decisions/Lessons/Next Actions) still parsed by existing `parse_section()`
+
+### Vault documents
+- `D:\Obsidian Brain\Brain\00_Meta\intent.md` — created, empty, ready for proposals
+- `D:\Obsidian Brain\Brain\00_Meta\workflow.md` — created, empty, ready for proposals
+- `D:\Obsidian Brain\Brain\00_Meta\proposals\identity_proposals.md` — created 2026-05-15 with first 4 proposals
+
+---
+
+## Implementation Log
+
+### 2026-05-15 — Phase 1 complete, first daily reflect run
+
+**Phase 1 built in one session.** All 8 Phase 1 items complete. Tests: 6/6 pass.
+
+**First `/daily-reflect` run results:**
+- Primary log: 2026-05-14 (8 sessions — LEBO v2 stories 5-1, 5-2; BMAD workflow)
+- Signal quality: Low — most of the 30-day window has `ANTHROPIC_API_KEY not set` (no extraction). Enriched Stage 1 format starts 2026-05-15.
+- 4 proposals generated:
+  - PROP-2026-05-14-001: `workflow.md` — BMAD Story-First Workflow (medium, 1-session)
+  - PROP-2026-05-14-002: `workflow.md` — Adversarial Code Review Gate (medium, cross-session)
+  - PROP-2026-05-14-003: `workflow.md` — Pre-existing Failure Baseline (medium, cross-session)
+  - PROP-2026-05-14-004: `intent.md` — Pure Function Contracts (medium, 1-session)
+- Double monotonicity check: `intent.md` empty — no contradictions.
+- Proposals pending Alec review in Obsidian.
 
 ---
 
@@ -521,36 +566,36 @@ Per the MemMachine ground-truth preservation principle: extraction is lossy. If 
 
 All changes land inside the existing structure. Nothing is moved, renamed, or replaced wholesale — files are modified in place or new files are added alongside existing ones.
 
-| File | Action | Notes |
+| File | Action | Status |
 |---|---|---|
-| `.claude/hooks/session-end-flush.py` | **Modify** | Enrich extraction prompt — add intent-signal sections above existing Decisions/Lessons/Next Actions |
-| `.claude/scripts/memory_reflect.py` | **Modify** | Strip AI call, keep HABITS/snapshot/git logic |
-| `.claude/scripts/proposal_extractor.py` | **Modify** | Add intent.md/workflow.md targets, tradeoff-structured prompt |
-| `.claude/scripts/memory_reflect_loader.py` | **New** | Pure file reader, no AI — assembles daily prompt for `/daily-reflect` |
-| `.claude/scripts/weekly_dream_loader.py` | **New** | Pure file reader, no AI — assembles 7-day prompt for `/weekly-dream` |
-| `.claude/scripts/consistency_check.py` | **New** | Double monotonicity logic — called by both slash commands |
-| `.claude/commands/daily-reflect.md` | **New** | Slash command — triggers daily synthesis via subscription |
-| `.claude/commands/weekly-dream.md` | **New** | Slash command — triggers weekly dream via subscription + extended thinking |
-| `.claude/tests/memory_reflect/` | **Modify** | Update fixtures — enriched log format, tradeoff-structured Claude responses, add intent.md/workflow.md to fixture vault |
-| `00_Meta/intent.md` *(vault)* | **New** | Core intent document — created empty, filled by proposals |
-| `00_Meta/workflow.md` *(vault)* | **New** | Procedural memory document — created empty, filled by proposals |
-| `00_Meta/proposals/identity_proposals.md` *(vault)* | **Modify** | Extended schema — new targets (intent/workflow), new types (strengthen/contradiction), new source field |
-| `SecondBrain\DailyReflect` *(Task Scheduler)* | **Retire** | Replaced by manual `/daily-reflect` slash command |
-| `SecondBrain\WeeklyDream` *(Task Scheduler)* | **Retire** | Replaced by manual `/weekly-dream` slash command |
+| `.claude/hooks/session-end-flush.py` | **Modify** | ✓ Done |
+| `.claude/scripts/memory_reflect.py` | **Modify** | ✓ Done |
+| `.claude/scripts/proposal_extractor.py` | **Modify** | ✓ Done |
+| `.claude/scripts/memory_reflect_loader.py` | **New** | ✓ Done |
+| `.claude/scripts/weekly_dream_loader.py` | **New** | Phase 2 |
+| `.claude/scripts/consistency_check.py` | **New** | Phase 2 |
+| `.claude/commands/daily-reflect.md` | **New** | ✓ Done |
+| `.claude/commands/weekly-dream.md` | **New** | Phase 2 |
+| `.claude/tests/memory_reflect/` | **Modify** | ✓ Done |
+| `00_Meta/intent.md` *(vault)* | **New** | ✓ Done |
+| `00_Meta/workflow.md` *(vault)* | **New** | ✓ Done |
+| `00_Meta/proposals/identity_proposals.md` *(vault)* | **Modify** | ✓ Done |
+| `SecondBrain\DailyReflect` *(Task Scheduler)* | **Retire** | Pending |
+| `SecondBrain\WeeklyDream` *(Task Scheduler)* | **Retire** | Phase 2 |
 
 ---
 
 ## Build Plan
 
-### Phase 1 — Intent foundation
-- [ ] Create `intent.md` and `workflow.md` in vault `00_Meta/`
-- [ ] Overhaul `session-end-flush.py` extraction prompt — add enriched intent-signal sections
-- [ ] Build `memory_reflect_loader.py` — file reader, no AI call, outputs structured prompt
-- [ ] Build `/daily-reflect` slash command (`.claude/commands/daily-reflect.md`)
-- [ ] Strip AI call from `memory_reflect.py` — keep HABITS, snapshot, git auto-commit
-- [ ] Overhaul `proposal_extractor.py` — add intent.md/workflow.md targets, tradeoff-structured evidence, new prompt
-- [ ] Update test fixtures — enriched log format, tradeoff-structured Claude responses
-- [ ] Add `intent.md` and `workflow.md` to fixture vault
+### Phase 1 — Intent foundation ✓ COMPLETE (2026-05-15)
+- [x] Create `intent.md` and `workflow.md` in vault `00_Meta/`
+- [x] Overhaul `session-end-flush.py` extraction prompt — add enriched intent-signal sections above existing Decisions/Lessons/Next Actions
+- [x] Build `memory_reflect_loader.py` — file reader, no AI call, outputs structured prompt
+- [x] Build `/daily-reflect` slash command (`.claude/commands/daily-reflect.md`)
+- [x] Strip AI call from `memory_reflect.py` — keep HABITS, snapshot, git auto-commit
+- [x] Overhaul `proposal_extractor.py` — add intent.md/workflow.md targets, tradeoff-structured evidence, new prompt
+- [x] Update test fixtures — enriched log format, tradeoff-structured Claude responses
+- [x] Add `intent.md` and `workflow.md` to fixture vault
 
 ### Phase 2 — Weekly Dreaming
 - [ ] Build `weekly_dream_loader.py` — 7-day file loader, no AI call, outputs structured prompt
