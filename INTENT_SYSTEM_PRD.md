@@ -233,7 +233,7 @@ The daily synthesis and weekly dream **do not make API calls**. Instead they bec
 
 Session flush stays as API because hooks run headless — there is no Claude Code session available. Daily and weekly synthesis require you to open a terminal and trigger them manually, which is intentional.
 
-**Optional fallback:** The Task Scheduler jobs (`SecondBrain\DailyReflect`, `SecondBrain\WeeklyDream`) can remain as lower-quality Haiku API fallbacks for days when the manual command isn't run. On days you run the slash command, it supersedes the scheduled job.
+The Task Scheduler job `SecondBrain\DailyReflect` will be retired — synthesis runs only when `/daily-reflect` is triggered manually. No fallback.
 
 ---
 
@@ -300,7 +300,7 @@ that don't appear in any single day but emerge across the full week.
 2. Keep: HABITS archive + reset (no AI needed).
 3. Keep: project snapshot timestamp update (no AI needed).
 4. Keep: git auto-commit trigger.
-5. Optional: run Haiku fallback synthesis if manual command hasn't run today (check for today's proposals in identity_proposals.md as a marker).
+5. Task Scheduler job `SecondBrain\DailyReflect` is retired — no fallback.
 
 ---
 
@@ -517,6 +517,29 @@ Per the MemMachine ground-truth preservation principle: extraction is lossy. If 
 
 ---
 
+## File Merge Map
+
+All changes land inside the existing structure. Nothing is moved, renamed, or replaced wholesale — files are modified in place or new files are added alongside existing ones.
+
+| File | Action | Notes |
+|---|---|---|
+| `.claude/hooks/session-end-flush.py` | **Modify** | Enrich extraction prompt — add intent-signal sections above existing Decisions/Lessons/Next Actions |
+| `.claude/scripts/memory_reflect.py` | **Modify** | Strip AI call, keep HABITS/snapshot/git logic |
+| `.claude/scripts/proposal_extractor.py` | **Modify** | Add intent.md/workflow.md targets, tradeoff-structured prompt |
+| `.claude/scripts/memory_reflect_loader.py` | **New** | Pure file reader, no AI — assembles daily prompt for `/daily-reflect` |
+| `.claude/scripts/weekly_dream_loader.py` | **New** | Pure file reader, no AI — assembles 7-day prompt for `/weekly-dream` |
+| `.claude/scripts/consistency_check.py` | **New** | Double monotonicity logic — called by both slash commands |
+| `.claude/commands/daily-reflect.md` | **New** | Slash command — triggers daily synthesis via subscription |
+| `.claude/commands/weekly-dream.md` | **New** | Slash command — triggers weekly dream via subscription + extended thinking |
+| `.claude/tests/memory_reflect/` | **Modify** | Update fixtures — enriched log format, tradeoff-structured Claude responses, add intent.md/workflow.md to fixture vault |
+| `00_Meta/intent.md` *(vault)* | **New** | Core intent document — created empty, filled by proposals |
+| `00_Meta/workflow.md` *(vault)* | **New** | Procedural memory document — created empty, filled by proposals |
+| `00_Meta/proposals/identity_proposals.md` *(vault)* | **Modify** | Extended schema — new targets (intent/workflow), new types (strengthen/contradiction), new source field |
+| `SecondBrain\DailyReflect` *(Task Scheduler)* | **Retire** | Replaced by manual `/daily-reflect` slash command |
+| `SecondBrain\WeeklyDream` *(Task Scheduler)* | **Retire** | Replaced by manual `/weekly-dream` slash command |
+
+---
+
 ## Build Plan
 
 ### Phase 1 — Intent foundation
@@ -534,8 +557,8 @@ Per the MemMachine ground-truth preservation principle: extraction is lossy. If 
 - [ ] Build `/weekly-dream` slash command (`.claude/commands/weekly-dream.md`)
 - [ ] Build `consistency_check.py` — double monotonicity check logic, contradiction proposals
 - [ ] Wire consistency check into both slash commands
-- [ ] Remove `SecondBrain\WeeklyDream` Task Scheduler job (replaced by manual slash command)
-- [ ] Optional: keep `SecondBrain\DailyReflect` as Haiku fallback on days `/daily-reflect` isn't run manually
+- [ ] Retire `SecondBrain\WeeklyDream` Task Scheduler job
+- [ ] Retire `SecondBrain\DailyReflect` Task Scheduler job
 
 ### Phase 3 — Gap tracking
 - [ ] Add AI gap capture section to session-end-flush.py enriched prompt
