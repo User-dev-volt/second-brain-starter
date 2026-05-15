@@ -1,7 +1,9 @@
 """
-proposal_extractor.py — Extracts soul.md / user.md proposals from daily session logs.
+proposal_extractor.py — Extracts identity proposals from daily session logs.
 
-Called by memory_reflect.py (daily at 8 AM) and testable via test_runner.py.
+Targets: soul.md, user.md, intent.md, workflow.md
+Evidence is structured as tradeoff pairs (offered/chosen/type/tier), not surface decisions.
+Called by the /daily-reflect slash command and testable via test_runner.py.
 When mock_response is passed to extract(), skips the Claude API call entirely.
 """
 
@@ -12,6 +14,9 @@ import sys
 from pathlib import Path
 
 PROP_ID_RE = re.compile(r"PROP-\d{4}-\d{2}-\d{2}-\d{3}")
+
+VALID_TARGETS = {"soul.md", "user.md", "intent.md", "workflow.md"}
+VALID_TYPES = {"add", "update", "deprecate", "strengthen", "contradiction"}
 
 
 def parse_proposal_blocks(text: str) -> list[dict]:
@@ -31,6 +36,7 @@ def parse_proposal_blocks(text: str) -> list[dict]:
         for label, key in [
             ("Target", "target"),
             ("Type", "type"),
+            ("Source", "source"),
             ("Proposed", "proposed"),
             ("Current value", "current_value"),
             ("Confidence", "confidence"),
@@ -65,7 +71,8 @@ def parse_proposal_blocks(text: str) -> list[dict]:
 
 class ProposalExtractor:
     """
-    Extracts soul.md / user.md proposals from daily session logs.
+    Extracts identity proposals from daily session logs.
+    Targets: soul.md, user.md, intent.md, workflow.md
 
     Interface compatible with StubExtractor in test_runner.py:
       extractor = ProposalExtractor(vault_path, proposals_path)
@@ -80,6 +87,8 @@ class ProposalExtractor:
         self._existing = self._load_existing()
         self._soul = self._load_doc("SOUL.md")
         self._user_profile = self._load_doc("user.md")
+        self._intent = self._load_doc("intent.md")
+        self._workflow = self._load_doc("workflow.md")
 
     # ------------------------------------------------------------------
     # Loaders
@@ -148,13 +157,18 @@ class ProposalExtractor:
         import anthropic
         client = anthropic.Anthropic(api_key=api_key)
 
-        prompt = f"""You are reviewing a session log from {log_date} to identify additions or updates worth making to two identity documents: soul.md and user.md.
+        intent_section = f"\n## Current intent.md\n{self._intent}" if self._intent else ""
+        workflow_section = f"\n## Current workflow.md\n{self._workflow}" if self._workflow else ""
+
+        prompt = f"""You are reviewing a session log from {log_date} to extract behavioral intent proposals.
 
 ## Current soul.md
 {self._soul}
 
 ## Current user.md
 {self._user_profile}
+{intent_section}
+{workflow_section}
 
 ## Existing proposals — do NOT re-propose anything on this list
 {self._existing_summary()}
@@ -164,33 +178,56 @@ class ProposalExtractor:
 
 ---
 
-Identify patterns that represent stable identity traits, preferences, or behavioral tendencies.
+Identify tradeoff patterns and behavioral signals that belong in one of these documents:
+- **intent.md**: How Alec makes decisions — heuristics, tradeoff resolutions, revealed preferences
+- **workflow.md**: How Alec structures and executes work — procedural patterns
+- **soul.md**: Stable identity values — who Alec is
+- **user.md**: Profile facts — stack, projects, communication style
 
-Rules:
-- Require at least 2 distinct evidence points from this log — single mentions do not qualify
+For each session, identify:
+1. What binary or multiple-choice questions did the AI ask? What did the user pick?
+   Classify the tradeoff type (control vs. convenience, ownership vs. delegation,
+   speed vs. durability, depth vs. breadth, manual vs. automated, local vs. cloud, explicit vs. implicit).
+2. Were there any "actually", "wait", "stop" moments? What was corrected?
+3. Where did Claude's default direction diverge from what the user chose?
+4. Did the user expand scope unprompted? In what direction?
+5. Do these signals confirm an existing intent.md pattern or suggest a new one?
+
+Proposal rules:
+- Require 2+ evidence points of the same tradeoff type (same session), OR 1+ confirming an existing intent.md pattern
 - Do not re-propose anything already listed above (implemented or rejected)
 - type "add": new entry that does not exist in the current document
-- type "update": meaningfully more accurate than the current entry — not a rewording
-- type "deprecate": only if there is strong evidence the current entry is now consistently wrong
+- type "update": meaningfully more accurate than current — not a rewording
+- type "deprecate": strong evidence current entry is consistently wrong
+- type "strengthen": adds a confirming instance to an existing intent.md pattern (no text change to heuristic)
+- type "contradiction": two intent.md entries that produce contradictory predictions for the same scenario
 - confidence "high" = 4+ evidence points; confidence "medium" = 2–3 evidence points
-- Return an empty proposals array if nothing meets the threshold
+- source is always "daily-reflect"
+- Return empty proposals array if nothing meets the threshold
 
-Respond ONLY with valid JSON in this exact shape:
+Evidence format for intent.md proposals:
+  "YYYY-MM-DD [project] [tradeoff type] [tier]: [offered] → [chosen] — \\"reason\\""
+  Tiers: Critical | Highest | High | Medium | Low
+
+Respond ONLY with valid JSON:
 {{
   "proposals": [
     {{
-      "target": "soul.md",
+      "target": "intent.md",
       "type": "add",
+      "source": "daily-reflect",
       "proposed": "...",
       "current_value": null,
-      "evidence": ["{log_date}: observation", "{log_date}: observation"],
+      "evidence": [
+        "{log_date} [project] [tradeoff type] [tier]: [offered] → [chosen] — \\"reason\\""
+      ],
       "source_logs": ["{log_date}"],
       "confidence": "medium"
     }}
   ]
 }}
 
-For update or deprecate, current_value must be the exact text from the document being replaced or removed."""
+For update, deprecate, strengthen, or contradiction: current_value must be the exact text being replaced or the entry being strengthened/contradicted."""
 
         response = client.messages.create(
             model="claude-sonnet-4-6",
@@ -249,7 +286,9 @@ For update or deprecate, current_value must be the exact text from the document 
         ]
         return max(nums, default=0) + 1
 
-    def format_proposals(self, proposals: list[dict], log_date: str) -> str:
+    def format_proposals(
+        self, proposals: list[dict], log_date: str, source: str = "daily-reflect"
+    ) -> str:
         """Format accepted proposals as markdown blocks ready to append."""
         if not proposals:
             return ""
@@ -260,11 +299,13 @@ For update or deprecate, current_value must be the exact text from the document 
             current_val = p.get("current_value") or "_(none — new addition)_"
             evidence_lines = "\n".join(f"- {e}" for e in p.get("evidence", []))
             source_logs = ", ".join(p.get("source_logs", [log_date]))
+            prop_source = p.get("source") or source
             block = f"""---
 
 ### {prop_id}
 **Target:** {p["target"]}
 **Type:** {p["type"]}
+**Source:** {prop_source}
 **Proposed:** {p["proposed"]}
 **Current value:** {current_val}
 **Evidence:**

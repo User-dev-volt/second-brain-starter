@@ -1,5 +1,25 @@
 ## [SessionEnd] 10:30
 
+Project: second-brain-starter
+Session goal: Implement local JSONL audit trail for Claude API calls
+Session type: building
+
+**Critical moments:**
+(none)
+
+**AI choices + responses:**
+- Offered: LangChain abstractions vs. direct Anthropic SDK → Chose: direct Anthropic SDK — "I want to see exactly what's being sent"
+  Tradeoff: control vs. convenience
+
+**AI gaps:**
+(none)
+
+**Scope expansions:**
+(none)
+
+**Scope constraints:**
+(none)
+
 **Decisions:**
 - Chose to log all Claude API calls to a local JSONL file rather than rely on Anthropic's dashboard — want full audit trail under my control
 - Rejected using LangChain abstractions in favor of direct Anthropic SDK calls — LangChain hides too much of what's actually being sent
@@ -13,6 +33,28 @@
 
 ## [SessionEnd] 15:45
 
+Project: second-brain-starter
+Session goal: Design proposal schema for identity documents
+Session type: designing
+
+**Critical moments:**
+(none)
+
+**AI choices + responses:**
+- Offered: pre-built memory framework (MemGPT) vs. custom build → Chose: custom build — "prefer to understand and own every layer of the memory system"
+  Tradeoff: ownership vs. delegation
+- Offered: database vs. markdown for proposals file → Chose: markdown — "stays human-readable and auditable in git without tooling"
+  Tradeoff: control vs. convenience
+
+**AI gaps:**
+(none)
+
+**Scope expansions:**
+(none)
+
+**Scope constraints:**
+(none)
+
 **Decisions:**
 - Decided against using a pre-built memory framework (MemGPT, etc.) — prefer to understand and own every layer of the memory system
 - Chose markdown over a database for the proposals file — stays human-readable and auditable in git without tooling
@@ -25,6 +67,28 @@
 - Draft the proposal block schema
 
 ## [SessionEnd] 21:15
+
+Project: second-brain-starter
+Session goal: Build identity proposal review gate
+Session type: building
+
+**Critical moments:**
+(none)
+
+**AI choices + responses:**
+- Offered: auto-approval for identity proposals vs. manual review gate → Chose: manual review gate — "want a manual review gate on anything touching soul.md or user.md"
+  Tradeoff: explicit vs. implicit
+- Offered: separate approved/rejected folders vs. status field in proposal → Chose: status field — "keeps rejection reason co-located with the proposal itself"
+  Tradeoff: explicit vs. implicit
+
+**AI gaps:**
+(none)
+
+**Scope expansions:**
+(none)
+
+**Scope constraints:**
+(none)
 
 **Decisions:**
 - Rejected auto-approval for identity proposals — want a manual review gate on anything touching soul.md or user.md

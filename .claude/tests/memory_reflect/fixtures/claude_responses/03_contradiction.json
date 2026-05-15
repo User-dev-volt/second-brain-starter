@@ -3,6 +3,7 @@
     {
       "target": "soul.md",
       "type": "update",
+      "source": "daily-reflect",
       "proposed": "Prefers local-first for data and core logic; accepts cloud for infrastructure and delivery when the maintenance cost of self-hosting outweighs the control benefit.",
       "current_value": "Prefers local-first systems over cloud-dependent solutions",
       "evidence": [

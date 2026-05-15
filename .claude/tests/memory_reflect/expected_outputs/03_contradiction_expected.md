@@ -3,6 +3,7 @@
 ### {{PROP_ID}}
 **Target:** soul.md
 **Type:** update
+**Source:** daily-reflect
 **Proposed:** Prefers local-first for data and core logic; accepts cloud for infrastructure and delivery when the maintenance cost of self-hosting outweighs the control benefit.
 **Current value:** Prefers local-first systems over cloud-dependent solutions
 **Evidence:**

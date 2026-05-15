@@ -52,7 +52,6 @@ def count_user_messages(transcript_path: str) -> int:
                     continue
                 try:
                     entry = json.loads(line)
-                    # Claude Code format: {"type": "user", "message": {"role": "user", ...}}
                     if entry.get("type") == "user" and "message" in entry:
                         count += 1
                 except json.JSONDecodeError:
@@ -76,8 +75,6 @@ def read_transcript_tail(transcript_path: str, last_n: int = 20) -> str:
                     continue
                 try:
                     entry = json.loads(line)
-                    # Claude Code format: top-level "type" is "user" or "assistant"
-                    # with content nested inside "message"
                     entry_type = entry.get("type", "")
                     if entry_type not in ("user", "assistant"):
                         continue
@@ -114,11 +111,14 @@ def _get_api_key() -> str:
     return key
 
 
-def extract_with_claude(transcript_text: str) -> str:
-    """Call Claude API to extract session summary."""
+def extract_with_claude(transcript_text: str, cwd: str = "") -> str:
+    """Call Claude API to extract session summary with enriched intent signals (Stage 1) and
+    traditional summary sections (Stage 2)."""
     api_key = _get_api_key()
     if not api_key:
         return "⚠️ ANTHROPIC_API_KEY not set — skipped AI extraction."
+
+    project_name = Path(cwd).name if cwd else "unknown"
 
     try:
         import anthropic
@@ -126,10 +126,37 @@ def extract_with_claude(transcript_text: str) -> str:
         client = anthropic.Anthropic(api_key=api_key)
         response = client.messages.create(
             model="claude-haiku-4-5-20251001",
-            max_tokens=512,
+            max_tokens=800,
             system=(
-                "You are a note-taking assistant. Summarize this session for a developer's personal log. "
-                "Output bullet points under these headers:\n"
+                "You are a behavioral intent logger for a developer's second brain. "
+                "Analyze this session transcript and output TWO sections in order:\n\n"
+                "--- SECTION 1: Intent signals ---\n"
+                f"Project: {project_name}\n"
+                "Session goal: [one line — what this session set out to accomplish]\n"
+                "Session type: designing | building | debugging | exploring\n\n"
+                "**Critical moments:**\n"
+                "(Any 'actually', 'wait', 'stop', or mid-session self-correction)\n"
+                "- [what was happening] → [what was corrected to] — \"[words used]\"\n"
+                "If none, write: (none)\n\n"
+                "**AI choices + responses:**\n"
+                "(Binary or multiple-choice questions the AI asked, and what the user picked)\n"
+                "- Offered: [option A] vs [option B] → Chose: [choice] — \"[reason if stated]\"\n"
+                "  Tradeoff: [control vs. convenience | ownership vs. delegation | speed vs. durability | depth vs. breadth | manual vs. automated | local vs. cloud | explicit vs. implicit]\n"
+                "If none, write: (none)\n\n"
+                "**AI gaps (Claude default → Alec preference):**\n"
+                "(Where Claude was heading in one direction and the user redirected)\n"
+                "- Claude heading toward: [X] → Alec redirected to: [Y]\n"
+                "  Gap type: [tradeoff type]\n"
+                "If none, write: (none)\n\n"
+                "**Scope expansions (unprompted additions):**\n"
+                "(Things the user added that weren't in the original request)\n"
+                "- Added: [what] — [context]\n"
+                "If none, write: (none)\n\n"
+                "**Scope constraints (explicit deferrals):**\n"
+                "(Things the user explicitly said to skip or defer)\n"
+                "- Deferred: [what] — \"[reason]\"\n"
+                "If none, write: (none)\n\n"
+                "--- SECTION 2: Session summary ---\n"
                 "**Decisions:** key choices made\n"
                 "**Lessons:** reusable patterns, API findings, or best practices discovered (technical only — skip project-specific one-offs)\n"
                 "**Next Actions:** the single most important next physical step\n"
@@ -178,7 +205,6 @@ def update_snapshot_next_action(cwd: str, next_action_text: str):
     try:
         text = snapshot_path.read_text(encoding="utf-8")
         new_section = f"## Next Action\n{next_action_text.strip()}\n"
-        # Match ## Next Action header + all content until next ## section or --- separator
         updated = re.sub(
             r"## Next Action\n.*?(?=\n## |\n---|\Z)",
             new_section,
@@ -250,9 +276,9 @@ def main():
     if not transcript_text:
         sys.exit(0)
 
-    extracted = extract_with_claude(transcript_text)
+    extracted = extract_with_claude(transcript_text, cwd=cwd)
 
-    # Write full summary to daily log
+    # Write full enriched summary (Stage 1 intent signals + Stage 2 summary) to daily log
     append_to_daily_log(extracted, "SessionEnd")
 
     # Update Snapshot.md Next Action from extracted next actions

@@ -3,6 +3,7 @@
 ### {{PROP_ID}}
 **Target:** soul.md
 **Type:** update
+**Source:** daily-reflect
 **Proposed:** Values depth over breadth in execution phases, but deliberately prioritizes breadth during exploration and research phases — maps the territory before drilling.
 **Current value:** Values depth over breadth — goes deep on fewer things rather than shallow on many
 **Evidence:**

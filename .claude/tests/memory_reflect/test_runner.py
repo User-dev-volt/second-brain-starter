@@ -26,8 +26,9 @@ PROPOSALS_PATH = VAULT_DIR / "00_Meta" / "proposals" / "identity_proposals.md"
 EXPECTED_DIR = TESTS_DIR / "expected_outputs"
 
 PROP_ID_RE = re.compile(r"PROP-\d{4}-\d{2}-\d{2}-\d{3}")
-REQUIRED_FIELDS = {"target", "type", "proposed", "confidence", "status"}
+REQUIRED_FIELDS = {"target", "type", "source", "proposed", "confidence", "status"}
 UPDATE_DEPRECATE_FIELDS = {"current_value"}  # additionally required for update/deprecate
+VALID_TYPES = {"add", "update", "deprecate", "strengthen", "contradiction"}
 
 
 # ---------------------------------------------------------------------------
@@ -51,6 +52,7 @@ def parse_proposal_blocks(text: str) -> list[dict]:
         for label, key in [
             ("Target", "target"),
             ("Type", "type"),
+            ("Source", "source"),
             ("Proposed", "proposed"),
             ("Current value", "current_value"),
             ("Confidence", "confidence"),
@@ -112,7 +114,6 @@ class StubExtractor:
         for existing in self._existing:
             status = existing.get("status", "")
             existing_text = existing.get("proposed", "").lower()
-            # Exact match suppression
             if existing_text == candidate_text:
                 if status == "implemented":
                     return True, f"already implemented ({existing['id']})"
@@ -135,7 +136,7 @@ class StubExtractor:
             accepted.append(p)
         return accepted
 
-    def format_proposals(self, proposals: list[dict], log_date: str) -> str:
+    def format_proposals(self, proposals: list[dict], log_date: str, source: str = "daily-reflect") -> str:
         """Format accepted proposals as markdown blocks ready to append."""
         if not proposals:
             return ""
@@ -145,11 +146,13 @@ class StubExtractor:
             current_val = p.get("current_value") or "_(none — new addition)_"
             evidence_lines = "\n".join(f"- {e}" for e in p.get("evidence", []))
             source_logs = ", ".join(p.get("source_logs", [log_date]))
+            prop_source = p.get("source") or source
             block = f"""---
 
 ### {prop_id}
 **Target:** {p["target"]}
 **Type:** {p["type"]}
+**Source:** {prop_source}
 **Proposed:** {p["proposed"]}
 **Current value:** {current_val}
 **Evidence:**
@@ -198,6 +201,8 @@ def validate_proposal_fields(p: dict, idx: int) -> list[str]:
     for f in REQUIRED_FIELDS:
         if f not in p:
             errors.append(f"  proposal {idx}: missing required field '{f}'")
+    if p.get("type") not in VALID_TYPES:
+        errors.append(f"  proposal {idx}: invalid type '{p.get('type')}'; expected one of {VALID_TYPES}")
     if p.get("type") in ("update", "deprecate"):
         if "current_value" not in p:
             errors.append(f"  proposal {idx}: update/deprecate must include 'current_value'")
@@ -231,7 +236,7 @@ def compare(actual_text: str, expected_text: str, verbose: bool) -> tuple[bool, 
 
     for i, (act, exp) in enumerate(zip(actual_proposals, expected_proposals), start=1):
         errors.extend(validate_proposal_fields(act, i))
-        for key in ("target", "type", "proposed", "current_value", "confidence"):
+        for key in ("target", "type", "source", "proposed", "current_value", "confidence"):
             if key not in exp:
                 continue
             if act.get(key) != exp.get(key):
