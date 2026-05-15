@@ -1,102 +1,52 @@
-# Intent System PRD
+# Intent System PRD — Second Brain Overhaul
 **Project:** second-brain-starter
 **Created:** 2026-05-14
-**Status:** In progress — picking up in fresh context
+**Updated:** 2026-05-15
+**Status:** Finalized — ready to build
 
 ---
 
 ## Vision
 
-Build a **behavioral memory system** — not a note archive, not a preference list, but a living model of how Alec makes decisions. The end goal is Dark Factory-like agent behavior: agents that don't ask clarifying questions because they already know how Alec would answer, built from watching him answer the same *type* of question across enough sessions.
+Overhaul the existing second brain memory system into a **behavioral intent engine** — not a note archive, not a preference list, but a living model of how Alec makes decisions. The end goal is Dark Factory-like agent behavior: agents that don't ask clarifying questions because they already know how Alec would answer, built from watching him answer the same *type* of question across enough sessions.
 
-The north star principle:
+This is not a new parallel system. Every change described here modifies or extends the existing structure in `second-brain-starter` and the vault at `D:\Obsidian Brain\Brain\`.
+
+The north star:
 > "The system should model decision-making patterns, not just store decisions."
 
 ---
 
-## The Core Shift
+## What We're Overhauling and Why
 
-Most second brain systems optimize for storage and retrieval. This system optimizes for **intent modeling**. The distinction:
+The current system captures:
+- **Decisions** — what was chosen (no tradeoff structure)
+- **Lessons** — technical patterns (stripped of context intentionally)
+- **Next Actions** — task tracking
 
-- Storage asks: "What did he decide?"
-- Intent modeling asks: "How does he consistently decide — and what does that reveal about his heuristics?"
+These are correct for what they were built for. They are insufficient for intent modeling because they record the *what* and discard the *how you decided* — which is the only part that matters for the Dark Factory goal.
 
-The highest-quality evidence is not what Alec explicitly states he values. It is how he answers when the AI offers him a choice — because those answers are revealed preferences, not performed ones. Instinctive choices under mild pressure show more than deliberate design docs.
-
----
-
-## Three-Document Structure
-
-| Document | Captures | Used for |
-|---|---|---|
-| `soul.md` | Stable identity values — who he is | Tone, philosophy, long-term alignment |
-| `user.md` | Profile facts — stack, projects, communication style | Context injection at session start |
-| `intent.md` | Decision heuristics and tradeoff patterns — how he decides | Agent decision prediction (Dark Factory) |
-
-`intent.md` is the new document and the most critical for the Dark Factory goal. It is not a list of traits. It is a living behavioral model.
+The overhaul adds intent-bearing signal capture at every stage of the pipeline without breaking what already works.
 
 ---
 
-## The Five-Layer Architecture (long-term)
+## Document Structure — Vault Additions
 
-1. **Raw Memory Layer** — everything: conversations, commits, decisions, session logs. Mostly immutable event log.
-2. **Semantic Extraction Layer** — converts raw sessions into structured understanding. Tradeoff patterns, choice history, project context.
-3. **Intent Graph Layer** — the soul of the system. Stable heuristics, dynamic intent, taste models, decision patterns. This becomes `intent.md` initially; evolves into a graph later.
-4. **Simulation Layer** — "What would Alec decide?" Agents answer as a continuity of intent, not by querying memory.
-5. **Governance / Drift Layer** — confidence scores, contradiction tracking, temporal weighting, versioned identity. Prevents fossilized outdated assumptions.
+Three documents exist today: `soul.md`, `user.md`, `MEMORY.md`. Two are being added:
 
-We are currently building Layers 1–2, with Layer 3 (`intent.md`) starting now.
+| Document | Location | Captures | Used for |
+|---|---|---|---|
+| `soul.md` | `00_Meta/` | Stable identity values — who Alec is | Tone, philosophy, long-term alignment |
+| `user.md` | `00_Meta/` | Profile facts — stack, projects, communication style | Context injection at session start |
+| `MEMORY.md` | `00_Meta/` | Promoted decisions and facts | Existing — unchanged |
+| **`intent.md`** | `00_Meta/` | Decision heuristics, tradeoff patterns — how Alec decides | Agent decision prediction → Dark Factory |
+| **`workflow.md`** | `00_Meta/` | Procedural patterns — how Alec structures and executes work | Agent execution calibration |
 
----
+`intent.md` is the core new document. `workflow.md` is the procedural layer — separate from values/preferences because *how you work* is distinct from *what you believe*.
 
-## Evidence Model
-
-### What evidence must capture
-
-Evidence is not a surface decision with a quoted reason. Evidence is the **tradeoff structure**:
-
-```
-Project: second-brain-starter (goal: own every layer of the memory system)
-Choice offered: LangChain (convenience, abstraction) vs. direct SDK (verbose, transparent)
-Choice made: direct SDK
-Reason: "I want to see exactly what's being sent"
-Tradeoff type: control vs. convenience
-Choice origin: AI clarifying question (instinctive, not deliberated)
-```
-
-### Evidence quality tiers
-
-| Tier | Source | Quality |
-|---|---|---|
-| Highest | Response to AI clarifying question — instinctive choice between options | Revealed preference, no self-presentation |
-| High | Unprompted mid-session decision that redirects work | Intent leak through behavior |
-| Medium | Explicit decision with stated reasoning | Conscious preference, possibly performed |
-| Low | Single mention, no decision attached | Accumulate only — never promote alone |
-
-### Evidence minimum thresholds
-
-- Cross-session pattern (2+ different days, same tradeoff type) → qualifies for `medium` confidence
-- Single-session with 4+ evidence points of same tradeoff type → qualifies for `medium` (same-day bias noted — less reliable than cross-session)
-- Cross-session with 4+ instances → `high` confidence
-- Single-session single mention → never promotes, accumulates only
-
-### Tradeoff types to track
-
-- Control vs. convenience
-- Ownership vs. delegation
-- Speed vs. durability
-- Depth vs. breadth (context-dependent — see pattern notes)
-- Manual vs. automated
-- Local vs. cloud (nuanced — see intent.md)
-- Explicit vs. implicit (prefers things stated clearly vs. inferred)
-
----
-
-## Intent Document Structure (`intent.md`)
+### intent.md entry structure
 
 ```markdown
-# Intent Document
-
 ## Decision Patterns
 
 ### [Pattern Name]
@@ -105,367 +55,434 @@ Choice origin: AI clarifying question (instinctive, not deliberated)
 **Observed:** How this manifests in behavior.
 **Context modifiers:** When does this apply strongly vs. relax?
 **Confirmed:** N times across N sessions
-**Confidence:** low / medium / high
-**Last seen:** YYYY-MM-DD
+**Confidence:** low | medium | high
+**Last confirmed:** YYYY-MM-DD
 **Sessions:** [list of source log dates]
+**Standing order:** no | proposed | active
 ```
 
----
-
-## Session Log Format (enriched — to be implemented in session-end-flush.py)
-
-Current logs only capture summarized decisions. The new format must also capture:
+### workflow.md entry structure
 
 ```markdown
-# Session: YYYY-MM-DD
-**Project:** [project name]
-**Session goal:** [what was being accomplished]
+## Workflow Patterns
 
-## [SessionEnd] HH:MM
-
-**AI choices presented + responses:**
-- Offered: [option A] vs. [option B]
-  → Chose: [choice] — "[reason if stated]"
-  → Tradeoff type: [control vs. convenience / etc.]
-
-**Unprompted decisions:**
-- [Decision made without being asked, with context]
-
-**Decisions:**
-- [Summarized key decisions]
-
-**Lessons:**
-- [Reusable patterns]
-
-**Next Actions:**
-- [Single most important next step]
+### [Workflow Name]
+**Pattern:** What Alec consistently does when facing this type of work.
+**Observed:** Specific behavioral examples.
+**Confirmed:** N times across N sessions
+**Confidence:** medium | high
+**Last confirmed:** YYYY-MM-DD
 ```
-
-This enriched format is what the extractor reads. Without project context and AI choice capture, the extraction quality degrades to surface-level.
 
 ---
 
-## Proposal System
+## Evidence Model
 
-### How proposals reach documents
+### The core principle
 
-1. `memory_reflect.py` runs daily at 8 AM
-2. Reads yesterday's enriched session log
-3. Calls `proposal_extractor.py` which:
-   - Loads existing proposals, `soul.md`, `user.md`, `intent.md`
-   - Sends to Claude with structured prompt focused on tradeoff patterns
-   - Filters suppressed proposals (already implemented or rejected)
-   - Writes new proposals to `00_Meta/proposals/identity_proposals.md`
-4. Alec reviews proposals in Obsidian — edits status field
-5. Implemented proposals: manually copied to target document
-6. Rejected proposals: status includes reason — system will not re-propose
+Evidence is not a surface decision with a quoted reason. Evidence is the **tradeoff structure** — what was offered, what was chosen, what type of choice it was, and where the choice came from.
 
-### Proposal block schema
+```
+Project: second-brain-starter (goal: own every layer of the memory system)
+Choice offered: LangChain (convenience) vs. direct SDK (transparent, verbose)
+Choice made: direct SDK
+Reason: "I want to see exactly what's being sent"
+Tradeoff type: control vs. convenience
+Choice origin: AI clarifying question — instinctive, not deliberated
+```
+
+### Evidence quality tiers
+
+| Tier | Source | Signal strength |
+|---|---|---|
+| **Critical** | "Actually", "wait", "stop" — mid-session self-correction | Non-negotiable preference overriding stated intent. Highest quality. |
+| **Highest** | Response to AI clarifying question — instinctive choice | Revealed preference, no self-presentation, mild pressure |
+| **High** | Unprompted scope expansion — adding something not requested | Interest and value leak through behavior |
+| **High** | AI gap — Claude default diverged from Alec's choice | Systematic divergence from AI defaults reveals stable preference |
+| **Medium** | Unprompted mid-session redirection | Intent expressed through correction |
+| **Medium** | Explicit rejection of AI suggestion with stated reason | Conscious preference, possibly performed |
+| **Low** | Single mention, no decision attached | Accumulate only — never promote alone |
+
+### Evidence confidence thresholds
+
+- **Cross-session** (2+ different days, same tradeoff type) → qualifies for `medium`
+- **Single-session** with 4+ evidence points of same tradeoff type → `medium` (same-day bias flagged)
+- **Cross-session** with 4+ confirmed instances → `high`
+- **Single-session single mention** → never promotes, accumulates only
+
+### Tradeoff types to track
+
+- Control vs. convenience
+- Ownership vs. delegation
+- Speed vs. durability
+- Depth vs. breadth *(context-dependent — exploration phase vs. execution phase)*
+- Manual vs. automated
+- Local vs. cloud *(nuanced: data sovereignty vs. infrastructure pragmatism)*
+- Explicit vs. implicit
+
+---
+
+## Pipeline — Full Overhaul
+
+```
+Raw transcript (JSONL)
+    ↓
+session-end-flush.py  [OVERHAUL]
+    → Enriched daily log with:
+        - Project + session goal + session type
+        - AI choices presented + user responses (tradeoff type classified)
+        - "Actually" / "wait" / "stop" moments (flagged as Critical tier)
+        - AI gaps (Claude default → Alec choice)
+        - Scope expansions (unprompted additions)
+        - Scope constraints (explicit deferrals)
+        - Decisions / Lessons / Next Actions (existing — unchanged)
+    ↓
+Daily log: 00_Meta/daily/YYYY-MM-DD.md
+    ↓
+memory_reflect.py  [OVERHAUL — daily at 8 AM]
+    → Reads yesterday's enriched log
+    → Reads last 30 days of logs (raw preservation window)
+    → Calls proposal_extractor.py
+    → Runs consistency check on intent.md
+    → Archives HABITS / resets for today
+    ↓
+proposal_extractor.py  [OVERHAUL]
+    → Targets: soul.md, user.md, intent.md, workflow.md
+    → Evidence structured as tradeoff pairs, not surface decisions
+    → Suppresses implemented and rejected proposals
+    → Writes to 00_Meta/proposals/identity_proposals.md
+    ↓
+weekly_dream.py  [NEW — weekly, Sonnet + High thinking]
+    → Reads 7 days of enriched logs
+    → Runs cross-session pattern synthesis
+    → Identifies patterns invisible to daily cycle
+    → Generates higher-confidence proposals
+    → Runs double monotonicity consistency check across intent.md
+    ↓
+identity_proposals.md  [Obsidian — manual review]
+    → Alec reviews: pending → implemented | rejected — <reason>
+    → Implemented: manually copied to target document
+    → Rejected: reason fed back as constraint on future extraction
+    ↓
+intent.md matures → entries promoted to Standing Orders
+    ↓
+Agents read intent.md + Standing Orders before acting
+    → Only escalates when confidence < threshold or novel situation
+    ↓
+Dark Factory
+```
+
+---
+
+## Files Being Modified or Created
+
+### `session-end-flush.py` — OVERHAUL
+
+**Current extraction prompt (Haiku, 512 tokens):**
+Produces Decisions / Lessons / Next Actions.
+
+**New extraction prompt — two-stage:**
+
+Stage 1 — intent signals (new, runs first):
+```
+Project: [name from cwd or session mention]
+Session goal: [what this session was trying to accomplish]
+Session type: designing | building | debugging | exploring
+
+**Critical moments:**
+(Capture any instance of "actually", "wait", "stop", or equivalent self-correction)
+- [what Claude was doing] → [what Alec corrected to] — "[words used]"
+
+**AI choices + responses:**
+- Offered: [A] vs [B] → Chose: [choice] — "[reason if stated]"
+  Tradeoff: [type]
+
+**AI gaps (Claude default → Alec preference):**
+- Claude heading toward: [X] → Alec redirected to: [Y]
+  Gap type: [tradeoff type]
+
+**Scope expansions (unprompted additions):**
+- Added: [what] — [context]
+
+**Scope constraints (explicit deferrals):**
+- Deferred: [what] — "[reason]"
+```
+
+Stage 2 — existing capture (unchanged):
+```
+**Decisions:** key choices made
+**Lessons:** reusable technical patterns
+**Next Actions:** single most important next step
+```
+
+**Model:** Keep Haiku for cost. The prompt is more structured, not more expensive.
+
+---
+
+### `memory_reflect.py` — OVERHAUL
+
+**Changes:**
+1. Load last 30 days of raw daily logs (not just yesterday) — raw preservation window per MemMachine principle. Re-processable if extraction logic improves.
+2. Pass enriched log to `proposal_extractor.py` with tradeoff-structured evidence format.
+3. After proposal extraction, run double monotonicity consistency check on `intent.md`.
+4. Log check results — contradictions surface as `update` proposals, not silent overwrites.
+
+---
+
+### `proposal_extractor.py` — OVERHAUL
+
+**Changes:**
+1. Add `intent.md` and `workflow.md` as valid proposal targets alongside `soul.md` and `user.md`.
+2. Rewrite Claude prompt to extract tradeoff patterns and procedural patterns, not surface preferences.
+3. Evidence format uses tradeoff structure (offered/chosen/type/origin) not quoted reasons.
+4. Read and pass existing `intent.md` entries to Claude so it knows what's already captured.
+5. Suppression checks extended to cover all four target documents.
+
+**New extraction prompt focus:**
+```
+For each session, identify:
+1. What project was active and what was the session goal?
+2. What binary or multiple-choice questions did the AI ask? What did the user pick?
+   Classify the tradeoff type for each.
+3. Were there any "actually", "wait", or "stop" moments? What was being corrected?
+4. Where did Claude's default direction diverge from what the user chose?
+5. Did the user expand scope unprompted? In what direction?
+6. Do these signals, across the session, confirm an existing intent.md pattern
+   or suggest a new one?
+
+Only propose if:
+- 2+ evidence points of the same tradeoff type (same session)
+- OR 1+ evidence point confirming an existing intent.md pattern
+  (cross-session confirmation)
+```
+
+---
+
+### `weekly_dream.py` — NEW
+
+**Purpose:** Cross-session pattern synthesis. Finds patterns invisible to the daily cycle — things that appear 2-3 times per week but never 4 times in one day.
+
+**Schedule:** Weekly, Sundays at 6 AM (via Windows Task Scheduler, `SecondBrain\WeeklyDream`)
+
+**Model:** `claude-sonnet-4-6` with extended thinking enabled, `budget_tokens: 10000` (High thinking)
+
+**Why High thinking:** Cross-session synthesis requires holding 7 days of signal simultaneously, finding non-obvious patterns, and checking logical consistency across the entire intent.md. This is exactly the task extended thinking was designed for.
+
+**What it does:**
+1. Loads all daily logs from the past 7 days
+2. Loads current `intent.md`, `workflow.md`, `soul.md`, `user.md`
+3. Loads all pending and implemented proposals from the past 30 days
+4. Calls Claude Sonnet with High thinking to:
+   - Identify patterns across sessions that didn't surface in daily reflects
+   - Find tradeoff types that resolved the same way 3+ times across the week
+   - Identify procedural workflow patterns across multiple session types
+   - Run double monotonicity check on intent.md (see below)
+5. Writes proposals to `identity_proposals.md` with source `weekly-dream`
+6. Writes consistency check results — contradictions become `update` proposals
+
+**API call structure:**
+```python
+response = client.messages.create(
+    model="claude-sonnet-4-6",
+    max_tokens=16000,
+    thinking={
+        "type": "enabled",
+        "budget_tokens": 10000
+    },
+    messages=[{"role": "user", "content": weekly_prompt}]
+)
+```
+
+---
+
+### `consistency_check.py` — NEW (called by both memory_reflect and weekly_dream)
+
+**Purpose:** Double monotonicity check on `intent.md` entries. Prevents the intent model from accumulating logically contradictory heuristics.
+
+**What double monotonicity means here:**
+If intent.md says:
+- A: "Prefers control over convenience"
+- B: "Prefers speed over setup cost"
+
+These can contradict for the same decision scenario. The check identifies pairs of entries that would produce contradictory predictions for the same tradeoff type and surfaces them as `update` proposals for Alec to resolve manually.
+
+**Output:** Contradiction pairs written to `identity_proposals.md` as `update` type with target `intent.md`.
+
+---
+
+### `identity_proposals.md` — EXTENDED
+
+**New proposal types for intent.md and workflow.md:**
 
 ```markdown
 ---
 
 ### PROP-YYYY-MM-DD-NNN
-**Target:** soul.md | user.md | intent.md
-**Type:** add | update | deprecate
+**Target:** intent.md | workflow.md | soul.md | user.md
+**Type:** add | update | deprecate | strengthen | contradiction
+**Source:** daily-reflect | weekly-dream | consistency-check
 **Proposed:** [exact text to add or replace with]
 **Current value:** [exact text being replaced, or _(none — new addition)_]
 **Evidence:**
-- YYYY-MM-DD [project] [tradeoff type]: [choice offered] → [choice made] — "[reason]"
+- YYYY-MM-DD [project] [tradeoff type] [tier]: [offered] → [chosen] — "[reason]"
 **Source logs:** YYYY-MM-DD, YYYY-MM-DD
 **Confidence:** medium | high
 **Status:** pending
 ```
 
-### Status values
+**New type: `strengthen`**
+For intent.md — adds a new confirming instance to an existing pattern without changing the heuristic text. Increases confirmation count and updates `last confirmed` date.
 
-- `pending` — awaiting review
-- `implemented` — Alec added to target document manually
-- `rejected — [reason]` — Alec rejected with reason; system suppresses re-proposal
+**New type: `contradiction`**
+Generated by consistency_check.py when two intent.md entries produce contradictory predictions. Alec resolves which version is current.
 
-### Suppression rules
-
-- Implemented proposals: never re-propose same text
-- Rejected proposals: read rejection reason as constraint; suppress unless evidence crosses higher threshold after rejection
-- Single-session low-confidence observations: never reach proposals, accumulate only
+**New source field:** Tracks whether the proposal came from daily-reflect, weekly-dream, or consistency-check. Weekly-dream proposals carry higher cross-session confidence.
 
 ---
 
-## Governance Principles (critical — prevents system from becoming dangerous)
+## Gap Tracking — Implementation
 
-1. **Agents never write directly to intent/soul/user documents.** Always proposals → manual review → implemented.
-2. **Rejected proposals teach the system.** The rejection reason is fed back as context on future extraction runs.
-3. **Confidence decays.** A heuristic not confirmed in 60+ days should be flagged for re-validation, not assumed stable.
-4. **Contradictions are surfaced, not resolved automatically.** When new evidence contradicts an existing `intent.md` entry, a `update` proposal is generated — Alec decides which version is current.
-5. **The system models intent trajectory, not a frozen snapshot.** The 2026 version of Alec may reject 2025 heuristics. Temporal weighting matters.
+Gap tracking captures the systematic divergence between Claude's default behavior and Alec's actual preferences. This is the highest-quality signal for building the intent model because it requires no self-reflection from Alec — the preference is revealed purely through correction.
+
+**How it flows in:**
+
+1. `session-end-flush.py` captures AI gaps in the enriched daily log:
+```
+**AI gaps (Claude default → Alec preference):**
+- Claude heading toward: pre-built framework → Alec chose: custom build
+  Gap type: ownership vs. convenience
+- Claude drafted: auto-approval logic → Alec redirected: manual gate
+  Gap type: automation vs. oversight
+```
+
+2. `proposal_extractor.py` treats AI gap evidence as `High` tier — one tier above explicit decisions, one tier below critical self-corrections.
+
+3. Over time, recurring gap types with consistent resolution direction → `intent.md` entry with high confidence.
+
+4. `weekly_dream.py` synthesizes gap patterns across 7 days — identifies which gap types are *systematic* (Claude consistently defaults away from Alec's preference in this category).
+
+**Long-term use:** When enough gap data accumulates for a tradeoff type, agents can pre-correct — stop defaulting to the Claude baseline and default instead to the Alec-pattern baseline. That is the Dark Factory shift: the agent's default becomes Alec's preference, not the model's.
 
 ---
 
-## What Has Been Built
+## Standing Orders — Promotion Path
+
+The explicit promotion path from evidence to autonomous agent behavior:
+
+```
+Evidence (tradeoff instances)
+    ↓
+Pattern confirmed in intent.md (medium confidence)
+    ↓
+Pattern strengthened across sessions (high confidence)
+    ↓
+Promoted to Standing Order (proposal type: standing-order)
+    ↓
+Alec approves: implemented as Standing Order in intent.md
+    ↓
+Agents read Standing Orders before acting
+    → Skip clarification for this tradeoff type
+    → Only escalate if confidence < threshold or situation is novel
+```
+
+Standing Orders are the Dark Factory end state made explicit. An agent with enough Standing Orders stops asking — it operates on known intent until it encounters something genuinely outside the model.
+
+**Standing Order format in intent.md:**
+```markdown
+### [Pattern Name]
+...
+**Standing order:** active
+**Active since:** YYYY-MM-DD
+**Agent instruction:** [Exact behavioral directive the agent follows without asking]
+```
+
+---
+
+## Raw Log Preservation — 30-Day Window
+
+Per the MemMachine ground-truth preservation principle: extraction is lossy. If the extraction logic improves, it should be possible to re-process raw logs.
+
+**Implementation:**
+- Daily logs in `00_Meta/daily/` are never deleted within 30 days
+- `memory_reflect.py` loads the past 30 days of logs on each run (not just yesterday)
+- If a new tradeoff type is added to the extractor, the 30-day window allows back-filling without lost signal
+- After 30 days, logs remain in the vault as historical record but are no longer actively re-processed
+
+---
+
+## Governance — Non-Negotiable Rules
+
+1. **Agents never write directly to intent/soul/user/workflow documents.** Always: evidence → proposal → manual review → implemented.
+2. **Rejected proposals teach the system.** Rejection reason is fed back as constraint on future extraction runs.
+3. **Confidence decays.** Intent.md entries not confirmed in 60 days are flagged for re-validation — not assumed stable.
+4. **Contradictions are surfaced, never auto-resolved.** Consistency check generates `contradiction` proposals. Alec resolves.
+5. **The system models intent trajectory, not a frozen snapshot.** 2026 Alec may reject 2025 heuristics. Temporal weighting is built into confidence decay.
+6. **Standing Orders require explicit approval.** Never auto-promoted. Alec must review and mark `active`.
+
+---
+
+## What Has Already Been Built
 
 ### Test infrastructure (`/.claude/tests/memory_reflect/`)
-- 6 scenario fixtures: strong pattern, single session, contradiction, rejected repeat, implemented repeat, deprecate trigger
-- Stubbed Claude responses for deterministic testing (no API calls)
+- 6 scenario fixtures covering: strong pattern, single session, contradiction, rejected repeat, implemented repeat, deprecate trigger
+- Deterministic stubbed Claude responses — no API calls in tests
 - `test_runner.py` — auto-detects real vs stub extractor; validates field structure, suppression logic, confidence filtering
 
 ### `proposal_extractor.py` (`/.claude/scripts/`)
 - Loads existing proposals, soul.md, user.md as Claude context
 - Calls Claude Sonnet with extraction prompt
-- Suppression check: blocks re-proposal of implemented/rejected items
-- `format_proposals()` generates valid proposal blocks with sequential IDs
-- `write_proposals()` appends to `identity_proposals.md`
+- Suppression: blocks re-proposal of implemented/rejected items
+- `format_proposals()` — sequential IDs, no collisions with existing
+- `write_proposals()` — appends to identity_proposals.md
 - Mock injection interface for test compatibility
 
 ### `memory_reflect.py` (updated)
-- Now runs proposal extractor as step 4 after existing learning/decision/idea promotions
+- Runs proposal extractor as step 4 after existing promotions
 - Targets: `VAULT_ROOT/00_Meta/proposals/identity_proposals.md`
 
 ---
 
-## What Needs to Be Built Next
+## Build Plan
 
-### Immediate (Phase 1 completion)
-- [ ] Rewrite sample log fixtures with enriched format (project context + AI choice capture)
-- [ ] Rewrite Claude response fixtures with tradeoff-structured evidence
-- [ ] Rewrite extractor prompt to target intent patterns, not surface preferences
-- [ ] Add `intent.md` as valid proposal target alongside soul.md / user.md
-- [ ] Add `intent.md` fixture to test vault
+### Phase 1 — Intent foundation
+- [ ] Create `intent.md` and `workflow.md` in vault `00_Meta/`
+- [ ] Overhaul `session-end-flush.py` extraction prompt — add enriched intent-signal sections
+- [ ] Overhaul `proposal_extractor.py` — add intent.md/workflow.md targets, tradeoff-structured evidence, new prompt
+- [ ] Update test fixtures — enriched log format, tradeoff-structured Claude responses
+- [ ] Add `intent.md` and `workflow.md` to fixture vault
 
-### Phase 2 — Enriched session capture
-- [ ] Update `session-end-flush.py` to extract and log AI clarifying questions + user responses
-- [ ] Update extraction prompt to pull project name and session goal from context
-- [ ] Cross-session pattern detection: memory_reflect.py looks at last 7–14 days, not just yesterday
+### Phase 2 — Weekly Dreaming
+- [ ] Build `weekly_dream.py` — Sonnet + High thinking, 7-day cross-session synthesis
+- [ ] Register `SecondBrain\WeeklyDream` in Windows Task Scheduler (Sundays 6 AM)
+- [ ] Build `consistency_check.py` — double monotonicity check, contradiction proposals
+- [ ] Wire consistency check into both memory_reflect.py (daily) and weekly_dream.py (weekly)
 
-### Phase 3 — Governance layer
-- [ ] Confidence decay: flag intent.md entries not confirmed in 60+ days
-- [ ] Contradiction detection: when new evidence conflicts with existing intent.md entry, generate update proposal automatically
-- [ ] Rejection memory: feed rejection reasons back as constraints to future extraction runs
+### Phase 3 — Gap tracking
+- [ ] Add AI gap capture section to session-end-flush.py enriched prompt
+- [ ] Add gap evidence tier to proposal_extractor.py prompt (High tier, below Critical)
+- [ ] Add weekly gap pattern synthesis to weekly_dream.py
+- [ ] Add gap accumulation tracking to intent.md entries
 
-### Phase 4 — Simulation
-- [ ] Intent document becomes queryable: "given this decision context, what does intent.md predict?"
-- [ ] Agent reads intent.md before asking clarifying questions — only escalates when confidence < threshold or situation is novel
-- [ ] Dark Factory behavior: agents operate with minimal clarification needed
+### Phase 4 — Standing Orders
+- [ ] Add `standing-order` proposal type to proposal schema
+- [ ] Add Standing Order section to intent.md format
+- [ ] Build Standing Order reader — agents load Standing Orders at session start
+- [ ] Define escalation logic — when does an agent override a Standing Order and ask
 
----
-
-## Open Questions for Next Session
-
-1. Should `intent.md` be a flat markdown file initially, or start as structured YAML for queryability?
-2. How should cross-session pattern detection work — does memory_reflect.py load N days of logs each run, or does it maintain a running accumulation file?
-3. What's the right confidence decay window — 60 days? 90 days? Should it vary by heuristic type?
-4. Should the proposal system support a `strengthen` type for intent.md — adding a new confirming instance to an existing pattern without changing the heuristic text?
-5. What additional tradeoff types should be tracked beyond the initial list?
+### Phase 5 — Dark Factory
+- [ ] Agents default to Alec-preference baseline for known tradeoff types
+- [ ] Escalation only for: confidence below threshold, novel tradeoff type, explicit override
+- [ ] Full autonomous operation within defined intent boundaries
 
 ---
 
-## Session Flush Analysis — What to Capture and Why
+## Open Questions
 
-### What session-end-flush.py currently gathers
-
-| Field | Why it exists | Intent value |
-|---|---|---|
-| **Decisions** | Records what was built or committed to | Low — captures the *what*, not the tradeoff structure |
-| **Lessons** | Feeds LEARNINGS.md — technical pattern accumulation | None — intentionally strips project context |
-| **Next Actions** | Updates project Snapshot.md for session continuity | None — pure task tracking |
-| **Last Touched timestamp** | Keeps snapshot current, shows project activity | Indirect — useful for cross-referencing pattern timing |
-
-**Core problem:** The extraction uses Claude Haiku with a 512-token limit and a prompt designed for a task tracker, not a behavioral observer. It records the *what* and discards the *how you decided* — which is the only part that matters for intent modeling.
-
----
-
-### What's missing — ranked by intent value
-
-**1. AI clarifying questions + user responses** ← highest priority
-When Claude offered A or B and the user picked one — that's the richest signal in the session. Revealed preference under mild pressure, no self-presentation. The transcript has it. The current extraction throws it away every session.
-
-```
-**AI choices + responses:**
-- Offered: SQLite vs. markdown for proposals storage
-  → Chose: markdown — "needs to be readable in Obsidian, auditable in git"
-  → Tradeoff: inspectability vs. convenience
-```
-
-**2. Course corrections**
-When Claude was heading in direction A and the user redirected without being asked. "Actually, let's do it this way." Strong signal — the preference was strong enough to interrupt mid-session.
-
-```
-**Course corrections:**
-- Claude drafted auto-approval logic → redirected to manual review gate
-  → "I want to understand what's going in there"
-  → Tradeoff: automation vs. oversight
-```
-
-**3. Explicit rejections of Claude suggestions**
-When Claude suggested something and the user said no. Different from course correction — a specific proposal being declined. The reason for rejection is the signal.
-
-```
-**Rejected suggestions:**
-- Claude suggested LangChain → rejected — "hides too much"
-- Claude suggested MemGPT → rejected — "prefer to own every layer"
-```
-
-**4. Project + session goal**
-Without this, every evidence point is context-free. "Chose markdown" means something different building a throwaway prototype versus a system intended for years of maintenance.
-
-```
-**Project:** second-brain-starter
-**Session goal:** Design proposal extraction for identity documents
-**Session type:** designing | building | debugging | exploring
-```
-
-**5. Scope decisions**
-Did the user expand or constrain scope during the session? Consistent scope discipline is a behavioral pattern. So is expansion — it reveals what can't be resisted.
-
-```
-**Scope decisions:**
-- Constrained: deferred cross-session pattern detection to Phase 2
-- Expanded: added intent.md as proposal target (unprompted)
-```
-
-**6. What was explicitly deferred**
-"We'll do that later" reveals prioritization instincts. What gets consistently pushed? What never gets deferred? Both patterns are meaningful.
-
-```
-**Deferred:**
-- Governance/drift layer — "Phase 3, after foundation works"
-- Multi-agent ecology — "premature for now"
-```
-
-**7. Confidence signals in language**
-"Definitely X" vs. "let's try X and see" vs. "I think X" — tells the system whether a decision was settled or exploratory. Instinctive certainty on a tradeoff is stronger evidence than a tentative choice.
-
----
-
-### Revised separation of concerns
-
-| Hook | Model | Job |
-|---|---|---|
-| `session-end-flush.py` | Haiku | Accurately capture raw signals — decisions, AI choices, course corrections, rejections, project context. Fast, cheap, factual. |
-| `memory_reflect.py` (daily 8 AM) | Sonnet | Higher-order analysis — identify tradeoff patterns, cross-reference intent.md, generate proposals. |
-
-Haiku captures. Sonnet interprets. Currently Haiku is doing both and doing neither well for intent purposes.
-
----
-
-### Revised daily log format (target state)
-
-```markdown
-**Project:** [name]
-**Session goal:** [what this session was trying to accomplish]
-**Session type:** designing | building | debugging | exploring
-
-**AI choices + responses:**
-- [what Claude offered] → [what user chose] — "[reason if stated]"
-  (Tradeoff: [type])
-
-**Course corrections:**
-- [what Claude was doing] → [what user redirected to] — "[reason]"
-
-**Rejected suggestions:**
-- [what Claude suggested] → rejected — "[reason]"
-
-**Scope decisions:**
-- Expanded: [what was added unprompted]
-- Constrained: [what was explicitly deferred]
-
-**Decisions:** [existing — keep]
-**Lessons:** [existing — keep]
-**Next Actions:** [existing — keep]
-```
-
-The top half feeds intent. The bottom half is what already exists.
-
----
-
-### Session type weighting note
-
-The most valuable sessions for intent modeling are **designing** sessions — that's when Claude is offering options and the user is choosing. Building sessions have fewer tradeoff moments. Debugging sessions have almost none. Design sessions are dense with revealed preference.
-
-Session type should be tagged and the extractor should weight designing sessions more heavily — a decision made while architecting something reveals more about how the user thinks than one made while fixing a syntax error.
-
----
-
-## Research Findings & Additional Intent Signals
-
-### What research validates about this approach
-
-**Revealed preference is formally recognized.** Active arxiv research (2026) builds alignment frameworks specifically around revealed preference — modeling humans from their *choices* rather than their *stated preferences*. The academic work confirms this is the right foundation, not an intuition.
-
-**Memory staleness is an open unsolved problem.** Research explicitly identifies it: a highly-retrieved preference memory becomes *confidently wrong* rather than just outdated when it goes stale. This makes confidence decay a critical early requirement, not a Phase 3 nice-to-have.
-
-**LinkedIn's Cognitive Memory Agent (CMA)** built the same three-layer structure at enterprise scale — episodic (interaction history), semantic (structured preferences), procedural (learned workflows and behavioral patterns). Procedural memory is the layer currently missing from this design — `intent.md` covers semantic preferences but not *how* Alec structures and executes work.
-
-**Dark Factory is operational in 2026.** Companies like StrongDM are running fully automated development pipelines where agents handle implementation, testing, review, and deployment. The capability threshold has been crossed. The missing layer is the intent model that makes it *Alec's* factory, not a generic one.
-
----
-
-### New concepts from research worth adopting
-
-**Procedural memory — separate track from intent.md**
-LinkedIn separates *what you prefer* (semantic) from *how you work* (procedural). `intent.md` is semantic. A `workflow.md` or procedural section is needed — capturing execution patterns: how Alec structures a build session, approaches debugging, handles scope creep. These are behavioral workflows, not value preferences.
-
-```markdown
-### Debug workflow
-Pattern: Reads error, checks the line, immediately looks upstream
-at what called it — rarely reads the error message twice.
-Confirmed: 4 sessions
-```
-
-**"Dreaming" — weekly consolidation pass**
-OpenClaw (personal AI agent platform) runs a dedicated "Dreaming" pass — 3-stage memory consolidation during off-hours, separate from the daily reflect. Our daily 8 AM reflect is episodic consolidation. A weekly pass is needed to find cross-session patterns that don't surface as single-day signals. The daily cycle can't see cross-week patterns. A weekly cycle can.
-
-**Gap tracking — Claude default vs. Alec choice**
-The revealed preference research frames AI choices as a mixture of its own defaults and the human's preferences. Every time Claude suggested direction A and Alec went direction B, that delta is the purest intent signal available — the AI's trained default diverging from actual preference. Currently that gap is lost every session.
-
-Should be stored explicitly:
-```
-Claude default: use established framework
-Alec chose: build custom
-Gap type: ownership vs. convenience
-Project: second-brain-starter
-```
-Accumulate enough gaps of the same type → high-confidence intent pattern.
-
-**Standing Orders — the Dark Factory promotion path**
-OpenClaw's "Standing Orders" are persistent behavioral directives that agents always follow without asking. This is what mature `intent.md` entries eventually become. The explicit promotion path:
-
-```
-Evidence → Pattern → Proposal → Implemented in intent.md
-       → Confirmed N times → Promoted to Standing Order
-       → Agent operates on it without surfacing to Alec
-```
-
-That is Dark Factory behavior made explicit as a pipeline stage.
-
-**MemMachine's ground-truth preservation principle**
-MemMachine avoids lossy extraction — stores raw episodes and re-extracts from them, rather than extracting once and discarding the source. If the extraction was lossy, the signal is permanently lost. Apply this principle: maintain a rolling 30-day window of enriched session logs that the extractor can re-process if extraction logic improves. Never discard a raw signal before confident everything useful was extracted.
-
-**Double monotonicity — consistency checking**
-From the revealed preference research: when AI interprets human choices, verify internal consistency — if A>B and B>C, then A>C must hold. Apply to `intent.md`: if the model says "prefers control over convenience" AND "prefers speed over setup cost," those can contradict depending on context. The system should run consistency checks and flag entries that produce contradictory predictions for the same scenario type.
-
----
-
-### Additional intent signals to capture
-
-**Git history as parallel behavioral signal**
-Auto-commit is already wired. The commit history is unused for intent. Signals available:
-- Commit messages → what Alec considered worth naming
-- Commit timing → when deep work happens
-- What gets committed together → how work is mentally grouped
-- What gets refactored → what he couldn't live with the first time
-The delta between first implementation and refactored implementation is pure taste signal — no one refactors something they were satisfied with.
-
-**What Alec doesn't ask**
-When Claude explains something and Alec doesn't follow up, that area is understood. Accumulated across sessions, this builds a competence map — what Alec knows deeply vs. where he's still learning. Agents use this to calibrate explanation depth. Explaining something already deeply understood is friction and erodes trust in the agent.
-
-**The "actually" and "wait" moments — highest-tier evidence**
-When Alec says "actually" or "wait" mid-session, the real preference is overriding the initially stated one. These are the highest-quality intent moments in any session — the correction reveals what was non-negotiable. Should be flagged as a distinct evidence tier above normal clarifying question responses. A mid-session self-correction is stronger signal than an answer to a choice question.
-
-**Scope expansion as interest signal**
-When Alec expands scope unprompted — adds something to the design that wasn't requested — that's an interest leak. What he can't resist adding across multiple sessions reveals what he actually cares about most. Consistent scope expansion in a particular direction (e.g., always adding auditability, always adding manual override gates) is a strong intent signal.
-
-**What never gets deferred**
-The inverse of deferral tracking. Some things Alec always handles immediately regardless of stated scope. Those are non-negotiable values expressed through prioritization, not words. If governance, auditability, and manual review gates appear in every session regardless of whether they were in scope, they are foundational — not preferences.
+1. Should `intent.md` start as flat markdown or structured YAML? Markdown is readable in Obsidian now; YAML is queryable later. Lean toward markdown with consistent headers that are parseable.
+2. What is the right confidence decay window — 60 days? 90 days? Should it vary by heuristic type (stable values decay slower than tactical preferences)?
+3. Should the weekly Dreaming pass also synthesize across `workflow.md` or focus on `intent.md` first?
+4. At what confirmation count does an intent.md entry become eligible for Standing Order promotion — 10 instances? 20?
+5. How does the agent escalation threshold work — is it per tradeoff-type confidence score, or global?
 
 ---
 
@@ -473,7 +490,13 @@ The inverse of deferral tracking. Some things Alec always handles immediately re
 
 - **Behavioral memory** — storing how Alec decides, not what he decided
 - **Revealed preference** — choices made in response to options, not explicitly stated values
-- **Intent trajectory** — the direction preferences are moving over time, not a frozen snapshot
-- **Dark Factory** — autonomous agent behavior driven by modeled intent, minimal human clarification needed
 - **Tradeoff type** — the category of choice being made (control vs. convenience, depth vs. breadth, etc.)
-- **Confidence decay** — heuristics that haven't been confirmed recently should lose weight, not persist indefinitely
+- **AI gap** — the divergence between Claude's default direction and Alec's actual choice; accumulated gaps reveal systematic preferences
+- **Critical moment** — an "actually", "wait", or "stop" self-correction; highest-tier evidence because it reveals a non-negotiable preference overriding stated intent
+- **Scope expansion** — unprompted addition of something not in scope; reveals what Alec can't resist building, indicating deep values
+- **Dreaming** — weekly cross-session synthesis pass using Sonnet + High thinking; finds patterns invisible to the daily cycle
+- **Double monotonicity** — logical consistency check on intent.md entries; ensures heuristics don't contradict each other across the same tradeoff type
+- **Standing Order** — a mature intent.md entry promoted to an active agent directive; the agent follows it without asking
+- **Dark Factory** — the end state: agents operating autonomously within Alec's intent boundaries, escalating only for genuinely novel situations
+- **Intent trajectory** — the direction preferences are moving over time, not a frozen snapshot; the system tracks evolution, not just current state
+- **Confidence decay** — heuristics not confirmed recently lose weight rather than persisting indefinitely; prevents fossilized outdated assumptions
