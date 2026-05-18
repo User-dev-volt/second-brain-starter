@@ -1,8 +1,8 @@
 # PRD: BMB Orchestration for BMAD Orchestrator Skill
 
-**Status:** Draft  
+**Status:** Ready for Implementation  
 **Author:** Alec  
-**Date:** 2026-05-17
+**Date:** 2026-05-18
 
 ---
 
@@ -19,36 +19,45 @@ Alec builds domain-specific BMAD modules (e.g. MovieBuilder, an interior design 
 
 - Add all 4 BMB modes to the orchestrator: **Brief, Create, Edit, Validate**
 - Orchestrator acts as **full user proxy** throughout BMB (same model as BMM) — user sees only status narration and milestone check-ins
-- Context comes from a **per-module intent doc** (e.g. `moviebuilder-intent.md`) built via brief doc + interview before BMB launches
-- Built modules are output into the **current project directory**
-- Supports building modules that contain **agents and workflows** together (not just one or the other)
+- Context comes from a **per-module intent doc** built via interview before BMB launches, used alongside any existing module brief
+- Built modules are output into the **current project directory** — no cross-project work ever
+- Full module build includes chained sessions for each agent and workflow (same session isolation model as BMM stories)
+- BMB's step-file workflows are followed exactly — orchestrator only deviates by answering questions from the intent doc on Alec's behalf
 
 ---
 
-## 3. Non-Goals (Out of Scope)
+## 3. Non-Goals (Out of Scope for v1)
 
-- Building standalone agents or workflows in isolation (BMB agent/workflow workflows) — module-first only in v1
-- Auto-installing built modules globally — user handles installation after output
-- BMB for project-specific micro-artifacts (e.g. a one-off agent for LEBO) — this is for reusable, full modules
+- Building standalone agents or workflows outside the context of a module build
+- Auto-installing built modules globally — Alec handles installation after output
+- Auto-updating the orchestrator routing table after a module is built — manual step
+- Cross-project orchestration — orchestrator is strictly scoped to the project directory it runs from
+- Module versioning — left entirely to BMB's own Edit flow
 
 ---
 
 ## 4. User Stories
 
 **US-1 — Module Brief**  
-As Alec, when I say "use BMAD to brief a [name] module", the orchestrator should interview me about my vision (what the module enables users to do, what agents and workflows it needs), synthesize a `{module-name}-intent.md`, then act as proxy through BMB's Brief mode to produce a complete `module-brief-{code}.md`.
+As Alec, when I say "use BMB to brief a [name] module", the orchestrator should interview me about my vision, synthesize a `{module-name}-intent.md`, then act as proxy through BMB's Brief mode to produce a complete `module-brief-{code}.md`.
 
 **US-2 — Module Create**  
-As Alec, when I say "use BMAD to create the [name] module", the orchestrator should load the existing `{module-name}-intent.md` brief, act as proxy through BMB's Create mode, and output the full module directory structure (agents, workflows, module.yaml, README, TODO) into the current project.
+As Alec, when I say "use BMB to create the [name] module", the orchestrator should load the existing intent doc + brief, act as proxy through BMB's Create mode to scaffold the module, then chain into individual agent and workflow build sessions until all components are complete.
 
 **US-3 — Module Edit**  
-As Alec, when I say "use BMAD to edit the [name] module", the orchestrator should load the existing intent doc and module artifacts, act as proxy through BMB's Edit mode, and apply changes to the module in place.
+As Alec, when I say "use BMB to edit the [name] module", the orchestrator should load the intent doc and module artifacts, act as proxy through BMB's Edit mode, and apply changes in place.
 
 **US-4 — Module Validate**  
-As Alec, when I say "use BMAD to validate the [name] module", the orchestrator should act as proxy through BMB's Validate mode and produce a compliance + completeness report. If issues are found, offer to fix them via Edit mode.
+As Alec, when I say "use BMB to validate the [name] module", the orchestrator should act as proxy through BMB's Validate mode, produce a compliance + completeness report, and automatically launch Edit mode to fix any issues found — reporting a summary of fixes made.
 
 **US-5 — Fresh Module (no brief yet)**  
-As Alec, when I mention building a new module with no prior brief or intent doc, the orchestrator should detect this and offer to run the Brief mode first before offering Create.
+As Alec, when I invoke BMB for a module with no prior intent doc or brief, the orchestrator should detect this and run the Brief mode before offering Create.
+
+**US-6 — Agent/Workflow Build within a Module**  
+As Alec, when Create mode has scaffolded the module and agents/workflows remain unbuilt, the orchestrator should offer logical next steps (e.g. "Create [Agent Name]", "Create [Workflow] for [Agent]") and execute each as a new isolated session.
+
+**US-7 — Refine Existing Module (MovieBuilder)**  
+As Alec, the orchestrator should support refining or updating an existing module (like MovieBuilder) using Edit and Validate modes, not just new module creation.
 
 ---
 
@@ -56,241 +65,210 @@ As Alec, when I mention building a new module with no prior brief or intent doc,
 
 ### 5.1 Trigger Phrases
 
-The orchestrator must activate the BMB flow (instead of normal BMM startup) when it detects phrases like:
+BMB flows activate on the **"use BMB"** prefix (distinct from "use BMAD" which routes to BMM/GDS). This is the primary disambiguation rule — "use BMAD" is never BMB.
 
-- "use BMAD to build a [X] module"
-- "use BMAD to brief a [X] module"
-- "use BMAD to create the [X] module"
-- "use BMAD to edit the [X] module"
-- "use BMAD to validate the [X] module"
-- "BMAD build module", "build BMAD module", "build a new module with BMAD"
-- Any phrase combining BMAD + module + (build/create/brief/edit/validate)
+Trigger phrases:
+- "use BMB to build/brief/create/edit/validate a [name] module"
+- "use BMB to create the next agent"
+- "use BMB to create the [name] workflow"
+- "BMB build module", "BMB brief [name]", "run BMB"
+- Any phrase starting with "use BMB" or "run BMB"
 
-### 5.2 Intent Doc Per Module
+**Disambiguation rule:** If the user says "use BMAD to build a MovieBuilder" (ambiguous — software project or module?), the orchestrator asks. If they say "use BMB to build a MovieBuilder module", it routes directly to BMB without asking.
 
-- Each module gets its own intent doc: `_bmad-output/bmb/{module-name}-intent.md`
-- On first run (no intent doc found): orchestrator runs the **Module Intent Interview** (see §5.3) before launching BMB
-- On subsequent runs: orchestrator loads the existing intent doc as its proxy source
-- Intent doc is separate from `project-intent.md` (keeps BMM and BMB concerns cleanly separated)
+### 5.2 Project Scope Lock (CRITICAL)
 
-### 5.3 Module Intent Interview
+The orchestrator **must never cross project directory boundaries** for BMB work.
 
-Before launching BMB, the orchestrator must gather:
+- All BMB operations are scoped strictly to the directory where the orchestrator session was launched
+- If Alec asks to work on a different module than the one in the current project, the orchestrator responds: "I'm running inside [current project] — I can only work on modules in this directory. Start a new session from the [other project] folder to work on that module."
+- No reading, writing, or installing to any path outside the current project root
 
-1. **Module name and code** — what is this module called? (e.g. "MovieBuilder", code: `cpm`)
-2. **What does it enable users to do?** — the core user journey (e.g. "plan, write, and produce a movie with AI agents")
-3. **Who is the target user?** — skill level, context, goals
-4. **What agents are needed?** — roles, personas, specialties
-5. **What workflows are needed?** — key processes the module needs to support
-6. **Domain knowledge** — specialized terminology, external resources, constraints
-7. **Module scope** — MVP vs full, what's explicitly excluded
+### 5.3 Intent Doc Per Module
 
-Orchestrator uses multiple-choice format (A/B/C/D) for each domain. Saves answers to `{module-name}-intent.md` before launching BMB.
+- **Location:** `_bmad-output/bmb/{module-name}-intent.md`
+- **First run** (no intent doc found): orchestrator runs the Module Intent Interview (§5.4) and saves the result before launching BMB
+- **Subsequent runs:** orchestrator loads existing intent doc as proxy source, combined with any existing `module-brief-{code}.md` if present
+- **Precedence when both exist:** intent doc provides context (what Alec wants), brief doc drives structure (what BMB produces) — orchestrator uses both together, not one over the other
+- Intent doc is always separate from `project-intent.md`
 
-### 5.4 BMB Mode Routing
+### 5.4 Module Intent Interview
+
+Run before the first BMB session for a new module. Uses multiple-choice A/B/C/D format for each domain.
+
+Domains to cover:
+
+1. **Module name and code** — orchestrator suggests 2–3 clever short codes based on the name, asks Alec to confirm or provide his own
+2. **Core user journey** — what does this module enable users to do? (e.g. "plan, write, and produce a movie with AI agents")
+3. **Target user** — skill level, context, goals
+4. **Agents needed** — roles, personas, specialties (orchestrator proposes candidates based on the domain)
+5. **Workflows needed** — key processes the module must support
+6. **Domain knowledge** — specialized terminology, external resources, data sources, constraints
+7. **Module scope** — MVP vs full; what is explicitly out of scope
+
+Save result to `_bmad-output/bmb/{module-name}-intent.md` before launching any BMB workflow.
+
+### 5.5 BMB Mode Routing
 
 | User intent | BMB mode | Orchestrator action |
 |-------------|----------|---------------------|
-| Brief / vision / explore | Brief | Load intent doc → proxy through Brief mode → output `module-brief-{code}.md` |
-| Create / build / make | Create | Load intent doc + brief → proxy through Create mode → output module directory |
+| Brief / vision / explore | Brief | Load/create intent doc → proxy through Brief mode → output `module-brief-{code}.md` |
+| Create / build / make | Create | Load intent doc + brief → proxy through Create mode → chain agent/workflow sessions |
 | Edit / change / update | Edit | Load intent doc + existing module → proxy through Edit mode |
-| Validate / check / review | Validate | Proxy through Validate mode → produce report → offer Edit if issues found |
+| Validate / check / review | Validate | Proxy through Validate → produce report → auto-launch Edit to fix issues |
 | Ambiguous | — | Ask: "Would you like to Brief, Create, Edit, or Validate?" |
 
-### 5.5 Full Proxy Behavior
+### 5.6 Full Proxy Behavior
 
-The orchestrator acts as user proxy inside BMB exactly as it does inside BMM:
+The orchestrator follows BMB's step-file workflows exactly — it does not skip, reorder, or shortcut any step. The only deviation from standard BMB behavior is that the orchestrator answers questions on Alec's behalf using the intent doc.
 
-- Answers all discovery questions from `{module-name}-intent.md`
+Proxy rules:
+- Answers all discovery questions from `{module-name}-intent.md` (primary) + `module-brief-{code}.md` (structural context)
 - Selects Continue at every step automatically
-- Never shows BMB menus to the human user
-- Prints `◆ [BMB] ...` status narration before each step
-- Outputs the Autonomous Mode Declaration before invoking BMB via the Skill tool
-- Escalates to the human only when BMB asks something not covered by the intent doc
+- **Never shows BMB menus to Alec**
+- Prints `◆ [BMB Mode] Step N/Total — [what's happening]` status narration before every step
+- After each step, prints a **one-line summary of the key answer/decision made** so Alec can see the direction the orchestrator is heading
+- Outputs the Autonomous Mode Declaration before every BMB Skill tool call
 
-### 5.6 Output Location
+**Inference logging rule (for subjective questions):**  
+When BMB asks a subjective question (e.g. agent communication style, personality) that the intent doc doesn't explicitly answer, the orchestrator:
+1. Makes a reasonable creative judgment aligned with the module's domain and tone
+2. Logs the inference: `  ↳ [Inferred] Agent communication style set to "warm, expert, encouraging" — not in intent doc, derived from module's target audience`
+3. Continues without escalating
 
-- All BMB output goes into the current project directory under the path BMB specifies (typically `_bmad/bmb/` or a configured `bmb_creations_output_folder`)
-- After Create mode completes, orchestrator prints the full output path and a summary of what was created (agents, workflows, module.yaml)
-- Orchestrator does NOT auto-install the module globally — it presents installation instructions and lets Alec decide
+**Escalation rule:**  
+When BMB asks a domain-specific question about the module's actual use case (e.g. "What data sources does this agent reference?", "What is the output format of this workflow?") that cannot be answered from the intent doc or brief, the orchestrator escalates to Alec, appends the answer to the intent doc, and continues.
 
-### 5.7 BMB Installation Check
+### 5.7 Session Architecture for Module Builds
 
-Before launching any BMB workflow, the orchestrator must check that BMB is installed in the current project:
+BMB module builds follow the same session isolation model as BMM story development:
 
-- Check for `.claude/skills/bmad-bmb-agent/` or `_bmad/bmb/` directory
-- If not found: offer to install BMB — `npx bmad-method install --modules bmb`
-- If install fails: report and stop
+```
+SESSION 1 — Brief
+  Proxy through BMB Brief mode (13 steps)
+  Output: module-brief-{code}.md
+  Milestone check-in: "Brief complete. Ready to move to Create?"
 
-### 5.8 Milestone Check-ins (BMB-specific)
+[FRESH SESSION]
+
+SESSION 2 — Module Scaffold (Create mode)
+  Proxy through BMB Create mode (8 steps)
+  Output: module directory, module.yaml, agent specs, workflow specs, README, TODO
+  Milestone check-in: "Module scaffolded. N agents and M workflows to build."
+
+[FRESH SESSION PER AGENT — or parallel if context allows]
+
+SESSION 3..N — Agent Builds
+  Proxy through bmad-bmb-agent (Create mode) for each agent
+  One session per agent (or parallel batch if agents are independent)
+  Milestone: summary of agent built
+
+[FRESH SESSION PER WORKFLOW]
+
+SESSION N+1..M — Workflow Builds
+  Proxy through bmad-bmb-workflow (Create mode) for each workflow
+  One session per workflow
+  Milestone: summary of workflow built
+
+[FRESH SESSION]
+
+SESSION FINAL — Validate
+  Proxy through BMB Validate mode
+  Auto-launch Edit if issues found
+  Run test install
+  Print completion summary
+```
+
+### 5.8 Compaction Recovery
+
+Same disk-based recovery as BMM:
+- Before launching each step, check the output file frontmatter for `stepsCompleted`
+- On post-compaction startup, read step frontmatter to detect where the run left off
+- Print: `◆ [Recovery] Post-compaction — resuming from step N of [mode] (detected from frontmatter)`
+- Never restart a mode from the beginning if partial progress exists on disk
+
+### 5.9 BMB Installation Check
+
+Before launching any BMB workflow:
+
+1. Check for `_bmad/bmb/` directory in the current project
+2. If not found: "BMB is not installed in this project. Install it now? (runs `npx bmad-method install --modules bmb`)" — **wait for confirmation**
+3. If confirmed: install, then continue
+4. If declined or install fails: report and stop
+
+### 5.10 Status Narration Format (BMB-specific)
+
+```
+◆ [BMB Brief] Step 4/13 — defining agent personas
+  ↳ Answered: 3 agents proposed — Showrunner, Script Supervisor, Cinematographer
+◆ [BMB Brief] Step 5/13 — establishing workflow structure
+  ↳ Answered: 4 workflows — script development, shot planning, scene generation, production review
+◆ [BMB Create] Step 2/8 — generating module.yaml
+  ↳ [Inferred] Module code set to "cpm" (Cinematic Production Module) — confirmed by user
+```
+
+Every step gets: a status line before it fires, and a one-line answer summary after it completes.
+
+### 5.11 Milestone Check-ins (BMB-specific)
 
 | Milestone | What to show | What to ask |
 |-----------|-------------|-------------|
-| Intent interview complete | Module intent summary | "Does this capture your vision?" |
-| Brief mode complete | Brief doc path + key decisions | "Ready to move to Create?" |
-| Create mode complete | Output directory + artifact list | "Review the output. Install globally or continue editing?" |
-| Validate report complete | Issue count + severity | "N issues found. Apply fixes via Edit mode?" |
+| Intent interview complete | Module name, code, agent list, workflow list, scope | "Does this capture your vision?" |
+| Brief mode complete | Brief doc path + key decisions made | "Ready to move to Create?" |
+| Module scaffold complete | Output directory + agent specs + workflow specs listed | "N agents and M workflows to build. Start building?" |
+| Each agent complete | Agent name + key traits | (no check-in — continue to next) |
+| Each workflow complete | Workflow name + step count | (no check-in — continue to next) |
+| All components built | Full component inventory | "All components built. Run validation now?" |
+| Validate complete | Issue count + severity + fixes applied | "Validation complete. [Summary of fixes]. Run test install?" |
+| Test install complete | Pass/fail + output path | "Module is ready. What's next?" |
+
+### 5.12 Post-Build Handoff Menu
+
+After all components are built and validated, present a context-aware next-step menu:
+
+```
+◆ [BMB] Module [Name] — build complete
+
+  What's next?
+  A: Run validation now
+  B: Create [Next Agent Name] — [description]
+  C: Create [Workflow Name] for [Agent Name]
+  D: Get installation instructions
+  E: Done — print summary and stop
+```
+
+Options B and C are dynamically generated based on what agents/workflows remain in the module spec but haven't been built yet. If all components are built, B and C are omitted.
+
+### 5.13 Completion Definition
+
+A module is **not considered done** until:
+1. All agents in the module spec have been built (proxied through `bmad-bmb-agent`)
+2. All workflows in the module spec have been built (proxied through `bmad-bmb-workflow`)
+3. BMB Validate mode passes (or all found issues have been fixed via Edit mode)
+4. A test install completes without errors
+5. Alec confirms he has tested the module himself
+
+The orchestrator tracks completion state in `_bmad-output/bmb/{module-name}-status.md`.
 
 ---
 
 ## 6. Non-Functional Requirements
 
-- **Status narration:** Every BMB action gets a `◆ [BMB] ...` status line — same discipline as BMM phases
-- **Autonomous Mode Declaration:** Required before every BMB Skill tool call
 - **Proxy fidelity:** Orchestrator must not generate module content from its own knowledge — all content comes from BMB's step files guided by the intent doc
-- **Intent doc format:** Same frontmatter convention as `project-intent.md` — readable by future orchestrator sessions for recovery
+- **Step compliance:** BMB workflows are followed in exact sequence — no steps skipped, no shortcuts
+- **Inference transparency:** Every creative judgment made without explicit intent doc guidance must be logged with `↳ [Inferred]` prefix
+- **Autonomous Mode Declaration:** Required before every BMB Skill tool call
+- **Project isolation:** Zero reads or writes outside the current project root — hard rule, no exceptions
+- **Status granularity:** Step-level narration (not just milestone-level) — Alec must be able to see the direction at every step
 
 ---
 
-## 7. Open Questions
-
-*These need answers before implementation begins. Please answer each one.*
-
----
-
-**Q1 — BMB as skills vs commands:**
-The moviebuilder project uses BMB as slash commands; LEBO and newer projects use skills. Should the orchestrator enforce skills-only (requiring BMB to be installed as skills), or detect the installed architecture and support both?
-
-> Well, BMB is a similar system to BMM in a sense that it is a process and we must follow the workflow processes the way BMAD BMB wants us to. This is important to make sure that we are building a brief through Bmad BMB the way it wants us to and that goes for each of the other workflows for building agents and workflows and modules. We must not stray from the BMAD method, however in the way that we do stray is that me and the orchestrator get the project-intent document squared away and then it works its way through the different flows of BMB. Get it? That way the Orchestrator can act on my behalf and answer questions that BMB asks the user(me) on my behalf also.
-
----
-
-**Q2 — Agent and workflow sub-builds within a module:**
-BMB's module Create mode outputs agent and workflow *specs/placeholders*, not fully built artifacts. Should the orchestrator then chain into `bmad-bmb-agent` and `bmad-bmb-workflow` to flesh out each component automatically — or stop after module scaffolding and let you do sub-builds in a follow-up session?
-
-> It will do everything and I will be here for important decisions that project-intent can't answer. It will also mind the context gap just like we do with stories and reviews. When we create a story in the BMM method, we start a new session for developing the story, then we start a new sessions for review and so on. So, when we build the module we start a new session, each agent gets a new session, unless built in parallel, same with workflows.
-
----
-
-**Q3 — Module versioning:**
-When editing an existing module, should the orchestrator handle version tracking (incrementing a version field in `module.yaml`), or leave that entirely to BMB's own Edit flow?
-
-> Leave it up to BMB's own Edit flow.
-
----
-
-**Q4 — Trigger disambiguation:**
-If you say "use BMAD to build a MovieBuilder", the orchestrator can't tell if you mean a software project (BMM) or a BMAD module (BMB). What should the rule be? Always ask when ambiguous? Assume module if the word "module" is present? Or treat anything that sounds like a domain tool (not a software app) as a module?
-
-> The rule will be Use BMB to build ... or Use BMB to create next agent/workflow. 
-
----
-
-**Q5 — Intent doc location:**
-The PRD proposes `_bmad-output/bmb/{module-name}-intent.md`. Does that path feel right, or do you want intent docs somewhere else — e.g. directly in the project root, or in a dedicated `_bmb-output/` folder separate from `_bmad-output/`?
-
-> The path feels right `_bmad-output/bmb/{module-name}-intent.md`
-
----
-
-**Q6 — Brief doc precedence:**
-If a prior BMB session already produced a `module-brief-{code}.md`, and you also have a `{module-name}-intent.md`, which should the orchestrator treat as authoritative when proxying? Intent doc only? Brief doc only? Merge both?
-
-> It should use my -intent.md for context in conjunction with the module brief. my project-intent gives the AI the context of what I want for the project so it can follow the module brief with the BMB to flesh out any questions.
-
----
-
-**Q7 — Compaction recovery during long BMB runs:**
-BMB Brief mode has 13 steps; Create mode has 8. These are long proxy runs that can trigger context compaction mid-flow. Should the orchestrator use the same disk-based state recovery as BMM (reading step frontmatter to detect where it left off), or is a simpler "restart from the top of the current mode" acceptable?
-
-> Read step frontmatter to detect where it left off.
-
----
-
-**Q8 — Proxy creativity for subjective BMB questions:**
-BMB asks creative and subjective questions — e.g. "What communication style should this agent have?", "What's the agent's personality?" — that a dry intent doc may not fully answer. When the intent doc is silent on something subjective, should the orchestrator: (a) make a reasonable creative judgment and continue, (b) always escalate to you, or (c) make a judgment but log every inference it makes so you can review?
-
-> c, a questions like the agents personality is easy to set and non-detrimental to to the actual use case anyways. When it comes to unknown use case questions about the moviebuilder or whatever module, then it should definitely escalate. It should query the brief or intent and if it can't answer the question, then refer to me.
-
----
-
-**Q9 — Multi-module projects:**
-If the current project has multiple modules in progress (e.g. both MovieBuilder and an interior design module), how should the orchestrator identify which one to Edit or Validate? Scan the intent docs and ask you to pick? Or require you to name it in the trigger phrase?
-
-> We will seperate these modules in their own respective folders/directories. They will not merge or be together. Just like LeboV2 is in its own directory, they won't leak.
-
----
-
-**Q10 — Auto-fix after validation:**
-When Validate mode finds issues, should the orchestrator automatically launch Edit mode to fix them — or present the report and ask you first?
-
-> Automatically launch edit mode to fix them and give me a run down of the important summary of the fixes.
-
----
-
-**Q11 — Orchestrator routing table auto-update:**
-After a module is successfully built and output, should the orchestrator automatically add a routing entry for it into its own `SKILL.md` (e.g. "if user says 'run MovieBuilder', invoke the moviebuilder module") — or leave that as a manual step?
-
-> Leave that as a manual step. 
-
----
-
-**Q12 — Rebuilding moviebuilder:**
-MovieBuilder already exists as a working module in its own project. Do you want to use this new orchestrator flow to rebuild or refine it eventually — or is moviebuilder "done" and this orchestrator flow is for new modules going forward?
-
-> Refining it/updating it. But this Orchestrator is for new modules going forward also.
-
----
-
-**Q13 — Output staging vs immediate:**
-The PRD says output goes into the current project. But since these are reusable modules, do you want the option to output to a staging/review folder first (so you can inspect before it lands in the final location) — or is "dump it in the project, I'll review in place" fine?
-
-> No need, leave it in the project. BMB steps will make sure everything remains the way it should.
-
----
-
-**Q14 — BMB not installed — auto-install behavior:**
-If the orchestrator detects BMB is not installed in the current project, should it auto-install silently (running `npx bmad-method install --modules bmb`), ask for confirmation first, or stop and tell you to install manually?
-
-> Ask for confirmation first.
-
----
-
-**Q15 — Session isolation for BMB vs BMM:**
-If you're mid-way through a BMM software build (e.g. working on LEBO stories) and you say "use BMAD to brief an interior design module," should the orchestrator: handle both in the same session (switching context), recommend starting a fresh session for the BMB work, or hard-block until the BMM work is paused/completed?
-
-> The Orchestrator should not do that and return-"not in Interior design module project" or something. We don't work on projects from outside the project with the Orchestrator ever. If Claude is ran from that projects folder, then we use it only in that folder. Orchestrator shouldn't be able to go edit other directories outside its project folders it's being ran from.
-
----
-
-**Q16 — Status narration granularity during long runs:**
-BMB Brief mode's 13 steps could take 20–40 minutes as a full proxy run. Do you want a status line before every step (`◆ [BMB Brief] Step 4/13 — defining agent personas`), or just at major milestones (e.g. after each mode phase)?
-
-> Yes, status lines with summary of answers given at each step so I can see the direction the Orchestrator is heading and know if it is sticking to the intent we laid out together or going off-base.
-
----
-
-**Q17 — "Done" definition for Create mode:**
-BMB Create mode outputs a module directory with agent specs, workflow specs, `module.yaml`, README, and TODO. Is that output sufficient for you to consider the module "done" (ready to be fleshed out further separately) — or does the orchestrator need to verify the output is actually installable (e.g. run a test install) before declaring success?
-
-> It should be able to run a test install, have the ability to flesh out further, module is not done until we're done with all agents and workflows and I've ran a test of the module myself.
-
----
-
-**Q18 — Partial module builds:**
-If Create mode fails or is interrupted mid-run (e.g. BMB hits an escalation blocker), should the orchestrator preserve whatever partial output was written and offer to resume — or clean it up and start fresh?
-
-> BMB preserves its own information as it goes each step I believe so no need.
-
----
-
-**Q19 — Module naming and code conventions:**
-BMB uses a short module code (e.g. `cpm` for Cinematic Production Module). Should the orchestrator ask you to define the code during the intent interview, suggest one based on the module name, or let BMB's own discovery steps handle it?
-
-> Suggest clever names or ask BMB and then ask me based on results.
-
----
-
-**Q20 — Post-build handoff:**
-After a module is built, what should the orchestrator offer next? Options like: "Run validate now", "Open the module in Edit mode", "Get installation instructions", "Done — nothing more needed"? Or just print a summary and stop?
-
-> Yes to Run Validate now, Create the (Blank) Agent - next agent to create if there is one, Creathe (Blank) Workflow for (Blank) agent if there is one, print a summary and stop. Things like that. Logical next direction based on BMB flows.
-
----
-
-## 8. Success Criteria
-
-- Alec can say "use BMB to build a [name] module" and the orchestrator handles the full Brief → Create flow without Alec having to navigate BMB menus manually
-- The per-module intent doc captures enough context that subsequent sessions (Edit, Validate) need no re-interview
-- A completed module directory is output, valid, and installable with `npx bmad-method install`
-- The orchestrator does not generate any module content from its own knowledge — BMB's step files produce everything
+## 7. Success Criteria
+
+- Alec says "use BMB to build a [name] module" and the orchestrator handles the full Brief → Create → Agent builds → Workflow builds → Validate flow without Alec navigating any BMB menus
+- The per-module intent doc captures enough context that all subsequent sessions (agent builds, workflow builds, Edit, Validate) need no re-interview
+- Each agent and workflow gets its own isolated session — same discipline as BMM story → review → fix cycles
+- Test install completes successfully on the built module
+- The orchestrator never generates module content from its own knowledge — BMB step files produce everything
+- Alec can see exactly what direction the orchestrator is heading at every step via narration + answer summaries
+- The orchestrator never touches files outside the current project directory
