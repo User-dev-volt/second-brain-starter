@@ -151,7 +151,7 @@ Before launching any BMB workflow, the orchestrator must check that BMB is insta
 **Q1 — BMB as skills vs commands:**
 The moviebuilder project uses BMB as slash commands; LEBO and newer projects use skills. Should the orchestrator enforce skills-only (requiring BMB to be installed as skills), or detect the installed architecture and support both?
 
-> **Your answer:**
+> Well, BMB is a similar system to BMM in a sense that it is a process and we must follow the workflow processes the way BMAD BMB wants us to. This is important to make sure that we are building a brief through Bmad BMB the way it wants us to and that goes for each of the other workflows for building agents and workflows and modules. We must not stray from the BMAD method, however in the way that we do stray is that me and the orchestrator get the project-intent document squared away and then it works its way through the different flows of BMB. Get it? That way the Orchestrator can act on my behalf and answer questions that BMB asks the user(me) on my behalf also.
 
 ---
 
