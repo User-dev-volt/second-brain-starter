@@ -5,7 +5,7 @@ Alec currently has one vault: D:\\Obsidian Brain\\Brain\\
 Game dev context → 20_Reference/GameDev/
 Product context  → 20_Reference/Products/ and 20_Reference/Market/
 AI/tooling       → 20_Reference/AI/
-Cross-project    → 00_Meta/ (SOUL, USER, MEMORY, HEARTBEAT, HABITS)
+Cross-project    → 00_Meta/ (SOUL, USER) + daily logs are canonical memory
 """
 
 import os
@@ -32,6 +32,8 @@ CONTEXT_ROUTES = {
     # AI / tooling / meta
     "second-brain": "20_Reference/AI",
     "bmad": "20_Reference/AI",
+    "practice": "20_Reference/AI",
+    "video": "20_Reference/AI",
     "ai": "20_Reference/AI",
     # Default: cross-project meta
 }
@@ -51,10 +53,11 @@ GITHUB_TOKEN_ROUTES = {
     "project_chimera": "GITHUB_PAT_CHIMERA",
 }
 
+# Daily logs are the canonical cross-session memory (injected separately by
+# context_builder). MEMORY.md was retired 2026-06-02 → 30_Archive/.
 CORE_MEMORY_FILES = [
     VAULT_ROOT / "00_Meta" / "SOUL.md",
     VAULT_ROOT / "00_Meta" / "USER.md",
-    VAULT_ROOT / "00_Meta" / "MEMORY.md",
 ]
 
 

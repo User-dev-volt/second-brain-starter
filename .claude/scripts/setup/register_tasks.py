@@ -25,18 +25,11 @@ if not PYTHON.exists():
 
 # ── Task definitions ─────────────────────────────────────────────────────────
 # (name, script, schedule, /mo interval or None, start time, end time or None)
+# NOTE: Heartbeat was retired 2026-06-02 (proactive monitor + HABITS removed).
+# heartbeat.py remains on disk but is intentionally NOT scheduled.
 TASKS = [
     {
-        "name": "SecondBrain\\Heartbeat",
-        "script": SCRIPTS_DIR / "heartbeat.py",
-        "schedule": "minute",
-        "interval": "150",   # every 2h30m = 6x per day (9am–10pm)
-        "start": "09:00",
-        "end": "22:00",      # kill-at-end so it doesn't run overnight
-        "kill_at_end": True,
-    },
-    {
-        "name": "SecondBrain\\DailyReflect",
+        "name": "SecondBrainDailyReflect",  # root path; matches the live task we kept
         "script": SCRIPTS_DIR / "memory_reflect.py",
         "schedule": "daily",
         "interval": None,
