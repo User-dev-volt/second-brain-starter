@@ -7,6 +7,7 @@ Usage:
 Outputs a markdown context brief to stdout.
 """
 
+import os
 import sys
 import json
 import subprocess
@@ -18,11 +19,12 @@ SKILL_DIR = Path(__file__).parent.parent
 SCRIPTS_DIR = SKILL_DIR.parent.parent / "scripts"
 PROJECT_LIST = SKILL_DIR / "references" / "project-list.md"
 
-VAULT_ROOT = Path(r"D:\Obsidian Brain\Brain")
+VAULT_ROOT = Path(os.environ.get("BRAIN_ROOT", r"D:\Brain"))
+PROJECTS_ROOT = Path(os.environ.get("PROJECTS_ROOT", r"D:\Projects"))
 
 
 def load_snapshot(slug: str) -> str | None:
-    snapshot = VAULT_ROOT / "10_Active_Projects" / slug / "Snapshot.md"
+    snapshot = PROJECTS_ROOT / slug / "Snapshot.md"
     if snapshot.exists():
         return snapshot.read_text(encoding="utf-8")
     return None
@@ -78,7 +80,7 @@ def main():
     snapshot = load_snapshot(slug)
     if not snapshot:
         print(f"No snapshot found for '{slug}'.")
-        print(f"Expected: {VAULT_ROOT / '10_Active_Projects' / slug / 'Snapshot.md'}")
+        print(f"Expected: {PROJECTS_ROOT / slug / 'Snapshot.md'}")
         sys.exit(0)
 
     memory_results = run_memory_search(slug)

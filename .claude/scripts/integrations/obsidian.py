@@ -2,13 +2,13 @@
 obsidian.py — Read/write utilities for Alec's Obsidian vault.
 
 All operations route through vault_router.py to resolve the correct paths.
-Vault root: D:\\Obsidian Brain\\Brain\\
+Brain root: D:\\Brain\\  |  Project snapshots: D:\\Projects\\<slug>\\Snapshot.md
 
 Operations:
   append_to_daily(text)               — Append timestamped entry to today's daily log
   update_project_snapshot(slug, fields) — Update fields in a project snapshot
   get_project_context(slug)           — Return full project snapshot as string
-  update_project_index()              — Rebuild 10_Active_Projects/_index.md
+  update_project_index()              — Rebuild D:\\Projects\\_index.md
   capture_idea(idea, source_project)  — Append to 00_Meta/ideas/_backlog.md
   log_learning(learning, category)    — Append to 20_Reference/GameDev/learnings/<category>.md
 """
@@ -29,6 +29,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "security"))
 from guardrails import assert_file_write
 
 VAULT_ROOT = vault_router.VAULT_ROOT
+PROJECTS_ROOT = vault_router.PROJECTS_ROOT
 
 
 # ---------------------------------------------------------------------------
@@ -80,7 +81,8 @@ def append_to_daily(text: str, prefix: str = "") -> Path:
 # ---------------------------------------------------------------------------
 
 def _snapshot_dir() -> Path:
-    return VAULT_ROOT / "10_Active_Projects"
+    # Per-project snapshots now live with the code under D:\Projects\<slug>\.
+    return PROJECTS_ROOT
 
 
 def _snapshot_path(slug: str) -> Path:
@@ -141,7 +143,7 @@ def update_project_snapshot(slug: str, fields: dict) -> Path:
 
 
 def update_project_index() -> Path:
-    """Rebuild 10_Active_Projects/_index.md from all project snapshot files."""
+    """Rebuild D:\\Projects\\_index.md from all project snapshot files."""
     projects_dir = _snapshot_dir()
     index_path = projects_dir / "_index.md"
 

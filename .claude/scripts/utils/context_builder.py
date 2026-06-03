@@ -135,5 +135,6 @@ def build_context(cwd: str) -> str:
 
 
 if __name__ == "__main__":
+    sys.stdout.reconfigure(encoding="utf-8")
     cwd = sys.argv[1] if len(sys.argv) > 1 else os.getcwd()
     print(build_context(cwd))

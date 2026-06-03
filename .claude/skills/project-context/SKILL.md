@@ -17,7 +17,7 @@ Instantly orient Alec on any project — what phase it's in, last action, decisi
 1. **Resolve the project name** — If no argument provided, list available projects from `${CLAUDE_SKILL_DIR}/references/project-list.md` and ask which one. Fuzzy-match the argument against known slugs (case-insensitive, partial match OK).
 
 2. **Load the project snapshot** — Read the file directly:
-   `D:\Obsidian Brain\Brain\10_Active_Projects\<slug>\Snapshot.md`
+   `D:\Projects\<slug>\Snapshot.md`
    If no snapshot exists, say so and offer to create one by reading the folder contents.
 
 3. **Search memory for recent learnings** — Run:

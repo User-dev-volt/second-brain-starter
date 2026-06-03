@@ -59,12 +59,12 @@ def get_env(var: str, required: bool = True) -> str | None:
 
 def get_vault_paths() -> dict[str, str]:
     """
-    Return resolved vault paths from environment.
-    Falls back to the single-vault default if env vars aren't set.
+    Return resolved brain paths from environment.
+    Falls back to the D:\\Brain default if env vars aren't set.
     """
-    default = r"D:\Obsidian Brain\Brain"
+    default = r"D:\Brain"
     return {
-        "vault_root": os.environ.get("VAULT_ROOT", default),
+        "vault_root": os.environ.get("BRAIN_ROOT") or os.environ.get("VAULT_ROOT", default),
         "comfyui_base": os.environ.get("COMFYUI_BASE_URL", "http://localhost:8188"),
     }
 

@@ -11,8 +11,7 @@ build a Sonnet/Haiku triage agent.
 python "D:\second-brain-starter\.claude\scripts\token_report.py"
 ```
 
-Report saves to: `D:\Obsidian Brain\Brain\Reports\Token Usage\YYYY-MM-DD_HH00.md`
-Open that file in Obsidian to read it.
+Report saves to: `D:\Brain\Reports\Token Usage\YYYY-MM-DD_HH00.md`
 
 ---
 

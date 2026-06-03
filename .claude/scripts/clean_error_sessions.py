@@ -1,7 +1,7 @@
 import re
 import os
 
-daily_dir = r"D:\Obsidian Brain\Brain\00_Meta\daily"
+daily_dir = r"D:\Brain\00_Meta\daily"
 
 error_files = [
     "2026-04-25.md", "2026-04-26.md", "2026-04-28.md", "2026-04-29.md",

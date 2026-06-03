@@ -7,12 +7,13 @@ Usage:
 Categories: godot-csharp, comfyui, unity, product, general
 """
 
+import os
 import sys
 import argparse
 from datetime import datetime
 from pathlib import Path
 
-VAULT_ROOT = Path(r"D:\Obsidian Brain\Brain")
+VAULT_ROOT = Path(os.environ.get("BRAIN_ROOT", r"D:\Brain"))
 
 CATEGORY_PATHS = {
     "godot-csharp": VAULT_ROOT / "20_Reference" / "GameDev" / "learnings" / "godot-csharp.md",

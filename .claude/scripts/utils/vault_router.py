@@ -1,7 +1,8 @@
 """
-vault_router.py — Maps the current working directory to the correct vault path and context area.
+vault_router.py — Maps the current working directory to the correct brain path and context area.
 
-Alec currently has one vault: D:\\Obsidian Brain\\Brain\\
+Cross-project memory lives at D:\\Brain\\ (Obsidian dissolved 2026-06-02).
+Per-project Snapshot.md files live WITH the code under D:\\Projects\\<name>\\.
 Game dev context → 20_Reference/GameDev/
 Product context  → 20_Reference/Products/ and 20_Reference/Market/
 AI/tooling       → 20_Reference/AI/
@@ -11,7 +12,20 @@ Cross-project    → 00_Meta/ (SOUL, USER) + daily logs are canonical memory
 import os
 from pathlib import Path
 
-VAULT_ROOT = Path(r"D:\Obsidian Brain\Brain")
+# Load .env (BRAIN_ROOT, API keys, …) so hooks/scripts launched from any cwd still
+# see the configured paths. Best-effort: if python-dotenv is missing or the file
+# isn't there, fall back to the literal defaults below.
+try:
+    from dotenv import load_dotenv
+    load_dotenv(dotenv_path=Path(__file__).resolve().parents[3] / ".env")
+except Exception:
+    pass
+
+BRAIN_ROOT = Path(os.environ.get("BRAIN_ROOT") or os.environ.get("VAULT_ROOT") or r"D:\Brain")
+PROJECTS_ROOT = Path(os.environ.get("PROJECTS_ROOT") or r"D:\Projects")
+
+# Back-compat alias: many modules import `vault_router.VAULT_ROOT`.
+VAULT_ROOT = BRAIN_ROOT
 
 # Map directory name patterns to context areas within the vault
 CONTEXT_ROUTES = {
@@ -91,14 +105,27 @@ def get_github_token_env(cwd: str) -> str:
 
 
 def get_project_snapshot(cwd: str) -> Path | None:
-    """Find a matching project snapshot by walking up the cwd for a known project folder."""
-    projects_dir = VAULT_ROOT / "10_Active_Projects"
-    known_projects = {p.name for p in projects_dir.iterdir() if p.is_dir()} if projects_dir.exists() else set()
+    """Resolve the project's Snapshot.md, which now lives next to the code under
+    PROJECTS_ROOT (D:\\Projects\\<name>\\Snapshot.md)."""
+    cwd_path = Path(cwd).resolve()
+    try:
+        projects_root = PROJECTS_ROOT.resolve()
+    except OSError:
+        projects_root = PROJECTS_ROOT
 
-    for part in reversed(Path(cwd).parts):
-        if part in known_projects:
-            snapshot = projects_dir / part / "Snapshot.md"
+    # If cwd is inside PROJECTS_ROOT, the project root is the first segment under it.
+    for parent in [cwd_path, *cwd_path.parents]:
+        if parent.parent == projects_root:
+            snapshot = parent / "Snapshot.md"
             return snapshot if snapshot.exists() else None
+
+    # Fallback: match a known project folder name anywhere in the cwd parts.
+    if projects_root.exists():
+        known_projects = {p.name for p in projects_root.iterdir() if p.is_dir()}
+        for part in reversed(cwd_path.parts):
+            if part in known_projects:
+                snapshot = projects_root / part / "Snapshot.md"
+                return snapshot if snapshot.exists() else None
 
     return None
 

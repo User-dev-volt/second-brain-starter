@@ -7,12 +7,13 @@ Usage:
 Categories: game-mechanic, product, business, feature, other
 """
 
+import os
 import sys
 import argparse
 from datetime import datetime
 from pathlib import Path
 
-VAULT_ROOT = Path(r"D:\Obsidian Brain\Brain")
+VAULT_ROOT = Path(os.environ.get("BRAIN_ROOT", r"D:\Brain"))
 BACKLOG = VAULT_ROOT / "00_Meta" / "ideas" / "_backlog.md"
 
 SURFACE_HINTS = {

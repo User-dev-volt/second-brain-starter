@@ -25,7 +25,7 @@ ENV_PATH = REPO_ROOT / ".env"
 SCRIPTS = REPO_ROOT / ".claude" / "scripts"
 DB_PATH = REPO_ROOT / ".claude" / "data" / "memory.db"
 
-REQUIRED_ENV_KEYS = ["SECOND_BRAIN_API_KEY", "GITHUB_PAT", "VAULT_ROOT"]
+REQUIRED_ENV_KEYS = ["SECOND_BRAIN_API_KEY", "GITHUB_PAT", "BRAIN_ROOT"]
 REQUIRED_PACKAGES = [
     "anthropic",
     "sentence_transformers",
@@ -70,10 +70,10 @@ def main() -> None:
         val = os.environ.get(key, "")
         results.append(check(f"  {key} is set", bool(val) and not val.startswith("your_")))
 
-    # ── 2. Vault ──────────────────────────────────────────────────────────────
-    print("\n-- Vault --")
-    vault_root = Path(os.environ.get("VAULT_ROOT", ""))
-    results.append(check("VAULT_ROOT exists on disk", vault_root.is_dir(), str(vault_root)))
+    # ── 2. Brain ──────────────────────────────────────────────────────────────
+    print("\n-- Brain --")
+    brain_root = Path(os.environ.get("BRAIN_ROOT") or os.environ.get("VAULT_ROOT", ""))
+    results.append(check("BRAIN_ROOT exists on disk", brain_root.is_dir(), str(brain_root)))
 
     # ── 3. Packages ───────────────────────────────────────────────────────────
     print("\n-- Python packages --")

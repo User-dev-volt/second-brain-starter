@@ -10,24 +10,49 @@
       "path": "D:/second-brain-starter"
     },
     {
+      "id": "brain",
+      "name": "Brain",
+      "path": "D:/Brain"
+    },
+    {
+      "id": "projects",
+      "name": "Projects",
+      "path": "D:/Projects"
+    },
+    {
       "id": "chimera",
       "name": "Project Chimera",
-      "path": "D:/Obsidian Brain/Brain/10_Active_Projects/Project_Chimera"
+      "path": "D:/Projects/Project_Chimera"
+    },
+    {
+      "id": "lebo",
+      "name": "LEBO v2",
+      "path": "D:/Projects/LEBOv2"
+    },
+    {
+      "id": "poe2-optimizer",
+      "name": "PoE2 Optimizer",
+      "path": "D:/Projects/poe2_optimizer_v6"
+    },
+    {
+      "id": "moviebuilder-bmad",
+      "name": "MovieBuilder BMAD",
+      "path": "D:/Projects/moviebuilder - BMAD MODULE Update"
+    },
+    {
+      "id": "practice-local-model",
+      "name": "Practice Local Model",
+      "path": "D:/Projects/Practice local model"
+    },
+    {
+      "id": "video-gen",
+      "name": "Video Gen",
+      "path": "D:/Projects/Video Gen"
     },
     {
       "id": "tracker",
       "name": "AD/SB Tracker",
       "path": "D:/Drive Return/Amentum Projects"
-    },
-    {
-      "id": "10-active-projects",
-      "name": "10 Active Projects",
-      "path": "D:/Obsidian Brain/Brain/10_Active_Projects"
-    },
-    {
-      "id": "obsidian-brain",
-      "name": "Obsidian Brain",
-      "path": "D:/Obsidian Brain/Brain"
     },
     {
       "id": "amentum-projects",
@@ -43,26 +68,6 @@
       "id": "ai-video-gen",
       "name": "AI Video Gen",
       "path": "C:/Vid-Pic Gen Dump from C Drive/AI Video Generation"
-    },
-    {
-      "id": "moviebuilder-bmad",
-      "name": "MovieBuilder BMAD",
-      "path": "D:/Obsidian Brain/Brain/10_Active_Projects/moviebuilder - BMAD MODULE Update"
-    },
-    {
-      "id": "last-epoch",
-      "name": "Last Epoch Optimizer",
-      "path": "D:/Obsidian Brain/Brain/10_Active_Projects/LastEpochBuildOptimizer"
-    },
-    {
-      "id": "poe2-optimizer",
-      "name": "PoE2 Optimizer",
-      "path": "D:/Obsidian Brain/Brain/10_Active_Projects/poe2_optimizer_v6"
-    },
-    {
-      "id": "lebo",
-      "name": "LEBO v2",
-      "path": "D:/Obsidian Brain/Brain/10_Active_Projects/LEBOv2"
     }
   ]
 }

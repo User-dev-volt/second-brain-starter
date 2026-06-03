@@ -1,8 +1,17 @@
 # Migration Plan: Dissolve Obsidian → Plain Folder Brain at `D:\Brain\`
 
 **Created:** 2026-06-02
-**Status:** READY TO IMPLEMENT (execute in a fresh session)
+**Status:** ✅ IMPLEMENTED 2026-06-02 — verified end-to-end. Old `D:\Obsidian Brain\` left intact as backup (deletion pending Alec's OK).
 **Author:** Phase-A reorg session
+
+> **Implementation notes / deviations from this plan:**
+> - Engine scripts live under `.claude/scripts/` (not `scripts/`) — all paths above adjusted accordingly.
+> - Keeper folders were **copied** (robocopy), not moved, so the old vault is an automatic backup until deletion is confirmed.
+> - The capture hooks were *already* in user-global `settings.json` but used bare `python` (no `anthropic`/`dotenv`), which is why "⚠️ Extraction failed" lines kept appearing in daily logs. Fixed to the venv python; emptied the repo-level hooks so they don't double-fire.
+> - Centralization done via `load_dotenv()` in `vault_router.py` (imported by all hooks) + `D:\Brain` literal fallback + `BRAIN_ROOT`/`PROJECTS_ROOT` user env vars.
+> - Session manager is **not installed/running** as a service — config updated; it applies whenever next launched.
+> - `integrations/obsidian.py` kept its filename (rerouted internals) to preserve the `query.py obsidian …` CLI.
+> - Also updated (beyond the table): `SOUL.md`/`USER.md`/`CLAUDE.md`/`Dashboard.md`/Templates inside `D:\Brain` (they're loaded every session and still pointed at the old vault); added `00_Meta/projects-index.md`.
 
 ---
 

@@ -78,14 +78,16 @@ def check_operation(operation: str) -> tuple[bool, str]:
 # ---------------------------------------------------------------------------
 # Layer 2: Vault boundary enforcement
 # ---------------------------------------------------------------------------
-# Only allow file writes inside these directories (using the single-vault layout).
+# Only allow file writes inside these directories. Cross-project memory lives in
+# D:\Brain; per-project Snapshot.md files live with the code under D:\Projects.
 
-_VAULT_ROOT = Path(r"D:\Obsidian Brain\Brain")
+_BRAIN_ROOT = Path(os.environ.get("BRAIN_ROOT") or os.environ.get("VAULT_ROOT") or r"D:\Brain")
+_PROJECTS_ROOT = Path(os.environ.get("PROJECTS_ROOT") or r"D:\Projects")
 
 _ALLOWED_WRITE_DIRS = [
-    _VAULT_ROOT / "00_Meta",
-    _VAULT_ROOT / "10_Active_Projects",
-    _VAULT_ROOT / "20_Reference",
+    _BRAIN_ROOT / "00_Meta",
+    _BRAIN_ROOT / "20_Reference",
+    _PROJECTS_ROOT,
 ]
 
 
@@ -143,8 +145,8 @@ if __name__ == "__main__":
 
     print("\n=== File write checks ===")
     test_paths = [
-        r"D:\Obsidian Brain\Brain\00_Meta\MEMORY.md",
-        r"D:\Obsidian Brain\Brain\10_Active_Projects\my-game\Snapshot.md",
+        r"D:\Brain\00_Meta\SOUL.md",
+        r"D:\Projects\my-game\Snapshot.md",
         r"C:\Users\Alec\Desktop\secret.txt",
         r"D:\second-brain-starter\.claude\data\memory.db",
     ]

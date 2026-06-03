@@ -37,7 +37,7 @@ that don't appear in any single day but emerge across the full week.
 4. Suppress duplicates against all existing proposals (pending, implemented, rejected).
 
 5. Write new proposals to:
-   D:\Obsidian Brain\Brain\00_Meta\proposals\identity_proposals.md
+   D:\Brain\00_Meta\proposals\identity_proposals.md
    using the PROP-YYYY-MM-DD-NNN schema and source "weekly-dream".
 
 6. Write contradiction proposals as type 'contradiction' targeting intent.md.

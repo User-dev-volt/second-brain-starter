@@ -30,6 +30,7 @@ import snapshot as snap
 from notifications import show_windows_toast
 
 VAULT_ROOT = vault_router.VAULT_ROOT
+PROJECTS_ROOT = vault_router.PROJECTS_ROOT
 
 
 # ---------------------------------------------------------------------------
@@ -74,11 +75,11 @@ def _get_comfyui_status() -> dict | None:
 
 def _get_project_last_touched() -> dict:
     """
-    Scan 10_Active_Projects/ and return {slug: last_touched_iso} for each
+    Scan PROJECTS_ROOT (D:\\Projects) and return {slug: last_touched_iso} for each
     project that has a Snapshot.md with a **Last Touched:** field.
     """
     import re
-    projects_dir = VAULT_ROOT / "10_Active_Projects"
+    projects_dir = PROJECTS_ROOT
     result = {}
     if not projects_dir.exists():
         return result
@@ -117,7 +118,7 @@ def _load_soul_and_user() -> str:
 
 def _load_project_index() -> str:
     """Return the current project index markdown."""
-    index = VAULT_ROOT / "10_Active_Projects" / "_index.md"
+    index = VAULT_ROOT / "00_Meta" / "projects-index.md"
     if index.exists():
         return index.read_text(encoding="utf-8")
     return "(No project index found)"

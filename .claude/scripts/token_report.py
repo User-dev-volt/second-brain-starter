@@ -1,6 +1,6 @@
 """
 Token usage report generator — reads token-dashboard SQLite DB and outputs
-a markdown report to the Obsidian vault Reports/Token Usage folder.
+a markdown report to the Brain Reports/Token Usage folder.
 Calls Claude API to append intelligent analysis to the report.
 Scheduled every 4 hours via Windows Task Scheduler (SecondBrain/TokenReport).
 """
@@ -24,7 +24,7 @@ if _env_file.exists():
 
 DB_PATH = Path.home() / ".claude" / "token-dashboard.db"
 DASHBOARD_CLI = Path.home() / "tools" / "token-dashboard" / "cli.py"
-REPORT_DIR = Path(r"D:\Obsidian Brain\Brain\Reports\Token Usage")
+REPORT_DIR = Path(os.environ.get("BRAIN_ROOT", r"D:\Brain")) / "Reports" / "Token Usage"
 REPORT_DIR.mkdir(parents=True, exist_ok=True)
 
 PYTHON = sys.executable

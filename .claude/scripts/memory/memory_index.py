@@ -24,7 +24,7 @@ from chunker import chunk_file
 from db import DB_PATH, delete_file_chunks, get_indexed_mtimes, insert_chunk, open_db
 from embeddings import embed, EMBEDDING_DIM
 
-VAULT_ROOT = Path(r"D:\Obsidian Brain\Brain")
+VAULT_ROOT = Path(r"D:\Brain")
 
 # Map vault label → list of directories to index
 VAULT_AREAS: dict[str, list[Path]] = {

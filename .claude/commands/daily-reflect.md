@@ -31,7 +31,7 @@ Run the daily memory synthesis for the second brain intent system.
 5. Suppress implemented and rejected duplicates.
 
 6. Write new proposals to:
-   D:\Obsidian Brain\Brain\00_Meta\proposals\identity_proposals.md
+   D:\Brain\00_Meta\proposals\identity_proposals.md
    using the PROP-YYYY-MM-DD-NNN schema.
 
 7. Use the consistency check output to flag contradictions.

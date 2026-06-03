@@ -27,7 +27,7 @@ Zero-friction idea capture. Appends to the backlog with context so ideas don't v
    python .claude/scripts/query.py obsidian idea "<idea text>" --project "<project>"
    ```
 
-4. **Confirm in one line:** `Captured → [backlog](D:\Obsidian Brain\Brain\00_Meta\ideas\_backlog.md)`
+4. **Confirm in one line:** `Captured → [backlog](D:\Brain\00_Meta\ideas\_backlog.md)`
 
 ## Format Written to Backlog
 
@@ -51,6 +51,6 @@ Zero-friction idea capture. Appends to the backlog with context so ideas don't v
 
 ## Notes
 
-- The backlog file is `D:\Obsidian Brain\Brain\00_Meta\ideas\_backlog.md`
+- The backlog file is `D:\Brain\00_Meta\ideas\_backlog.md`
 - Ideas are append-only — never deleted, just accumulated
 - Do NOT summarize or shorten the idea — capture exactly what Alec said

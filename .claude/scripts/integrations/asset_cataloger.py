@@ -2,7 +2,7 @@
 asset_cataloger.py — Catalog ComfyUI-generated assets into the vault.
 
 After each generation, appends an entry to:
-  D:\\Obsidian Brain\\Brain\\20_Reference\\GameDev\\assets\\_catalog.md
+  D:\\Brain\\20_Reference\\GameDev\\assets\\_catalog.md
 
 Also maintains a JSON index at .claude/data/state/asset-catalog.json
 for fast lookups without reading markdown.
