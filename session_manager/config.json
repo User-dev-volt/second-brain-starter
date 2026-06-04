@@ -68,6 +68,11 @@
       "id": "ai-video-gen",
       "name": "AI Video Gen",
       "path": "C:/Vid-Pic Gen Dump from C Drive/AI Video Generation"
+    },
+    {
+      "id": "tabletopmagic",
+      "name": "Tabletop Magic",
+      "path": "D:/Projects/tabletopmagic/TabletopMagic"
     }
   ]
 }
