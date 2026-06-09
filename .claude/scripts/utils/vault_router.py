@@ -29,6 +29,10 @@ VAULT_ROOT = BRAIN_ROOT
 
 # Map directory name patterns to context areas within the vault
 CONTEXT_ROUTES = {
+    # Day-job / office work (Excel, Amentum) — listed first so these win over
+    # the generic "work" keyword below
+    "amentum": "20_Reference/Work",
+    "drive return": "20_Reference/Work",
     # Game engine / game dev projects
     "godot": "20_Reference/GameDev/godot-csharp",
     "unity": "20_Reference/GameDev",
@@ -59,6 +63,7 @@ LEARNINGS_MAP = {
     "20_Reference/GameDev": VAULT_ROOT / "20_Reference/GameDev/godot-csharp/LEARNINGS.md",
     "20_Reference/Products": VAULT_ROOT / "20_Reference/Products/LEARNINGS.md",
     "20_Reference/AI": VAULT_ROOT / "20_Reference/AI/LEARNINGS.md",
+    "20_Reference/Work": VAULT_ROOT / "20_Reference/Work/LEARNINGS.md",
 }
 
 # Map directory name patterns to the GitHub PAT env var for that account

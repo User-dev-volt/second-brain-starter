@@ -5,7 +5,12 @@ that don't appear in any single day but emerge across the full week.
 
 1. Execute: python "D:\second-brain-starter\.claude\scripts\weekly_dream_loader.py"
 2. Execute: python "D:\second-brain-starter\.claude\scripts\consistency_check.py"
-3. Using the 7-day assembled context and consistency check input, identify:
+3. Read D:\Brain\00_Meta\bmad_rituals.md — the BMAD ritual whitelist. Whitelisted
+   patterns are prescribed methodology, never behavioral evidence: never propose
+   them, and ritual-execution instances count toward no proposal's gap/confirmation
+   totals. From BMAD-mode sessions only deviations, methodology-open choices,
+   redirections of agents, and edits to BMAD itself are signal.
+4. Using the 7-day assembled context and consistency check input, identify:
 
    - **Tradeoff patterns** that resolved the same way 3+ times this week across
      any combination of evidence tiers (Critical, Highest, High, Medium).
@@ -34,10 +39,11 @@ that don't appear in any single day but emerge across the full week.
 
    - **intent.md contradictions** flagged by the consistency check.
 
-4. Suppress duplicates against all existing proposals (pending, implemented, rejected).
+5. Suppress duplicates against all existing proposals (pending, implemented, rejected).
+   Proposals with status `deferred` may be strengthened but never re-proposed as new adds.
 
-5. Write new proposals to:
+6. Write new proposals to:
    D:\Brain\00_Meta\proposals\identity_proposals.md
    using the PROP-YYYY-MM-DD-NNN schema and source "weekly-dream".
 
-6. Write contradiction proposals as type 'contradiction' targeting intent.md.
+7. Write contradiction proposals as type 'contradiction' targeting intent.md.

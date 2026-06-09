@@ -88,8 +88,62 @@ def format_standing_orders(orders: list[dict]) -> str:
     return "\n".join(lines)
 
 
+def load_decision_patterns(intent_path: Path) -> list[dict]:
+    """Parse intent.md Decision Patterns (entries without an active Standing order)."""
+    if not intent_path.exists():
+        return []
+
+    text = intent_path.read_text(encoding="utf-8")
+    # Limit to the Decision Patterns section (stop at next ## heading)
+    m = re.search(r"## Decision Patterns\n(.*?)(?=\n## |\Z)", text, re.DOTALL)
+    if not m:
+        return []
+
+    patterns = []
+    blocks = re.split(r"\n(?=### )", m.group(1))
+    for block in blocks:
+        block = block.strip()
+        if not block.startswith("### "):
+            continue
+        entry: dict = {"name": re.match(r"### (.+)", block).group(1).strip()}
+        for label, key in [
+            ("Heuristic", "heuristic"),
+            ("Tradeoff type", "tradeoff_type"),
+            ("Confidence", "confidence"),
+        ]:
+            fm = re.search(
+                rf"\*\*{re.escape(label)}:\*\*\s*(.+?)(?=\n\*\*|\Z)", block, re.DOTALL
+            )
+            entry[key] = " ".join(fm.group(1).split()) if fm else ""
+        patterns.append(entry)
+    return patterns
+
+
+def format_decision_patterns(patterns: list[dict]) -> str:
+    """Format Decision Patterns as compact propose-then-act priors."""
+    if not patterns:
+        return ""
+
+    lines = [
+        "## Alec's Decision Patterns (propose-then-act)",
+        "Learned heuristics for how Alec resolves tradeoffs. When a decision matches one:",
+        "- **high confidence** → state \"Per your [pattern], doing X\" and proceed",
+        "- **medium** → propose the pattern-consistent option and wait for the go-ahead",
+        "- **low / low-medium** → treat as a weak prior; mention it only if relevant",
+        "Every acceptance confirms the pattern; every override is counter-evidence — both get logged.",
+        "",
+    ]
+    for p in patterns:
+        conf = p.get("confidence", "?")
+        tt = f" [{p['tradeoff_type']}]" if p.get("tradeoff_type") else ""
+        lines.append(f"- **{p['name']}** ({conf}){tt}: {p.get('heuristic', '')}")
+    return "\n".join(lines)
+
+
 def get_standing_orders_context(vault_root: Path) -> str:
     """Main entry point for context_builder.py."""
     intent_path = vault_root / "00_Meta" / "intent.md"
     orders = load_standing_orders(intent_path)
-    return format_standing_orders(orders)
+    parts = [format_standing_orders(orders)]
+    parts.append(format_decision_patterns(load_decision_patterns(intent_path)))
+    return "\n\n".join(p for p in parts if p)

@@ -30,7 +30,9 @@ if not PYTHON.exists():
 TASKS = [
     {
         "name": "SecondBrainDailyReflect",  # root path; matches the live task we kept
-        "script": SCRIPTS_DIR / "memory_reflect.py",
+        # Headless claude -p "/daily-reflect" (replaces print-only memory_reflect.py
+        # as the scheduled entry point, 2026-06-09)
+        "script": SCRIPTS_DIR / "run_daily_reflect.py",
         "schedule": "daily",
         "interval": None,
         "start": "08:00",

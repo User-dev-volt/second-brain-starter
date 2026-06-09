@@ -2,7 +2,14 @@ Run the daily memory synthesis for the second brain intent system.
 
 1. Execute: python "D:\second-brain-starter\.claude\scripts\memory_reflect_loader.py"
 2. Execute: python "D:\second-brain-starter\.claude\scripts\consistency_check.py"
-3. Using the assembled context and consistency check output, identify intent proposals.
+3. Read D:\Brain\00_Meta\bmad_rituals.md — the BMAD ritual whitelist. Whitelisted
+   patterns are prescribed methodology, never behavioral evidence:
+   - Never propose a whitelisted pattern (add, strengthen, or standing-order).
+   - Evidence that merely shows a ritual executing counts toward NO proposal.
+   - From BMAD-mode sessions, only these count as signal: deviations from rituals,
+     choices the methodology leaves open, Alec redirecting an agent, and edits to
+     the BMAD workflow itself.
+4. Using the assembled context and consistency check output, identify intent proposals.
 
    Evidence tier ranking (highest to lowest signal quality):
    - **Critical** — "actually", "wait", "stop", or any mid-session self-correction.
@@ -16,7 +23,7 @@ Run the daily memory synthesis for the second brain intent system.
    - **Medium** — Explicit rejection of AI suggestion with stated reason.
    - **Low** — Single mention, no decision attached. Accumulate only, never promote alone.
 
-4. For intent.md proposals: if AI gap instances exist for the same tradeoff type as
+5. For intent.md proposals: if AI gap instances exist for the same tradeoff type as
    an existing entry, propose type "strengthen" rather than a new "add".
    Include a **Gap accumulation:** line in the proposed text:
      **Gap accumulation:** N gaps — [tradeoff type] → [direction] each time (YYYY-MM-DD, ...)
@@ -28,11 +35,13 @@ Run the daily memory synthesis for the second brain intent system.
    actionable sentence an agent can follow without asking. Set current_value to
    the entry name being promoted. Evidence needs only 1 line referencing the entry.
 
-5. Suppress implemented and rejected duplicates.
+6. Suppress implemented and rejected duplicates. Proposals with status `deferred`
+   may be strengthened (new evidence appended, confidence raised) but never
+   re-proposed as a fresh add.
 
-6. Write new proposals to:
+7. Write new proposals to:
    D:\Brain\00_Meta\proposals\identity_proposals.md
    using the PROP-YYYY-MM-DD-NNN schema.
 
-7. Use the consistency check output to flag contradictions.
+8. Use the consistency check output to flag contradictions.
    Write any as type 'contradiction' targeting intent.md.

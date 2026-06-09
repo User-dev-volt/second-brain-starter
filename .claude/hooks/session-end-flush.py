@@ -111,9 +111,60 @@ def _get_api_key() -> str:
     return key
 
 
-def extract_with_claude(transcript_text: str, cwd: str = "") -> str:
+def detect_session_mode(cwd: str, transcript_text: str) -> str:
+    """Classify the session: 'bmad' (methodology-driven dev), 'work' (day-job /
+    Excel), or 'freeform' (everything else). Used to pick the extraction prompt
+    so BMAD's prescribed rituals don't pollute the intent signal."""
+    try:
+        cwd_path = Path(cwd)
+        for parent in [cwd_path, *cwd_path.parents]:
+            if (parent / "_bmad").is_dir() or (parent / "_bmad-output").is_dir():
+                return "bmad"
+    except Exception:
+        pass
+
+    t = transcript_text.lower()
+    bmad_markers = (
+        "/bmad-", "bmad-story-loop", "sprint-status.yaml", "_bmad-output",
+        "story-context", "gds-code-review", "/gds-",
+    )
+    if any(m in t for m in bmad_markers):
+        return "bmad"
+
+    cwd_l = str(cwd).lower()
+    work_cwd_markers = ("amentum", "drive return")
+    work_text_markers = (".xlsx", ".xlsm", "power query", "pivot table", "excel workbook")
+    if any(m in cwd_l for m in work_cwd_markers) or any(m in t for m in work_text_markers):
+        return "work"
+
+    return "freeform"
+
+
+MODE_PROMPTS = {
+    "bmad": (
+        "MODE: BMAD. This session executed Alec's BMAD methodology. The following are "
+        "PRESCRIBED steps that repeat by design — do NOT report them as intent signals, "
+        "AI gaps, or scope expansions: story-first authoring, parallel/exhaustive artifact "
+        "loading, adversarial multi-layer code review with a different LLM, pre-existing "
+        "failure baseline cataloguing, patch/defer/dismiss triage gates, sprint status "
+        "updates. ONLY report: (1) deviations from the methodology, (2) choices the "
+        "methodology leaves open (architecture, scope, naming, data-model decisions), "
+        "(3) Alec redirecting an agent, (4) edits to the BMAD workflow itself — those "
+        "are the highest-value signal.\n\n"
+    ),
+    "work": (
+        "MODE: WORK (day job, typically Excel/data/reporting — not software development). "
+        "Focus extraction on: data-handling decisions, formatting and reporting "
+        "preferences, recurring spreadsheet/report patterns, and how Alec structures "
+        "deliverables for colleagues. Skip software-engineering framing.\n\n"
+    ),
+    "freeform": "",
+}
+
+
+def extract_with_claude(transcript_text: str, cwd: str = "", mode: str = "freeform") -> str:
     """Call Claude API to extract session summary with enriched intent signals (Stage 1) and
-    traditional summary sections (Stage 2)."""
+    traditional summary sections (Stage 2). The prompt adapts to the detected session mode."""
     api_key = _get_api_key()
     if not api_key:
         return "⚠️ ANTHROPIC_API_KEY not set — skipped AI extraction."
@@ -129,9 +180,11 @@ def extract_with_claude(transcript_text: str, cwd: str = "") -> str:
             max_tokens=800,
             system=(
                 "You are a behavioral intent logger for a developer's second brain. "
-                "Analyze this session transcript and output TWO sections in order:\n\n"
+                + MODE_PROMPTS.get(mode, "")
+                + "Analyze this session transcript and output TWO sections in order:\n\n"
                 "--- SECTION 1: Intent signals ---\n"
                 f"Project: {project_name}\n"
+                f"Session mode (detected): {mode}\n"
                 "Session goal: [one line — what this session set out to accomplish]\n"
                 "Session type: designing | building | debugging | exploring\n\n"
                 "**Critical moments:**\n"
@@ -155,6 +208,12 @@ def extract_with_claude(transcript_text: str, cwd: str = "") -> str:
                 "**Scope constraints (explicit deferrals):**\n"
                 "(Things the user explicitly said to skip or defer)\n"
                 "- Deferred: [what] — \"[reason]\"\n"
+                "If none, write: (none)\n\n"
+                "**Pattern confirmations / overrides:**\n"
+                "(Moments where the assistant cited an intent pattern or Standing Order — "
+                "e.g. \"Per your [pattern]...\" — and the user accepted or overrode it)\n"
+                "- Pattern confirmed: [name] — [context]\n"
+                "- Pattern overridden: [name] → [what the user chose instead] — \"[words used]\"\n"
                 "If none, write: (none)\n\n"
                 "--- SECTION 2: Session summary ---\n"
                 "**Decisions:** key choices made\n"
@@ -276,10 +335,11 @@ def main():
     if not transcript_text:
         sys.exit(0)
 
-    extracted = extract_with_claude(transcript_text, cwd=cwd)
+    mode = detect_session_mode(cwd, transcript_text)
+    extracted = extract_with_claude(transcript_text, cwd=cwd, mode=mode)
 
     # Write full enriched summary (Stage 1 intent signals + Stage 2 summary) to daily log
-    append_to_daily_log(extracted, "SessionEnd")
+    append_to_daily_log(extracted, f"SessionEnd:{mode}")
 
     # Update Snapshot.md Next Action from extracted next actions
     next_actions = parse_section(extracted, "Next Actions")
