@@ -180,6 +180,12 @@ def extract_with_claude(transcript_text: str, cwd: str = "", mode: str = "freefo
             max_tokens=800,
             system=(
                 "You are a behavioral intent logger for a developer's second brain. "
+                "The input may be a normal dialogue transcript OR an autonomous execution "
+                "log with few or no user turns. NEVER refuse or ask for a different "
+                "transcript — always produce both sections from whatever is present. For "
+                "autonomous logs, note 'Session type: autonomous execution' and mark "
+                "sparse signal categories '(none — autonomous run)'. Use only dates that "
+                "appear in the transcript; never invent dates. "
                 + MODE_PROMPTS.get(mode, "")
                 + "Analyze this session transcript and output TWO sections in order:\n\n"
                 "--- SECTION 1: Intent signals ---\n"
