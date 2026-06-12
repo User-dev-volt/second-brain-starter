@@ -64,8 +64,10 @@ def require_auth(
 
 def require_tailscale(request: Request) -> None:
     host = request.client.host if request.client else ""
-    # Tailscale assigns addresses in 100.64.0.0/10
-    if not (host.startswith("100.") or host in ("127.0.0.1", "::1")):
+    # Tailscale assigns IPv4 in 100.64.0.0/10 and IPv6 in fd7a:115c:a1e0::/48
+    if not (host.startswith("100.")
+            or host.startswith("fd7a:115c:a1e0")
+            or host in ("127.0.0.1", "::1")):
         raise HTTPException(status_code=403, detail="Access denied: Tailscale only")
 
 
@@ -120,6 +122,18 @@ def _get_tailscale_ip() -> str:
     if not ip:
         raise RuntimeError("Tailscale not connected or has no IPv4 address")
     return ip
+
+
+def _get_tailscale_ip6() -> str:
+    """Tailscale IPv6 (fd7a:...). Empty string if unavailable — caller treats as optional."""
+    try:
+        cli = _find_tailscale()
+        result = subprocess.run([cli, "ip", "-6"], capture_output=True, text=True, timeout=5)
+        if result.returncode != 0:
+            return ""
+        return result.stdout.strip().splitlines()[0].strip() if result.stdout.strip() else ""
+    except Exception:
+        return ""
 
 
 def _is_alive(project_id: str) -> bool:
@@ -492,10 +506,36 @@ def main():
 
     port = config.get("port", 8765)
     hostname = config.get("hostname", _tailscale_ip)
+    ip6 = _get_tailscale_ip6()
 
-    print(f"Tailscale IP : {_tailscale_ip}")
+    print(f"Tailscale IP : {_tailscale_ip}" + (f"  /  {ip6}" if ip6 else ""))
     print(f"Listening on : http://{_tailscale_ip}:{port}")
     print(f"Bookmark     : http://{hostname}:{port}")
+
+    # Bind BOTH Tailscale IPv4 and IPv6 explicitly (interface-specific = still
+    # Tailscale-only, no LAN/Public exposure). The MagicDNS name 'voltreezy' resolves
+    # to both, and browsers often try IPv6 first — binding only v4 caused intermittent
+    # "connection refused". Defensive: if the dual-stack bind fails for any reason,
+    # fall back to the original IPv4-only bind so the working path is never lost.
+    if ip6:
+        import socket as _socket
+        socks = []
+        try:
+            for addr, fam in ((_tailscale_ip, _socket.AF_INET), (ip6, _socket.AF_INET6)):
+                s = _socket.socket(fam, _socket.SOCK_STREAM)
+                s.setsockopt(_socket.SOL_SOCKET, _socket.SO_REUSEADDR, 1)
+                s.bind((addr, port))
+                s.listen()
+                socks.append(s)
+            uvicorn.Server(uvicorn.Config(app, log_level="info")).run(sockets=socks)
+            return
+        except Exception as e:
+            print(f"dual-stack bind failed ({e}); IPv4-only fallback", file=sys.stderr)
+            for s in socks:
+                try:
+                    s.close()
+                except Exception:
+                    pass
 
     uvicorn.run(app, host=_tailscale_ip, port=port, log_level="info")
 
