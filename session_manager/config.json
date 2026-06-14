@@ -3,6 +3,8 @@
   "port": 8765,
   "hostname": "voltreezy",
   "auth_token_hash": "81caf6292f585b1ace3af2f6d02f21c5d506d769d240eac112e154de7f4fd267",
+  "default_model": "claude-opus-4-8",
+  "default_effort": "max",
   "projects": [
     {
       "id": "second-brain",

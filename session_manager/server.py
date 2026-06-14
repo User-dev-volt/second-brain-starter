@@ -183,10 +183,21 @@ def _spawn(project_id: str, path: str, resume_session_id: Optional[str] = None) 
 
     _preseed_trust(path)
 
+    # Optional launch defaults from config.json (model alias/full name, effort level).
+    # Absent keys → no flag added, preserving claude's own global defaults.
+    config = load_config()
+    defaults = ""
+    model = config.get("default_model")
+    if model:
+        defaults += f" --model {model}"
+    effort = config.get("default_effort")
+    if effort:
+        defaults += f" --effort {effort}"
+
     if resume_session_id:
-        claude_cmd = f"claude --resume {resume_session_id} --dangerously-skip-permissions"
+        claude_cmd = f"claude --resume {resume_session_id}{defaults} --dangerously-skip-permissions"
     else:
-        claude_cmd = "claude --dangerously-skip-permissions"
+        claude_cmd = f"claude{defaults} --dangerously-skip-permissions"
 
     proc = subprocess.Popen(
         [pwsh, "-NoExit", "-Command", f"Set-Location '{path}'; {claude_cmd}"],
