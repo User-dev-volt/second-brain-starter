@@ -73,6 +73,11 @@
       "id": "tabletopmagic",
       "name": "Tabletop Magic",
       "path": "D:/Projects/tabletopmagic/TabletopMagic"
+    },
+    {
+      "id": "stocks",
+      "name": "Stocks",
+      "path": "D:/Projects/Stocks"
     }
   ]
 }
