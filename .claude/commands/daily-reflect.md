@@ -1,6 +1,16 @@
 Run the daily memory synthesis for the second brain intent system.
 
 1. Execute: python "D:\second-brain-starter\.claude\scripts\memory_reflect_loader.py"
+1b. Execute: python "D:\second-brain-starter\.claude\scripts\transcript_intent_loader.py" --mode daily
+   This prints the RAW INTENT LEDGER — Alec's VERBATIM user turns from yesterday's raw
+   transcripts (all projects), which the digested daily logs in step 1 do NOT contain.
+   The digested logs miss two things this recovers: (a) Alec's questioning at the
+   boundaries of autonomous runs (those digest as "AI gaps: none"), and (b) his actual
+   wording. Treat flagged (⚑) turns as ground-truth primary evidence and read each one's
+   before→after context for AI-gap causality (Claude heading toward X → Alec's turn → Y).
+   A flagged questioning/redirect/rejection turn IS real Alec signal — tier it per step 4
+   (often Critical "no/wait/stop/actually", Highest, or High). Do not let a "no signal"
+   digested log override a questioning turn that appears here.
 2. Execute: python "D:\second-brain-starter\.claude\scripts\consistency_check.py"
 3. Read D:\Brain\00_Meta\bmad_rituals.md — the BMAD ritual whitelist. Whitelisted
    patterns are prescribed methodology, never behavioral evidence:
@@ -9,7 +19,8 @@ Run the daily memory synthesis for the second brain intent system.
    - From BMAD-mode sessions, only these count as signal: deviations from rituals,
      choices the methodology leaves open, Alec redirecting an agent, and edits to
      the BMAD workflow itself.
-4. Using the assembled context and consistency check output, identify intent proposals.
+4. Using the assembled context (digested logs from step 1 + the RAW INTENT LEDGER from
+   step 1b) and consistency check output, identify intent proposals.
 
    Evidence tier ranking (highest to lowest signal quality):
    - **Critical** — "actually", "wait", "stop", or any mid-session self-correction.

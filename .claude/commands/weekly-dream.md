@@ -4,6 +4,15 @@ This is a deep cross-session analysis. Take your time — look for patterns
 that don't appear in any single day but emerge across the full week.
 
 1. Execute: python "D:\second-brain-starter\.claude\scripts\weekly_dream_loader.py"
+1b. Execute: python "D:\second-brain-starter\.claude\scripts\transcript_intent_loader.py" --mode weekly
+   This prints the RAW INTENT LEDGER — Alec's VERBATIM user turns for the whole week
+   across ALL projects, with flagged (⚑) questioning/redirect/rejection turns and their
+   before→after causal context. It is the PRIMARY source for the two cross-session bullets
+   in step 4: a deliberate habit like "one deep-dive per fresh session" is visible ONLY
+   here — the per-session digested logs structurally cannot show an across-session pattern.
+   Count repeated same-direction turns across sessions AND projects toward pattern and
+   Standing-Order thresholds (cross-project recurrence raises confidence). Always confirm
+   the digested logs didn't already capture a turn before counting it as newly surfaced.
 2. Execute: python "D:\second-brain-starter\.claude\scripts\consistency_check.py"
 3. Read D:\Brain\00_Meta\bmad_rituals.md — the BMAD ritual whitelist. Whitelisted
    patterns are prescribed methodology, never behavioral evidence: never propose
@@ -33,9 +42,13 @@ that don't appear in any single day but emerge across the full week.
 
    - **Procedural workflow patterns** for workflow.md — consistent session structure,
      sequencing choices, or execution habits that appear across 2+ sessions.
+     Mine the RAW INTENT LEDGER (step 1b) for these — session-scoping habits, "new
+     session" / "commit then new session" closers, and interrupts live only there.
 
    - **Cross-session signals** invisible to the daily cycle — things that appear
-     2-3 times per week but never 4 times in a single day.
+     2-3 times per week but never 4 times in a single day. The RAW INTENT LEDGER
+     (step 1b) is the primary source; a same-direction turn recurring across 2+
+     projects is stronger evidence than the same count within one project.
 
    - **intent.md contradictions** flagged by the consistency check.
 
