@@ -13,6 +13,10 @@ that don't appear in any single day but emerge across the full week.
    Count repeated same-direction turns across sessions AND projects toward pattern and
    Standing-Order thresholds (cross-project recurrence raises confidence). Always confirm
    the digested logs didn't already capture a turn before counting it as newly surfaced.
+   The ledger ends with a **RECURRING CORRECTIONS** block that already does this clustering
+   for you: each ⟳ entry is a repeated correction with its session/project spread. Treat a
+   cross-project ⟳⟳ cluster as a near-anchor — it is prime Standing-Order evidence (a value
+   you re-assert across unrelated work), not a project-local tactic.
 2. Execute: python "D:\second-brain-starter\.claude\scripts\consistency_check.py"
 3. Read D:\Brain\00_Meta\bmad_rituals.md — the BMAD ritual whitelist. Whitelisted
    patterns are prescribed methodology, never behavioral evidence: never propose

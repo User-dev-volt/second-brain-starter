@@ -163,6 +163,76 @@ def project_label(folder_name: str) -> str:
     return "-".join(parts) or folder_name
 
 
+# ── recurrence: corrections that repeat across sessions/projects ─────────────
+# A flagged turn is one correction. The SAME correction recurring across sessions
+# (and especially across PROJECTS) is the strongest preference signal available —
+# the nearest thing to ground truth in a system with no objective outcome. The
+# per-session digested logs structurally cannot surface this; the ledger can.
+_SIG_STOP = {
+    "the", "and", "for", "that", "this", "with", "you", "your", "are", "was",
+    "but", "not", "have", "has", "had", "just", "like", "what", "when", "why",
+    "how", "its", "it's", "i'm", "can", "could", "would", "should", "did",
+    "does", "don't", "didn't", "isn't", "were", "they", "them", "then", "than",
+    "there", "here", "into", "out", "off", "get", "got", "let", "yeah", "okay",
+    "new", "one", "use", "using", "make", "made", "want", "need", "know",
+    "think", "see", "look", "now", "also", "still", "really",
+}
+
+
+def _sig_tokens(text: str) -> set:
+    toks = re.findall(r"[a-z][a-z']+", text.lower())
+    return {t for t in toks if len(t) > 2 and t not in _SIG_STOP}
+
+
+def recurring_corrections(flagged):
+    """Greedy Jaccard clustering. flagged: list of (date, proj, sid, text)."""
+    clusters = []  # each: {"tokens": set, "members": [(date, proj, sid, text)]}
+    for row in flagged:
+        toks = _sig_tokens(row[3])
+        if len(toks) < 2:
+            continue
+        best, best_j = None, 0.0
+        for c in clusters:
+            inter = len(toks & c["tokens"])
+            union = len(toks | c["tokens"])
+            j = inter / union if union else 0.0
+            if j > best_j:
+                best, best_j = c, j
+        if best is not None and best_j >= 0.45:
+            best["members"].append(row)
+            best["tokens"] |= toks
+        else:
+            clusters.append({"tokens": set(toks), "members": [row]})
+    return clusters
+
+
+def print_recurring(flagged):
+    clusters = [c for c in recurring_corrections(flagged) if len(c["members"]) >= 2]
+    print(f"\n{'=' * 70}")
+    print("RECURRING CORRECTIONS — flagged turns that repeat across sessions/projects")
+    print("A correction given repeatedly is the closest thing to ground truth in a")
+    print("preference system — weight these hardest toward proposals / Standing Orders.")
+    print("Cross-PROJECT recurrence (>1 project) is the strongest signal of a deep value.")
+    print("=" * 70)
+    if not clusters:
+        print("\n_(no repeated corrections this window — every flagged turn is a one-off)_")
+        return
+    clusters.sort(
+        key=lambda c: (len({m[1] for m in c["members"]}), len(c["members"])),
+        reverse=True,
+    )
+    for c in clusters:
+        members = sorted(c["members"], key=lambda m: m[0])
+        projs = sorted({m[1] for m in members})
+        sids = {(m[1], m[2]) for m in members}
+        rep = min((m[3] for m in members), key=len)  # shortest member = cleanest
+        marker = "  ⟳⟳" if len(projs) > 1 else "  ⟳ "
+        print(f"\n{marker} ×{len(members)} · {len(projs)} project(s) · {len(sids)} session(s) — "
+              f"\"{_clip(rep, 160)}\"")
+        for date, proj, sid, _text in members:
+            print(f"        {date} · {proj} · {sid}")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--mode", choices=["daily", "weekly"], default="daily")
@@ -266,6 +336,9 @@ def main():
                 print(f"        after  · claude: {after}")
         else:
             print(f"    [{stamp}] ALEC: {_clip(text, 500)}")
+
+    flagged = [(r[0], r[1], r[2], r[5]) for r in rows if r[4]]
+    print_recurring(flagged)
 
     print("\n## END OF RAW INTENT LEDGER")
     print("=" * 70)

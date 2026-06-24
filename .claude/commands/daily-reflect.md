@@ -11,6 +11,10 @@ Run the daily memory synthesis for the second brain intent system.
    A flagged questioning/redirect/rejection turn IS real Alec signal — tier it per step 4
    (often Critical "no/wait/stop/actually", Highest, or High). Do not let a "no signal"
    digested log override a questioning turn that appears here.
+   The ledger ends with a **RECURRING CORRECTIONS** block that pre-clusters repeated
+   flagged turns across sessions/projects. A cross-project cluster (⟳⟳) is the strongest
+   preference signal available — the nearest thing to an anchor — so weight it hard toward
+   a proposal or strengthen, even if no single day shows the pattern 4 times.
 2. Execute: python "D:\second-brain-starter\.claude\scripts\consistency_check.py"
 3. Read D:\Brain\00_Meta\bmad_rituals.md — the BMAD ritual whitelist. Whitelisted
    patterns are prescribed methodology, never behavioral evidence:
