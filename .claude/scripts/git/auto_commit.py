@@ -50,6 +50,26 @@ def push(cwd: Path, branch: str) -> tuple[bool, str]:
     return r.returncode == 0, (r.stdout + r.stderr).strip()
 
 
+def run_pre_commit_check(cwd: Path, command: str, timeout: int) -> tuple[bool, str]:
+    """Run a project's pre-commit safety gate (e.g. build/test). Returns (passed, detail).
+
+    Only an exit code of 0 permits the commit; a non-zero exit or a timeout blocks it, so a
+    build/test-failing state is never auto-committed or pushed. Configured per project via the
+    "pre_commit_check" key in .gitaccount; repos that don't set it are unaffected (no-op).
+    """
+    try:
+        proc = subprocess.run(
+            command, shell=True, cwd=str(cwd),
+            capture_output=True, text=True, timeout=timeout,
+        )
+    except subprocess.TimeoutExpired:
+        return False, f"pre_commit_check timed out after {timeout}s"
+    if proc.returncode == 0:
+        return True, "passed"
+    detail = (proc.stdout + proc.stderr).strip()
+    return False, detail[-1500:] if detail else f"exit code {proc.returncode}"
+
+
 def setup_project(cwd: Path) -> None:
     """One-time setup: update SSH config and rewrite remote URL for this project."""
     keys = detect_keys()
@@ -108,6 +128,22 @@ def auto_commit_push(
         if verbose:
             print("git-auto: no changes to commit")
         return result
+
+    # Optional per-project safety gate: run a build/test check (configured via
+    # "pre_commit_check" in .gitaccount) and skip the commit if it fails, so a broken
+    # state is never auto-committed/pushed. No-op for repos that don't set the key.
+    check_cmd = config.get("pre_commit_check")
+    if check_cmd:
+        check_timeout = int(config.get("pre_commit_check_timeout", 240))
+        passed, detail = run_pre_commit_check(cwd, check_cmd, check_timeout)
+        if not passed:
+            result["error"] = (
+                "pre_commit_check failed - commit skipped; changes left uncommitted in the "
+                f"working tree, will retry next Stop. Detail: {detail}"
+            )
+            if verbose:
+                print(f"git-auto: {result['error']}")
+            return result
 
     # Ensure remote URL uses SSH host alias before committing
     rewrite_remote_for_account(cwd, config)

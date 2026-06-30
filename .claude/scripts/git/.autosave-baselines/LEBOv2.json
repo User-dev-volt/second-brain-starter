@@ -1,0 +1,13 @@
+{
+  "failing": [
+    "src/features/settings/ProviderSelector.test.tsx :: ProviderSelector renders provider-selector control",
+    "src/features/settings/ProviderSelector.test.tsx :: ProviderSelector reverts provider on set_llm_provider failure",
+    "src/features/settings/ProviderSelector.test.tsx :: ProviderSelector shows neither provider input when llmProvider is null",
+    "src/features/settings/ProviderSelector.test.tsx :: ProviderSelector switching back to Claude calls set_llm_provider with \"claude\"",
+    "src/features/settings/ProviderSelector.test.tsx :: ProviderSelector switching to OpenRouter calls set_llm_provider and updates store",
+    "src/features/settings/Settings.test.tsx :: Settings renders the ProviderSelector (AI Provider section)",
+    "src/features/skill-tree/SkillTreeCanvas.test.tsx :: SkillTreeCanvas keyboard overlay onContextMenu on focused button fires onNodeContextMenu (not onNodeClick)",
+    "src/features/skill-tree/TreeControls.test.tsx :: TreeControls clicking RESET button calls onReset"
+  ],
+  "count": 8
+}

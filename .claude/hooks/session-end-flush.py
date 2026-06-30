@@ -368,7 +368,10 @@ def run_git_auto_commit(cwd: str) -> None:
         subprocess.run(
             [sys.executable, str(script), "--cwd", cwd],
             capture_output=True,
-            timeout=30,
+            # Generous ceiling: a project may run a build/test "pre_commit_check" gate
+            # (see auto_commit.py / .gitaccount) before committing. No-gate repos finish
+            # in well under a second, so this only bites when a gate is actually running.
+            timeout=270,
         )
     except Exception as e:
         sys.stderr.write(f"second-brain: git auto-commit failed: {e}\n")
