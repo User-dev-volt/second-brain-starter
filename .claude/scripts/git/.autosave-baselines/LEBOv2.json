@@ -6,8 +6,7 @@
     "src/features/settings/ProviderSelector.test.tsx :: ProviderSelector switching back to Claude calls set_llm_provider with \"claude\"",
     "src/features/settings/ProviderSelector.test.tsx :: ProviderSelector switching to OpenRouter calls set_llm_provider and updates store",
     "src/features/settings/Settings.test.tsx :: Settings renders the ProviderSelector (AI Provider section)",
-    "src/features/skill-tree/SkillTreeCanvas.test.tsx :: SkillTreeCanvas keyboard overlay onContextMenu on focused button fires onNodeContextMenu (not onNodeClick)",
     "src/features/skill-tree/TreeControls.test.tsx :: TreeControls clicking RESET button calls onReset"
   ],
-  "count": 8
+  "count": 7
 }
