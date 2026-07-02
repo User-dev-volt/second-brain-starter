@@ -1,0 +1,18 @@
+
+===== 2026-07-02 07:14:33  [data-transform]  [AutoSave] 2026-07-02 07:14 =====
+ _bmad-output/implementation-artifacts/4-0-affix-stat-semantics-data-gate.md |   108 +-
+ _bmad-output/implementation-artifacts/sprint-status.yaml                    |     3 +-
+ docs/data-transform/.gitignore                                              |     1 +
+ docs/data-transform/check_coverage.py                                       |   163 +
+ docs/data-transform/generate_item_db.py                                     |   855 +-
+ lebo/scripts/annotate_s4_affixes.py                                         |   168 -
+ lebo/src-tauri/resources/items/affix-manifest.json                          |  3170 ++
+ lebo/src-tauri/resources/items/affixes.json                                 | 75568 +---------------------------------
+ lebo/src-tauri/resources/items/base-items.json                              |     2 +-
+ lebo/src-tauri/resources/items/uniques.json                                 | 15439 +------
+ lebo/src-tauri/scoring-core/src/compute/mod.rs                              |    60 +-
+ lebo/src-tauri/scoring-core/src/game_data.rs                                |    32 +-
+ lebo/src-tauri/scoring-core/src/gear.rs                                     |   191 +-
+ lebo/src-tauri/src/models/item_data.rs                                      |    21 +
+ lebo/src-tauri/src/services/game_data_loader.rs                             |   392 +-
+ 15 files changed, 4647 insertions(+), 91526 deletions(-)

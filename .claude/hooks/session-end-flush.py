@@ -366,7 +366,7 @@ def run_git_auto_commit(cwd: str) -> None:
         return
     try:
         subprocess.run(
-            [sys.executable, str(script), "--cwd", cwd],
+            [sys.executable, str(script), "--cwd", cwd, "--autosave"],
             capture_output=True,
             # Generous ceiling: a project may run a build/test "pre_commit_check" gate
             # (see auto_commit.py / .gitaccount) before committing. No-gate repos finish

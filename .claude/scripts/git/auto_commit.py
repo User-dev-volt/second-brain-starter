@@ -45,8 +45,13 @@ def commit(cwd: Path, message: str) -> tuple[bool, str]:
     return r.returncode == 0, (r.stdout + r.stderr).strip()
 
 
-def push(cwd: Path, branch: str) -> tuple[bool, str]:
-    r = _git(["push", "origin", branch], cwd)
+def push(cwd: Path, branch: str, push_branch: str | None = None) -> tuple[bool, str]:
+    # push_branch (opt-in via "push_branch" in .gitaccount): back up commits to a DIFFERENT
+    # remote branch via a local:remote refspec — e.g. push local "main" to origin/"autosave/main"
+    # so AutoSave never advances origin/main. Absent → push the branch to its same-named remote
+    # (original behaviour). First push to a not-yet-existing remote branch creates it (no --force).
+    refspec = f"{branch}:{push_branch}" if push_branch and push_branch != branch else branch
+    r = _git(["push", "origin", refspec], cwd)
     return r.returncode == 0, (r.stdout + r.stderr).strip()
 
 
@@ -68,6 +73,35 @@ def run_pre_commit_check(cwd: Path, command: str, timeout: int) -> tuple[bool, s
         return True, "passed"
     detail = (proc.stdout + proc.stderr).strip()
     return False, detail[-1500:] if detail else f"exit code {proc.returncode}"
+
+
+def log_staged_snapshot(cwd: Path, config: dict, commit_msg: str) -> None:
+    """Forensic AutoSave log (opt-in via "autosave_log": true in .gitaccount).
+
+    Appends a timestamped record of EXACTLY what is about to be committed — the staged --stat
+    plus the staged source diff — to .autosave-log/<repo>.log next to this script. Purpose: when
+    a racing/phantom edit sneaks into an AutoSave snapshot, this captures the diff + timestamp
+    after the fact so it can be correlated with whatever else was running. Best-effort only: any
+    failure here MUST NOT block the commit (a logging bug can never cost a snapshot).
+    """
+    if not config.get("autosave_log"):
+        return
+    try:
+        stat = _git(["diff", "--cached", "--stat"], cwd).stdout
+        src_diff = _git(
+            ["diff", "--cached", "--", "*.ts", "*.tsx", "*.js", "*.jsx", "*.rs"], cwd
+        ).stdout
+        ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        log_dir = GIT_DIR / ".autosave-log"
+        log_dir.mkdir(parents=True, exist_ok=True)
+        parts = [f"\n===== {ts}  [{cwd.name}]  {commit_msg} =====", stat.rstrip()]
+        if src_diff.strip():
+            parts.append("--- staged source diff (.ts/.tsx/.js/.jsx/.rs) ---")
+            parts.append(src_diff.rstrip())
+        with (log_dir / f"{cwd.name}.log").open("a", encoding="utf-8") as fh:
+            fh.write("\n".join(parts) + "\n")
+    except Exception:
+        pass  # forensic logging must never break AutoSave
 
 
 def setup_project(cwd: Path) -> None:
@@ -98,6 +132,7 @@ def auto_commit_push(
     cwd: str | Path,
     message: str | None = None,
     commit_only: bool = False,
+    autosave: bool = False,
     verbose: bool = False,
 ) -> dict:
     """
@@ -153,6 +188,7 @@ def auto_commit_push(
     commit_msg = message or f"{prefix} {timestamp}"
 
     stage_all(cwd)
+    log_staged_snapshot(cwd, config, commit_msg)
     ok, output = commit(cwd, commit_msg)
     if not ok:
         result["error"] = f"commit failed: {output}"
@@ -162,8 +198,12 @@ def auto_commit_push(
     should_push = config.get("auto_push") and not commit_only
     if should_push:
         branch = config.get("branch", "main")
-        ok, output = push(cwd, branch)
+        # The push_branch redirect applies ONLY to the automatic Stop-hook autosave (--autosave),
+        # so a deliberate /gitpush still publishes to origin/<branch>. No flag → normal push.
+        push_branch = config.get("push_branch") if autosave else None
+        ok, output = push(cwd, branch, push_branch)
         result["pushed"] = ok
+        result["push_target"] = push_branch or branch
         if not ok:
             result["error"] = f"push failed: {output}"
 
@@ -175,6 +215,8 @@ if __name__ == "__main__":
     p.add_argument("--cwd", default=".", help="Project directory")
     p.add_argument("--message", "-m", default=None, help="Custom commit message")
     p.add_argument("--commit-only", action="store_true", help="Commit but do not push")
+    p.add_argument("--autosave", action="store_true",
+                   help="Automatic Stop-hook autosave: honors .gitaccount push_branch (backup-branch redirect)")
     p.add_argument("--setup", action="store_true", help="One-time setup: update SSH config + rewrite remote")
     p.add_argument("--verbose", "-v", action="store_true")
     args = p.parse_args()
@@ -189,6 +231,7 @@ if __name__ == "__main__":
         cwd=cwd,
         message=args.message,
         commit_only=args.commit_only,
+        autosave=args.autosave,
         verbose=args.verbose,
     )
 
@@ -200,7 +243,10 @@ if __name__ == "__main__":
         print(f"git-auto ERROR: {r['error']}", file=sys.stderr)
         sys.exit(1)
     elif r["committed"]:
-        pushed_str = "pushed" if r["pushed"] else "not pushed (auto_push=false or --commit-only)"
+        if r["pushed"]:
+            pushed_str = f"pushed → origin/{r.get('push_target', 'main')}"
+        else:
+            pushed_str = "not pushed (auto_push=false or --commit-only)"
         print(f"git-auto: committed + {pushed_str}")
     else:
         if args.verbose:
