@@ -15,3 +15,345 @@
  _bmad-output/implementation-artifacts/4-0-affix-stat-semantics-data-gate.md | 216 ++++++++++++++++++++++++++++++++++++
  _bmad-output/implementation-artifacts/sprint-status.yaml                    |   5 +-
  2 files changed, 219 insertions(+), 2 deletions(-)
+
+===== 2026-07-02 13:46:08  [LEBOv2]  [AutoSave] 2026-07-02 13:46 =====
+ docs/data-transform/__pycache__/generate_item_db.cpython-314.pyc | Bin 0 -> 41485 bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+===== 2026-07-02 16:16:01  [LEBOv2]  [AutoSave] 2026-07-02 16:16 =====
+ _bmad-output/implementation-artifacts/4-0-affix-stat-semantics-data-gate.md |   83 ++-
+ _bmad-output/implementation-artifacts/deferred-work.md                      |    6 +
+ _bmad-output/implementation-artifacts/sprint-status.yaml                    |    5 +-
+ docs/data-transform/__pycache__/check_coverage.cpython-314.pyc              |  Bin 0 -> 12935 bytes
+ docs/data-transform/__pycache__/generate_item_db.cpython-314.pyc            |  Bin 41485 -> 44214 bytes
+ docs/data-transform/check_coverage.py                                       |   76 ++-
+ docs/data-transform/generate_item_db.py                                     |  200 ++++--
+ lebo/src-tauri/resources/items/affix-manifest.json                          | 1236 +++++++++++------------------------
+ lebo/src-tauri/resources/items/affixes.json                                 |    2 +-
+ lebo/src-tauri/resources/items/base-items.json                              |    2 +-
+ lebo/src-tauri/resources/items/uniques.json                                 |    2 +-
+ lebo/src-tauri/src/services/game_data_loader.rs                             |    7 +-
+ 12 files changed, 676 insertions(+), 943 deletions(-)
+--- staged source diff (.ts/.tsx/.js/.jsx/.rs) ---
+diff --git a/lebo/src-tauri/src/services/game_data_loader.rs b/lebo/src-tauri/src/services/game_data_loader.rs
+index f36f171..3a6bb85 100644
+--- a/lebo/src-tauri/src/services/game_data_loader.rs
++++ b/lebo/src-tauri/src/services/game_data_loader.rs
+@@ -598,9 +598,10 @@ fn build_seeded_unique_items() -> Vec<scoring_core::game_data::UniqueItem> {
+ /// variants. Single canonical resolver for idols + gear (Story 4.0, Decision D1). Returns `None`
+ /// for unknown/inert keys â€” the affix (or that stat clause) is silently dropped (FR-A6 pattern).
+ ///
+-/// `stun_chance` is deliberately ABSENT: `StunChance` is inert (no compute/* module surfaces it),
+-/// so mapping it would ship a dead key (Source Audit; memory stun-chance-inert-unowned). The
+-/// transform emits `statKey: null` for stun, and this resolver would drop it anyway.
++/// `stun_chance` is deliberately ABSENT because no shipped source feeds a CONSUMED `StunChance`
++/// value: `offense.rs` does sum Flat `StunChance`, but every stun affix in the corpus is
++/// "% increased" (which the Flat-only sum ignores), so mapping it would ship a dead key (Source
++/// Audit; memory stun-chance-inert-unowned). The transform emits `statKey: null` for stun regardless.
+ fn stat_key_from_str(s: &str) -> Option<StatKey> {
+     Some(match s {
+         // Damage â€” generic
+
+===== 2026-07-02 18:20:47  [LEBOv2]  [AutoSave] 2026-07-02 18:20 =====
+ .../4-1-affix-prefix-suffix-discriminator-data-gate.md                      | 232 ++++++++++++++++++++++++++++++++++++
+ _bmad-output/implementation-artifacts/sprint-status.yaml                    |   3 +-
+ 2 files changed, 234 insertions(+), 1 deletion(-)
+
+===== 2026-07-02 18:36:57  [LEBOv2]  [AutoSave] 2026-07-02 18:36 =====
+ _bmad-output/implementation-artifacts/4-1-affix-prefix-suffix-discriminator-data-gate.md | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+===== 2026-07-02 22:55:15  [LEBOv2]  [AutoSave] 2026-07-02 22:55 =====
+ _bmad-output/implementation-artifacts/4-1-affix-prefix-suffix-discriminator-data-gate.md | 22 +++++++++++++++++++++-
+ _bmad-output/implementation-artifacts/sprint-status.yaml                                 |  3 ++-
+ 2 files changed, 23 insertions(+), 2 deletions(-)
+
+===== 2026-07-02 23:30:04  [LEBOv2]  [AutoSave] 2026-07-02 23:30 =====
+ _bmad-output/implementation-artifacts/4-2-item-picker-modal.md | 267 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 267 insertions(+)
+
+===== 2026-07-03 00:22:11  [LEBOv2]  [AutoSave] 2026-07-03 00:22 =====
+ Snapshot.md                                                            |   2 +-
+ _bmad-output/implementation-artifacts/4-1-5-item-metadata-data-gate.md | 150 ++++++++++++++++++++++++
+ _bmad-output/implementation-artifacts/4-2-item-picker-modal.md         | 256 ++++++++++++++++++-----------------------
+ _bmad-output/implementation-artifacts/sprint-status.yaml               |   5 +-
+ 4 files changed, 264 insertions(+), 149 deletions(-)
+
+===== 2026-07-03 00:44:44  [LEBOv2]  [AutoSave] 2026-07-03 00:44 =====
+ _bmad-output/implementation-artifacts/4-1-5-item-metadata-data-gate.md |  78 ++++++++++++++++++++++++++-------------
+ _bmad-output/implementation-artifacts/sprint-status.yaml               |   3 +-
+ docs/data-transform/.gitignore                                         |   2 +
+ docs/data-transform/__pycache__/check_coverage.cpython-314.pyc         | Bin 12935 -> 0 bytes
+ docs/data-transform/__pycache__/generate_item_db.cpython-314.pyc       | Bin 44214 -> 0 bytes
+ docs/data-transform/check_coverage.py                                  |  17 +++++++++
+ docs/data-transform/generate_item_db.py                                |   2 +
+ lebo/src-tauri/resources/items/base-items.json                         |   2 +-
+ lebo/src-tauri/resources/items/uniques.json                            |   2 +-
+ lebo/src-tauri/src/models/item_data.rs                                 |  36 ++++++++++++++++++
+ lebo/src-tauri/src/services/item_data_service.rs                       |  82 +++++++++++++++++++++++++++++++++++++++++
+ lebo/src/features/item-database/itemDatabaseLoader.test.ts             |  48 ++++++++++++++++++++++++
+ lebo/src/shared/types/itemDatabase.ts                                  |  15 ++++++++
+ 13 files changed, 258 insertions(+), 29 deletions(-)
+--- staged source diff (.ts/.tsx/.js/.jsx/.rs) ---
+diff --git a/lebo/src-tauri/src/models/item_data.rs b/lebo/src-tauri/src/models/item_data.rs
+index 25518fc..968ef56 100644
+--- a/lebo/src-tauri/src/models/item_data.rs
++++ b/lebo/src-tauri/src/models/item_data.rs
+@@ -46,6 +46,27 @@ pub struct RawAffix {
+     pub extra_stats: Vec<RawAffixStat>,
+ }
+ 
++/// A base item's inline implicit (Story 4.1.5). The transform already emits `implicits[].text`
++/// (821/897 bases populated); this struct carries it the last mile so Story 4.2 can render real
++/// implicit lines. `text` is the universal display string; `stat_key` is nullable and unused by 4.2.
++#[derive(Debug, Deserialize, Serialize, Clone)]
++#[serde(rename_all = "camelCase")]
++pub struct RawImplicit {
++    pub text: String,
++    #[serde(default)]
++    pub stat_key: Option<String>,
++    #[serde(default)]
++    pub modifier_type: Option<String>,
++    #[serde(default)]
++    pub scope: Option<String>,
++    #[serde(default)]
++    pub damage_type: Option<String>,
++    #[serde(default)]
++    pub min_value: f64,
++    #[serde(default)]
++    pub max_value: f64,
++}
++
+ #[derive(Debug, Deserialize, Serialize, Clone)]
+ #[serde(rename_all = "camelCase")]
+ pub struct RawBaseItem {
+@@ -54,6 +75,12 @@ pub struct RawBaseItem {
+     pub base_type: String,
+     pub slot: String,
+     pub implicit_affix_ids: Vec<String>,
++    // Story 4.1.5 â€” additive/back-compat. `req.level` from PoB4LE (100% populated); implicit display
++    // text the transform already emits but the struct previously dropped serde-side.
++    #[serde(default)]
++    pub level_requirement: u32,
++    #[serde(default)]
++    pub implicits: Vec<RawImplicit>,
+ }
+ 
+ #[derive(Debug, Deserialize, Serialize, Clone)]
+@@ -62,6 +89,12 @@ pub struct RawUniqueItemAffix {
+     pub affix_id: String,
+     pub fixed_min_value: f64,
+     pub fixed_max_value: f64,
++    // Story 4.1.5 â€” the transform emits inline mod `text` (100%) + nullable `statKey` (~41%); carried
++    // additively so Story 4.2 renders real unique stat lines. `text` is the display source.
++    #[serde(default)]
++    pub stat_key: Option<String>,
++    #[serde(default)]
++    pub text: Option<String>,
+ }
+ 
+ #[derive(Debug, Deserialize, Serialize, Clone)]
+@@ -74,6 +107,9 @@ pub struct RawUniqueItem {
+     pub affixes: Vec<RawUniqueItemAffix>,
+     #[serde(default)]
+     pub description: Option<String>,
++    // Story 4.1.5 â€” `req.level` from PoB4LE (100% populated), additive.
++    #[serde(default)]
++    pub level_requirement: u32,
+ }
+ 
+ #[derive(Debug, Deserialize, Serialize, Clone)]
+diff --git a/lebo/src-tauri/src/services/item_data_service.rs b/lebo/src-tauri/src/services/item_data_service.rs
+index 22c7b52..fe987df 100644
+--- a/lebo/src-tauri/src/services/item_data_service.rs
++++ b/lebo/src-tauri/src/services/item_data_service.rs
+@@ -54,3 +54,85 @@ pub fn load_item_database_from_dir(data_dir: &Path) -> Result<ItemDatabase, Stri
+ 
+     Ok(ItemDatabase { base_items, unique_items, affixes, set_items })
+ }
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++    use std::path::PathBuf;
++
++    fn items_dir() -> PathBuf {
++        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
++            .join("resources")
++            .join("items")
++    }
++
++    /// Story 4.1.5 (AC1, AC2) â€” the shipped item DB, loaded through the REAL production loader,
++    /// carries item level + base-implicit / unique-affix display text end-to-end (the fields the
++    /// Rust structs previously dropped serde-side). Value+element assertions over real sampled items:
++    /// a golden count would not catch a mis-parsed level or an empty text string â€” the exact failure
++    /// mode this gate closes. [SOURCE-AUDIT + VERIFICATION GUARDRAIL]
++    #[test]
++    fn shipped_item_db_carries_level_and_display_text() {
++        let db = load_item_database_from_dir(&items_dir()).expect("load shipped item database");
++
++        // AC1 â€” item level survives loader -> struct. Jewelled Circlet -> 7 (spike-verified).
++        let circlet = db
++            .base_items
++            .iter()
++            .find(|b| b.id == "jewelled-circlet")
++            .expect("jewelled-circlet present in base-items.json");
++        assert_eq!(circlet.level_requirement, 7, "Jewelled Circlet level requirement");
++        // level 0 is a real value (Refuge Helmet), not a missing field; Iron Casque is a third value.
++        let refuge = db
++            .base_items
++            .iter()
++            .find(|b| b.id == "refuge-helmet")
++            .expect("refuge-helmet present");
++        assert_eq!(refuge.level_requirement, 0, "Refuge Helmet level requirement");
++        let iron = db
++            .base_items
++            .iter()
++            .find(|b| b.id == "iron-casque")
++            .expect("iron-casque present");
++        assert_eq!(iron.level_requirement, 10, "Iron Casque level requirement");
++
++        // AC2 â€” base implicit display text reaches the loader (previously dropped). Assert the VALUE:
++        // a known token from the real implicit lines, not a count.
++        assert!(
++            circlet
++                .implicits
++                .iter()
++                .any(|im| im.text.contains("Mana") || im.text.contains("Spell Damage")),
++            "Jewelled Circlet implicits must carry real display text (got: {:?})",
++            circlet.implicits.iter().map(|im| &im.text).collect::<Vec<_>>()
++        );
++
++        // AC2 â€” unique affix display text reaches the loader (RawUniqueItemAffix.text no longer dropped).
++        let calamity = db
++            .unique_items
++            .iter()
++            .find(|u| u.id == "calamity")
++            .expect("calamity present in uniques.json");
++        assert!(
++            calamity
++                .affixes
++                .iter()
++                .any(|a| a.text.as_deref().map_or(false, |t| t.contains("increased Fire Damage"))),
++            "Calamity must carry a real unique affix text line (got: {:?})",
++            calamity.affixes.iter().map(|a| a.text.as_deref()).collect::<Vec<_>>()
++        );
++    }
++
++    /// AC1 regression floor â€” levelRequirement is the REAL sourced value across the shipped corpus,
++    /// not a blanket serde default. A future transform/serde regression that drops it fails here too.
++    #[test]
++    fn shipped_item_db_level_requirement_is_populated() {
++        let db = load_item_database_from_dir(&items_dir()).expect("load shipped item database");
++        let total = db.base_items.len() + db.unique_items.len();
++        assert!(total > 1000, "sanity: full corpus loaded (got {total} items)");
++        // Many items carry a non-zero level -> proves it's sourced from req.level, not defaulted to 0.
++        let nonzero = db.base_items.iter().filter(|b| b.level_requirement > 0).count()
++            + db.unique_items.iter().filter(|u| u.level_requirement > 0).count();
++        assert!(nonzero > 100, "expected many items with a non-zero level (got {nonzero})");
++    }
++}
+diff --git a/lebo/src/features/item-database/itemDatabaseLoader.test.ts b/lebo/src/features/item-database/itemDatabaseLoader.test.ts
+index 9d05534..57596a0 100644
+--- a/lebo/src/features/item-database/itemDatabaseLoader.test.ts
++++ b/lebo/src/features/item-database/itemDatabaseLoader.test.ts
+@@ -50,6 +50,54 @@ describe('loadItemDatabase', () => {
+     expect(useGameDataStore.getState().itemDatabase).toEqual(mockDb)
+   })
+ 
++  // Story 4.1.5 (AC1, AC2) â€” the loader is a passthrough, so the new levelRequirement + base-implicit
++  // / unique-affix display text must round-trip into the store intact. Value+element assertions (a
++  // real level and a real text token), not a count â€” the defect this gate closes is blank/dropped data.
++  it('round-trips levelRequirement and implicit/affix display text into the store', async () => {
++    const richDb: ItemDatabase = {
++      baseItems: [
++        {
++          id: 'jewelled-circlet',
++          name: 'Jewelled Circlet',
++          baseType: 'Helmet',
++          slot: 'helmet',
++          implicitAffixIds: [],
++          levelRequirement: 7,
++          implicits: [{ text: '(5-25)% increased Spell Damage', statKey: 'increased_spell_damage' }],
++        },
++      ],
++      uniqueItems: [
++        {
++          id: 'calamity',
++          name: 'Calamity',
++          baseType: 'Helmet',
++          slot: 'helmet',
++          levelRequirement: 0,
++          affixes: [
++            {
++              affixId: 'unique-calamity-1',
++              fixedMinValue: 20,
++              fixedMaxValue: 80,
++              statKey: 'increased_fire_damage',
++              text: '(20-80)% increased Fire Damage',
++            },
++          ],
++        },
++      ],
++      affixes: [],
++      setItems: [],
++    }
++    mockInvoke.mockResolvedValueOnce(richDb)
++
++    await loadItemDatabase()
++
++    const stored = useGameDataStore.getState().itemDatabase
++    expect(stored?.baseItems[0].levelRequirement).toBe(7)
++    expect(stored?.baseItems[0].implicits?.[0].text).toContain('Spell Damage')
++    expect(stored?.uniqueItems[0].affixes[0].text).toContain('increased Fire Damage')
++    expect(stored?.uniqueItems[0].levelRequirement).toBe(0)
++  })
++
+   it('leaves itemDatabase null when invokeCommand throws', async () => {
+     mockInvoke.mockRejectedValueOnce(new Error('ITEM_DATA_ERROR: file not found'))
+ 
+diff --git a/lebo/src/shared/types/itemDatabase.ts b/lebo/src/shared/types/itemDatabase.ts
+index b21a843..feb04d6 100644
+--- a/lebo/src/shared/types/itemDatabase.ts
++++ b/lebo/src/shared/types/itemDatabase.ts
+@@ -24,18 +24,32 @@ export interface AffixEntry {
+   damageType?: DamageType | null
+ }
+ 
++export interface BaseImplicit {
++  text: string
++  statKey?: string
++  modifierType?: string
++  scope?: string
++  damageType?: DamageType | null
++  minValue?: number
++  maxValue?: number
++}
++
+ export interface BaseItem {
+   id: string
+   name: string
+   baseType: string
+   slot: string
+   implicitAffixIds: string[]
++  levelRequirement?: number
++  implicits?: BaseImplicit[]
+ }
+ 
+ export interface UniqueItemAffix {
+   affixId: string
+   fixedMinValue: number
+   fixedMaxValue: number
++  statKey?: string
++  text?: string
+ }
+ 
+ export interface UniqueItem {
+@@ -45,6 +59,7 @@ export interface UniqueItem {
+   slot: string
+   affixes: UniqueItemAffix[]
+   description?: string
++  levelRequirement?: number
+ }
+ 
+ export interface SetBonus {

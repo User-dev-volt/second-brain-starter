@@ -1,0 +1,27 @@
+
+===== 2026-07-02 18:56:36  [src-tauri]  [AutoSave] 2026-07-02 18:56 =====
+ .../4-1-affix-prefix-suffix-discriminator-data-gate.md                      | 81 +++++++++++++++++++++++++------------
+ _bmad-output/implementation-artifacts/sprint-status.yaml                    |  3 +-
+ lebo/src-tauri/scoring-core/src/lib.rs                                      |  5 ++-
+ lebo/src/features/item-database/GearSlot.test.tsx                           | 42 +++++++++++++++++++
+ lebo/src/features/item-database/GearSlot.tsx                                |  4 +-
+ lebo/src/shared/types/build.ts                                              |  3 ++
+ lebo/src/shared/utils/buildSnapshotSerializer.test.ts                       | 40 +++++++++++++++---
+ lebo/src/shared/utils/buildSnapshotSerializer.ts                            | 16 +++++---
+ 8 files changed, 152 insertions(+), 42 deletions(-)
+--- staged source diff (.ts/.tsx/.js/.jsx/.rs) ---
+diff --git a/lebo/src-tauri/scoring-core/src/lib.rs b/lebo/src-tauri/scoring-core/src/lib.rs
+index ed637c7..a3057eb 100644
+--- a/lebo/src-tauri/scoring-core/src/lib.rs
++++ b/lebo/src-tauri/scoring-core/src/lib.rs
+@@ -24,7 +24,8 @@ pub use modifier::{
+ pub use gear::run_gear_scoring;
+ pub use scan::{run_efficiency_scan, ScanResult};
+ pub use stat_sheet::{
+-    AilmentStats, AttributeStats, DamageTypeBreakdown, DefenseStats, GearAnalysis, MinionStats,
+-    NodeEfficiency, OffenseStats, ScoreComponents, StatSheet, StatWarning, SynergyFlag,
++    AilmentStats, AttributeStats, DamageTypeBreakdown, DefenseStats, GearAnalysis, GearSlotRanking,
++    MinionStats, NodeEfficiency, OffenseStats, ScoreComponents, StatSheet, StatWarning, SynergyFlag,
++    WishlistAffix,
+ };
+ pub use synergy::run_synergy_detection;
