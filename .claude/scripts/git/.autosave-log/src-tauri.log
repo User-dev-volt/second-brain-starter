@@ -25,3 +25,44 @@ index ed637c7..a3057eb 100644
 +    WishlistAffix,
  };
  pub use synergy::run_synergy_detection;
+
+===== 2026-07-03 08:47:14  [src-tauri]  [AutoSave] 2026-07-03 08:47 =====
+ lebo/src-tauri/src/services/item_data_service.rs | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
+--- staged source diff (.ts/.tsx/.js/.jsx/.rs) ---
+diff --git a/lebo/src-tauri/src/services/item_data_service.rs b/lebo/src-tauri/src/services/item_data_service.rs
+index fe987df..46b16a0 100644
+--- a/lebo/src-tauri/src/services/item_data_service.rs
++++ b/lebo/src-tauri/src/services/item_data_service.rs
+@@ -121,6 +121,16 @@ mod tests {
+             "Calamity must carry a real unique affix text line (got: {:?})",
+             calamity.affixes.iter().map(|a| a.text.as_deref()).collect::<Vec<_>>()
+         );
++
++        // AC1 â€” pin a non-zero UNIQUE level. Calamity is legitimately level 0, so a uniques-only
++        // sourcing regression would leave every base pin (7/0/10) green; this spike-verified pin
++        // (artor-s-legacy -> 44) fails loudly if unique levels stop being sourced from req.level.
++        let artor = db
++            .unique_items
++            .iter()
++            .find(|u| u.id == "artor-s-legacy")
++            .expect("artor-s-legacy present in uniques.json");
++        assert_eq!(artor.level_requirement, 44, "Artor's Legacy level requirement");
+     }
+ 
+     /// AC1 regression floor â€” levelRequirement is the REAL sourced value across the shipped corpus,
+@@ -131,8 +141,11 @@ mod tests {
+         let total = db.base_items.len() + db.unique_items.len();
+         assert!(total > 1000, "sanity: full corpus loaded (got {total} items)");
+         // Many items carry a non-zero level -> proves it's sourced from req.level, not defaulted to 0.
+-        let nonzero = db.base_items.iter().filter(|b| b.level_requirement > 0).count()
+-            + db.unique_items.iter().filter(|u| u.level_requirement > 0).count();
+-        assert!(nonzero > 100, "expected many items with a non-zero level (got {nonzero})");
++        // Asserted PER-CORPUS: a pooled bases+uniques count is satisfied by the bases alone, so a
++        // uniques-only zeroing regression (e.g. transform_uniques drift) would slip an aggregate guard.
++        let base_nonzero = db.base_items.iter().filter(|b| b.level_requirement > 0).count();
++        let unique_nonzero = db.unique_items.iter().filter(|u| u.level_requirement > 0).count();
++        assert!(base_nonzero > 100, "expected many BASES with a non-zero level (got {base_nonzero})");
++        assert!(unique_nonzero > 100, "expected many UNIQUES with a non-zero level (got {unique_nonzero})");
+     }
+ }

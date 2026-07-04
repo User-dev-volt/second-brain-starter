@@ -26,6 +26,18 @@ roughly every 10–30 min — which is why it *looked* like a timer. The commit 
 > `.gitaccount` with `auto_commit: true`, so anything you change in it affects them all —
 > keep per-project behavior in that project's `.gitaccount`.
 
+## Submodule guard (never autosave inside a submodule)
+
+`load_config` walks **up** parent dirs to find a `.gitaccount`, so an autosave whose cwd
+landed *inside* a submodule (e.g. `external/pob-engine` in `poe2_optimizer_v6`) would resolve
+the **superproject's** config and then `git add -A; git commit` the submodule's own working
+tree — a stray `[AutoSave]` commit that moves the submodule HEAD off its pinned gitlink
+(observed 2026-07-03: pob-engine jumped to `97f50b1a`, breaking `setup_pob.py` with a
+"HEAD != gitlink" drift). `auto_commit.py` now **refuses the automatic `--autosave` path when
+`git rev-parse --show-superproject-working-tree` is non-empty** (cwd is in a submodule). A
+deliberate `/gitpush` (`autosave=False`) is unaffected; a top-level repo's root-cwd autosave
+has no superproject and is unaffected.
+
 ## The safety gate (`pre_commit_check`)
 
 Without a gate the hook commits **and pushes** whatever is on disk at the tick, so a

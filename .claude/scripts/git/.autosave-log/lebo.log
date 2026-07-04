@@ -1,0 +1,1806 @@
+
+===== 2026-07-03 09:52:16  [lebo]  [AutoSave] 2026-07-03 09:52 =====
+ _bmad-output/implementation-artifacts/sprint-status.yaml |   2 +-
+ lebo/src/features/item-database/GearSlot.test.tsx        |  47 +++++++
+ lebo/src/features/item-database/GearSlot.tsx             |  37 +++++-
+ lebo/src/features/item-database/ItemPickerModal.test.tsx | 196 ++++++++++++++++++++++++++++
+ lebo/src/features/item-database/ItemPickerModal.tsx      | 388 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ lebo/src/features/item-database/SlotGlyph.test.tsx       |  22 ++++
+ lebo/src/features/item-database/SlotGlyph.tsx            | 100 ++++++++++++++
+ lebo/src/features/item-database/itemSearch.ts            |  11 +-
+ lebo/src/features/item-database/itemSearchIndex.test.ts  | 162 +++++++++++++++++++++++
+ lebo/src/features/item-database/itemSearchIndex.ts       | 126 ++++++++++++++++++
+ lebo/src/features/item-database/slotMap.test.ts          |  35 +++++
+ lebo/src/features/item-database/slotMap.ts               |  26 ++++
+ lebo/src/shared/types/itemDatabase.ts                    |   2 +-
+ lebo/src/shared/utils/rarityColors.ts                    |   6 +-
+ 14 files changed, 1152 insertions(+), 8 deletions(-)
+--- staged source diff (.ts/.tsx/.js/.jsx/.rs) ---
+diff --git a/lebo/src/features/item-database/GearSlot.test.tsx b/lebo/src/features/item-database/GearSlot.test.tsx
+index 781ca77..81ad516 100644
+--- a/lebo/src/features/item-database/GearSlot.test.tsx
++++ b/lebo/src/features/item-database/GearSlot.test.tsx
+@@ -588,4 +588,51 @@ describe('GearSlot', () => {
+       expect(speed?.position).toBe('suffix')
+     })
+   })
++
++  // Story 4.2 â€” Item Picker Modal integration (equip path + itemId plumbing)
++
++  it('inline Combobox equip now populates itemId (Story 4.2)', async () => {
++    render(<GearSlot slotId="helmet" slotName="Helmet" itemDatabase={mockItemDatabase} />)
++    const input = screen.getByPlaceholderText('Search itemsâ€¦')
++    await userEvent.type(input, 'Iron Helm')
++    await waitFor(() => expect(screen.getByText('Iron Helm')).toBeInTheDocument())
++    await userEvent.click(screen.getByText('Iron Helm'))
++    await waitFor(() => {
++      const slot = useBuildStore.getState().activeBuild!.contextData.gear.find((g) => g.slotId === 'helmet')
++      expect(slot?.itemId).toBe('iron-helm')
++    })
++  })
++
++  it('"Browse all itemsâ€¦" opens the slot-scoped picker and equips one {slotId,itemId,itemName,affixes}', async () => {
++    render(<GearSlot slotId="helmet" slotName="Helmet" itemDatabase={mockItemDatabase} />)
++    await userEvent.click(screen.getByText('Browse all itemsâ€¦'))
++    // slot-scoped: the helmet-slot item shows; a weapon-slot item does not
++    const card = await screen.findByRole('gridcell', { name: 'Iron Helm, Helmet' })
++    expect(screen.queryByRole('gridcell', { name: /Iron Sword/ })).toBeNull()
++    await userEvent.click(card)
++    await userEvent.click(screen.getByRole('button', { name: 'Equip Item' }))
++    await waitFor(() => {
++      const helmetSlots = useBuildStore.getState().activeBuild!.contextData.gear.filter((g) => g.slotId === 'helmet')
++      expect(helmetSlots).toHaveLength(1)
++      expect(helmetSlots[0].itemId).toBe('iron-helm')
++      expect(helmetSlots[0].itemName).toBe('Iron Helm')
++    })
++  })
++
++  it('equipping via the picker replaces (not duplicates) an already-equipped slot', async () => {
++    render(<GearSlot slotId="helmet" slotName="Helmet" itemDatabase={mockItemDatabase} />)
++    const input = screen.getByPlaceholderText('Search itemsâ€¦')
++    await userEvent.type(input, 'Iron Helm')
++    await waitFor(() => expect(screen.getByText('Iron Helm')).toBeInTheDocument())
++    await userEvent.click(screen.getByText('Iron Helm'))
++    await waitFor(() => expect(screen.getByRole('button', { name: 'Swap Helmet' })).toBeInTheDocument())
++
++    await userEvent.click(screen.getByRole('button', { name: 'Swap Helmet' }))
++    await userEvent.dblClick(await screen.findByRole('gridcell', { name: 'Iron Helm, Helmet' }))
++
++    await waitFor(() => {
++      const helmetSlots = useBuildStore.getState().activeBuild!.contextData.gear.filter((g) => g.slotId === 'helmet')
++      expect(helmetSlots).toHaveLength(1)
++    })
++  })
+ })
+diff --git a/lebo/src/features/item-database/GearSlot.tsx b/lebo/src/features/item-database/GearSlot.tsx
+index 058dea8..2543abb 100644
+--- a/lebo/src/features/item-database/GearSlot.tsx
++++ b/lebo/src/features/item-database/GearSlot.tsx
+@@ -13,6 +13,8 @@ import type { AffixEntryV2 } from '../../shared/types/build'
+ import { useBuildStore } from '../../shared/stores/buildStore'
+ import { searchItems } from './itemSearch'
+ import { getRarityColorForItemType } from '../../shared/utils/rarityColors'
++import { ItemPickerModal } from './ItemPickerModal'
++import { showSuccessToast } from '../../shared/components/Toast'
+ 
+ interface ResolvedAffix {
+   affixId: string
+@@ -72,6 +74,7 @@ export function GearSlot({ slotId, slotName, itemDatabase }: GearSlotProps) {
+   const [freeText, setFreeText] = useState<string>('')
+   const [affixPickerOpen, setAffixPickerOpen] = useState<boolean>(false)
+   const [customAffixIds, setCustomAffixIds] = useState<string[]>([])
++  const [pickerOpen, setPickerOpen] = useState<boolean>(false)
+ 
+   const activeBuildId = useBuildStore((s) => s.activeBuild?.id ?? null)
+ 
+@@ -83,6 +86,7 @@ export function GearSlot({ slotId, slotName, itemDatabase }: GearSlotProps) {
+     setFreeText('')
+     setAffixPickerOpen(false)
+     setCustomAffixIds([])
++    setPickerOpen(false)
+   }, [activeBuildId])
+ 
+   const searchResults = useMemo(() => {
+@@ -122,7 +126,8 @@ export function GearSlot({ slotId, slotName, itemDatabase }: GearSlotProps) {
+     const affixEntries = buildAffixEntries(resolved, tiers)
+     useBuildStore.getState().updateContextGear([
+       ...otherSlots,
+-      { slotId, itemName: item.name, affixes: affixEntries },
++      // Story 4.2: populate itemId (SearchResult.id) so the serializer's toGearSlots forwards it end-to-end.
++      { slotId, itemId: item.id, itemName: item.name, affixes: affixEntries },
+     ])
+   }
+ 
+@@ -177,6 +182,7 @@ export function GearSlot({ slotId, slotName, itemDatabase }: GearSlotProps) {
+   }
+ 
+   return (
++    <>
+     <div
+       role="group"
+       aria-label={`${slotName} slot`}
+@@ -299,6 +305,13 @@ export function GearSlot({ slotId, slotName, itemDatabase }: GearSlotProps) {
+                 </ComboboxOptions>
+               </Combobox>
+             </div>
++            <button
++              onClick={() => setPickerOpen(true)}
++              className="text-[11px] self-start mt-0.5"
++              style={{ color: 'var(--color-accent-gold)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
++            >
++              Browse all itemsâ€¦
++            </button>
+             <button
+               onClick={() => setIsFreeText(true)}
+               className="text-[11px] self-start mt-0.5"
+@@ -334,6 +347,14 @@ export function GearSlot({ slotId, slotName, itemDatabase }: GearSlotProps) {
+               Ã—
+             </button>
+           </div>
++          <button
++            onClick={() => setPickerOpen(true)}
++            aria-label={`Swap ${slotName}`}
++            className="text-[11px] self-start"
++            style={{ color: 'var(--color-accent-gold)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
++          >
++            Swap item
++          </button>
+           {selectedItem.type === 'unique' ? (
+             /* Unique item: affixes are fixed â€” display read-only, no tier controls */
+             resolvedAffixes.map((r) => (
+@@ -405,5 +426,19 @@ export function GearSlot({ slotId, slotName, itemDatabase }: GearSlotProps) {
+         </>
+       )}
+     </div>
++      {pickerOpen && itemDatabase && (
++        <ItemPickerModal
++          slotId={slotId}
++          slotName={slotName}
++          itemDatabase={itemDatabase}
++          onEquip={(item) => {
++            handleSelect(item)
++            showSuccessToast(`Equipped ${item.name}`)
++            setPickerOpen(false)
++          }}
++          onClose={() => setPickerOpen(false)}
++        />
++      )}
++    </>
+   )
+ }
+diff --git a/lebo/src/features/item-database/ItemPickerModal.test.tsx b/lebo/src/features/item-database/ItemPickerModal.test.tsx
+new file mode 100644
+index 0000000..2dd73fc
+--- /dev/null
++++ b/lebo/src/features/item-database/ItemPickerModal.test.tsx
+@@ -0,0 +1,196 @@
++import { describe, it, expect, vi, beforeEach } from 'vitest'
++import { render, screen, fireEvent, waitFor } from '@testing-library/react'
++import userEvent from '@testing-library/user-event'
++import { axe } from 'vitest-axe'
++import { ItemPickerModal } from './ItemPickerModal'
++import type { ItemDatabase } from '../../shared/types/itemDatabase'
++
++// Real-shaped fixture: carries levelRequirement + implicit/affix display text (the 4.1.5 fields the
++// modal filters and shows). Slots mirror the shipped 3-convention wrinkle â€” base/unique helms use
++// `helm`, the set helm uses `helmet` â€” so a helmet-scoped modal must surface all three via slotMap.
++const db: ItemDatabase = {
++  baseItems: [
++    {
++      id: 'jewelled-circlet', name: 'Jewelled Circlet', baseType: 'Circlet', slot: 'helm',
++      implicitAffixIds: [], levelRequirement: 7,
++      implicits: [{ text: '(5-25)% increased Spell Damage' }, { text: '+(10-35) Mana' }],
++    },
++    {
++      id: 'iron-casque', name: 'Iron Casque', baseType: 'Plate Helm', slot: 'helm',
++      implicitAffixIds: [], levelRequirement: 10, implicits: [{ text: '+14 Armor' }],
++    },
++    {
++      id: 'refuge-helmet', name: 'Refuge Helmet', baseType: 'Helmet', slot: 'helm',
++      implicitAffixIds: [], levelRequirement: 0, implicits: [],
++    },
++    {
++      id: 'iron-sword', name: 'Iron Sword', baseType: 'Sword', slot: 'weapon',
++      implicitAffixIds: [], levelRequirement: 2, implicits: [],
++    },
++  ],
++  uniqueItems: [
++    {
++      id: 'calamity', name: 'Calamity', baseType: 'Circlet', slot: 'helm', levelRequirement: 44,
++      affixes: [
++        { affixId: 'c0', fixedMinValue: 20, fixedMaxValue: 80, text: '(20-80)% increased Fire Damage' },
++        { affixId: 'c1', fixedMinValue: 100, fixedMaxValue: 150, text: '+(100-150)% Chance to Ignite' },
++      ],
++    },
++  ],
++  affixes: [],
++  setItems: [
++    {
++      id: 'forgotten-helm', name: 'Vestments of the Forgotten', baseType: 'Helmet', slot: 'helmet',
++      setName: 'Forgotten', description: 'A set helm.',
++      affixes: [{ affixId: 'f0', fixedMinValue: 1, fixedMaxValue: 1, text: '+1 to All Attributes' }],
++      setBonuses: [{ piecesRequired: 2, description: '20% increased Attack Speed' }],
++    },
++  ],
++}
++
++function renderModal(overrides?: Partial<Parameters<typeof ItemPickerModal>[0]>) {
++  const onEquip = vi.fn()
++  const onClose = vi.fn()
++  render(
++    <ItemPickerModal
++      slotId="helmet"
++      slotName="Helmet"
++      itemDatabase={db}
++      onEquip={onEquip}
++      onClose={onClose}
++      {...overrides}
++    />,
++  )
++  return { onEquip, onClose }
++}
++
++describe('ItemPickerModal', () => {
++  beforeEach(() => {
++    document.body.innerHTML = ''
++  })
++
++  it('renders slot-scoped items with real name + base type; excludes wrong-slot items', () => {
++    renderModal()
++    // helm (base/unique) + helmet (set) all surface for the helmet gear slot
++    expect(screen.getByText('Jewelled Circlet')).toBeInTheDocument()
++    expect(screen.getByText('Calamity')).toBeInTheDocument()
++    expect(screen.getByText('Vestments of the Forgotten')).toBeInTheDocument()
++    // real base type rendered on the card (also appears as an Item Type option â€” assert the card)
++    expect(screen.getByRole('gridcell', { name: 'Iron Casque, Plate Helm' })).toBeInTheDocument()
++    // wrong-slot item is excluded (Iron Sword is a weapon)
++    expect(screen.queryByText('Iron Sword')).toBeNull()
++  })
++
++  it('shows the affix slot count for bases and the stat-line fallback for uniques', () => {
++    renderModal()
++    // base card: rule-constant affix slot count
++    expect(screen.getAllByText('4 affix slots').length).toBeGreaterThan(0)
++    // unique card: real affix stat line (flavor fallback), not an empty flavor block
++    expect(screen.getByText('(20-80)% increased Fire Damage')).toBeInTheDocument()
++  })
++
++  it('Rarity=Unique hides bases and sets (collection filter)', async () => {
++    renderModal()
++    await userEvent.click(screen.getByRole('button', { name: 'Unique' }))
++    expect(screen.getByText('Calamity')).toBeInTheDocument()
++    expect(screen.queryByText('Jewelled Circlet')).toBeNull()
++    expect(screen.queryByText('Vestments of the Forgotten')).toBeNull()
++  })
++
++  it('Item Type filter narrows by the real base type', async () => {
++    renderModal()
++    await userEvent.selectOptions(screen.getByLabelText('Item Type'), 'Circlet')
++    // Circlet-based items only (base Jewelled Circlet + unique Calamity)
++    expect(screen.getByText('Jewelled Circlet')).toBeInTheDocument()
++    expect(screen.getByText('Calamity')).toBeInTheDocument()
++    // Plate Helm / Helmet base types are hidden
++    expect(screen.queryByText('Iron Casque')).toBeNull()
++    expect(screen.queryByText('Refuge Helmet')).toBeNull()
++  })
++
++  it('Item Level slider narrows by the real levelRequirement (low shows, high hides)', () => {
++    renderModal()
++    const slider = screen.getByRole('slider', { name: 'Maximum item level' })
++    fireEvent.change(slider, { target: { value: '9' } })
++    expect(screen.getByText('Jewelled Circlet')).toBeInTheDocument() // lvl 7 â‰¤ 9
++    expect(screen.queryByText('Iron Casque')).toBeNull() // lvl 10 > 9
++    expect(screen.queryByText('Calamity')).toBeNull() // lvl 44 > 9
++  })
++
++  it('real-time search narrows the grid', async () => {
++    renderModal()
++    await userEvent.type(screen.getByLabelText('Search items'), 'Calam')
++    expect(screen.getByText('Calamity')).toBeInTheDocument()
++    expect(screen.queryByText('Jewelled Circlet')).toBeNull()
++  })
++
++  it('single-click selects and the Equip Item button reports the exact item', async () => {
++    const { onEquip } = renderModal()
++    await userEvent.click(screen.getByRole('gridcell', { name: 'Calamity, Circlet' }))
++    const equipBtn = screen.getByRole('button', { name: 'Equip Item' })
++    expect(equipBtn).toBeEnabled()
++    await userEvent.click(equipBtn)
++    expect(onEquip).toHaveBeenCalledTimes(1)
++    expect(onEquip).toHaveBeenCalledWith(
++      expect.objectContaining({ id: 'calamity', name: 'Calamity', baseType: 'Circlet', slot: 'helm', type: 'unique' }),
++    )
++  })
++
++  it('Equip Item button is disabled until an item is selected', () => {
++    renderModal()
++    expect(screen.getByRole('button', { name: 'Equip Item' })).toBeDisabled()
++  })
++
++  it('double-click equips immediately', async () => {
++    const { onEquip } = renderModal()
++    await userEvent.dblClick(screen.getByRole('gridcell', { name: 'Jewelled Circlet, Circlet' }))
++    expect(onEquip).toHaveBeenCalledWith(expect.objectContaining({ id: 'jewelled-circlet', type: 'base' }))
++  })
++
++  it('hovering a card shows a tooltip with the real implicit stat text', async () => {
++    renderModal()
++    const card = screen.getByRole('gridcell', { name: 'Jewelled Circlet, Circlet' })
++    await userEvent.hover(card)
++    await waitFor(() => {
++      const tip = screen.getByRole('tooltip')
++      expect(tip).toHaveTextContent('(5-25)% increased Spell Damage')
++      expect(tip).toHaveTextContent('+(10-35) Mana')
++    })
++  })
++
++  it('Escape closes the modal (Headless UI Dialog)', async () => {
++    const { onClose } = renderModal()
++    await userEvent.keyboard('{Escape}')
++    expect(onClose).toHaveBeenCalled()
++  })
++
++  it('renders "Database unavailable" when the item DB is null', () => {
++    renderModal({ itemDatabase: null })
++    expect(screen.getByText('Database unavailable')).toBeInTheDocument()
++    expect(screen.queryByLabelText('Search items')).toBeNull()
++  })
++
++  it('announces the result count in an aria-live region', () => {
++    renderModal()
++    const status = screen.getByRole('status')
++    expect(status).toHaveTextContent(/item/)
++  })
++
++  it('axe accessibility: zero violations in the loaded grid', async () => {
++    renderModal()
++    expect(await axe(document.body)).toHaveNoViolations()
++  })
++
++  it('axe accessibility: zero violations with an item selected', async () => {
++    renderModal()
++    await userEvent.click(screen.getByRole('gridcell', { name: 'Calamity, Circlet' }))
++    expect(await axe(document.body)).toHaveNoViolations()
++  })
++
++  it('axe accessibility: zero violations in the no-results (empty) state', async () => {
++    renderModal()
++    await userEvent.type(screen.getByLabelText('Search items'), 'zzzznomatch')
++    expect(screen.getByText('No items match these filters')).toBeInTheDocument()
++    expect(await axe(document.body)).toHaveNoViolations()
++  })
++})
+diff --git a/lebo/src/features/item-database/ItemPickerModal.tsx b/lebo/src/features/item-database/ItemPickerModal.tsx
+new file mode 100644
+index 0000000..f997532
+--- /dev/null
++++ b/lebo/src/features/item-database/ItemPickerModal.tsx
+@@ -0,0 +1,388 @@
++import { useEffect, useMemo, useRef, useState } from 'react'
++import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
++import type { ItemDatabase, SearchResult } from '../../shared/types/itemDatabase'
++import { buildItemSearchIndex, queryItemIndex, type IndexedItem } from './itemSearchIndex'
++import { dbSlotsForGearSlot } from './slotMap'
++import { getRarityColorForItemType } from '../../shared/utils/rarityColors'
++import { SlotGlyph } from './SlotGlyph'
++
++interface ItemPickerModalProps {
++  slotId: string
++  slotName: string
++  itemDatabase: ItemDatabase | null
++  onEquip: (item: SearchResult) => void
++  onClose: () => void
++}
++
++type Collection = 'all' | 'base' | 'unique' | 'set'
++
++const COLLECTIONS: { value: Collection; label: string }[] = [
++  { value: 'all', label: 'All' },
++  { value: 'base', label: 'Base' },
++  { value: 'unique', label: 'Unique' },
++  { value: 'set', label: 'Set' },
++]
++
++// Cap rendered cards so the roving grid stays light; the status region surfaces the true match count
++// so nothing is silently hidden. Slot-scoping already narrows most slots below this.
++const MAX_RENDERED = 200
++
++function toSearchResult(it: IndexedItem): SearchResult {
++  return { id: it.id, name: it.name, baseType: it.baseType, slot: it.slot, type: it.type }
++}
++
++export function ItemPickerModal({ slotId, slotName, itemDatabase, onEquip, onClose }: ItemPickerModalProps) {
++  const dbSlots = useMemo(() => dbSlotsForGearSlot(slotId), [slotId])
++  const index = useMemo(() => (itemDatabase ? buildItemSearchIndex(itemDatabase) : null), [itemDatabase])
++
++  const [query, setQuery] = useState('')
++  const [collection, setCollection] = useState<Collection>('all')
++  const [itemType, setItemType] = useState<string>('all')
++  const [maxLevel, setMaxLevel] = useState<number | null>(null)
++  const [selectedId, setSelectedId] = useState<string | null>(null)
++  const [focusedId, setFocusedId] = useState<string | null>(null)
++  const [hoveredId, setHoveredId] = useState<string | null>(null)
++  const cellRefs = useRef<Map<string, HTMLButtonElement>>(new Map())
++
++  // Item Type options = the distinct baseTypes available for THIS slot (slot-scoped, and stable
++  // across the other filters so the select never empties itself). The honest, sourced analog of the
++  // FR-27 "Required Tags" filter â€” PoB4LE ships no tags field, so baseType is the real categorical.
++  const itemTypeOptions = useMemo(() => {
++    if (!index) return []
++    const inSlot = dbSlots.length > 0 ? index.items.filter((i) => dbSlots.includes(i.slot)) : index.items
++    return Array.from(new Set(inSlot.map((i) => i.baseType))).sort((a, b) => a.localeCompare(b))
++  }, [index, dbSlots])
++
++  const results = useMemo(() => {
++    if (!index) return []
++    const base = queryItemIndex(index, query, {
++      slots: dbSlots.length > 0 ? dbSlots : undefined,
++      collection: collection === 'all' ? undefined : collection,
++      maxLevel: maxLevel ?? undefined,
++    })
++    return itemType === 'all' ? base : base.filter((it) => it.baseType === itemType)
++  }, [index, query, dbSlots, collection, maxLevel, itemType])
++
++  const rendered = useMemo(() => results.slice(0, MAX_RENDERED), [results])
++  const selected = useMemo(() => rendered.find((r) => r.id === selectedId) ?? null, [rendered, selectedId])
++
++  // Keep the roving focus target valid as filters change.
++  useEffect(() => {
++    if (rendered.length === 0) {
++      setFocusedId(null)
++      return
++    }
++    if (!focusedId || !rendered.some((r) => r.id === focusedId)) {
++      setFocusedId(rendered[0].id)
++    }
++  }, [rendered, focusedId])
++
++  function equip(it: IndexedItem) {
++    onEquip(toSearchResult(it))
++  }
++
++  function moveFocus(id: string) {
++    setFocusedId(id)
++    cellRefs.current.get(id)?.focus()
++  }
++
++  function handleGridKeyDown(e: React.KeyboardEvent) {
++    if (rendered.length === 0) return
++    const idx = rendered.findIndex((r) => r.id === focusedId)
++    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
++      e.preventDefault()
++      moveFocus(rendered[idx > 0 ? idx - 1 : rendered.length - 1].id)
++    } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
++      e.preventDefault()
++      moveFocus(rendered[idx < rendered.length - 1 ? idx + 1 : 0].id)
++    } else if (e.key === 'Enter' && focusedId) {
++      e.preventDefault()
++      setSelectedId(focusedId)
++    }
++    // Escape is handled by the Dialog's onClose (focus-trap + restore).
++  }
++
++  const sliderMin = index?.minLevel ?? 0
++  const sliderMax = index?.maxLevel ?? 0
++  const sliderValue = maxLevel ?? sliderMax
++  const capped = results.length > MAX_RENDERED
++
++  return (
++    <Dialog open onClose={onClose} className="relative z-50">
++      <div className="fixed inset-0" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} aria-hidden="true" />
++
++      <div className="fixed inset-0 flex items-center justify-center p-4">
++        <DialogPanel
++          className="rounded-lg w-full max-w-3xl max-h-[85vh] flex flex-col shadow-xl overflow-hidden"
++          style={{ backgroundColor: 'var(--color-bg-surface)', border: '1px solid var(--color-bg-elevated)' }}
++        >
++          <div className="flex items-center justify-between px-5 pt-4 pb-3">
++            <DialogTitle className="text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>
++              Choose {slotName}
++            </DialogTitle>
++            <button
++              type="button"
++              onClick={onClose}
++              aria-label="Close item picker"
++              className="text-lg leading-none"
++              style={{ color: 'var(--color-text-muted)', background: 'none', border: 'none', cursor: 'pointer' }}
++            >
++              Ã—
++            </button>
++          </div>
++
++          {itemDatabase === null || index === null ? (
++            <div className="px-5 pb-6" style={{ color: 'var(--color-text-muted)' }}>
++              <p className="text-sm">Database unavailable</p>
++            </div>
++          ) : (
++            <div className="flex-1 min-h-0 flex flex-col">
++              <div className="px-5 pb-3">
++                <input
++                  type="text"
++                  value={query}
++                  onChange={(e) => setQuery(e.target.value)}
++                  placeholder="Search itemsâ€¦"
++                  aria-label="Search items"
++                  className="w-full text-sm px-3 py-2 rounded"
++                  style={{
++                    backgroundColor: 'var(--color-bg-base)',
++                    color: 'var(--color-text-primary)',
++                    border: '1px solid var(--color-bg-elevated)',
++                  }}
++                />
++              </div>
++
++              <div className="flex-1 min-h-0 flex">
++                {/* Sidebar filters â€” every control is backed by real shipped data (Source Audit). */}
++                <aside
++                  className="w-48 shrink-0 px-5 py-2 overflow-y-auto flex flex-col gap-4"
++                  style={{ borderRight: '1px solid var(--color-bg-elevated)' }}
++                >
++                  <div role="group" aria-label="Rarity">
++                    <p className="text-[11px] uppercase tracking-wide mb-1.5" style={{ color: 'var(--color-text-muted)' }}>
++                      Rarity
++                    </p>
++                    <div className="flex flex-wrap gap-1">
++                      {COLLECTIONS.map((c) => {
++                        const active = collection === c.value
++                        return (
++                          <button
++                            key={c.value}
++                            type="button"
++                            aria-pressed={active}
++                            onClick={() => setCollection(c.value)}
++                            className="text-xs px-2 py-1 rounded"
++                            style={{
++                              backgroundColor: active ? 'var(--color-bg-hover)' : 'var(--color-bg-elevated)',
++                              color: active ? 'var(--color-accent-gold)' : 'var(--color-text-secondary)',
++                              border: active
++                                ? '1px solid var(--color-accent-gold)'
++                                : '1px solid var(--color-bg-elevated)',
++                            }}
++                          >
++                            {c.label}
++                          </button>
++                        )
++                      })}
++                    </div>
++                  </div>
++
++                  <div>
++                    <label
++                      htmlFor="item-type-filter"
++                      className="text-[11px] uppercase tracking-wide mb-1.5 block"
++                      style={{ color: 'var(--color-text-muted)' }}
++                    >
++                      Item Type
++                    </label>
++                    <select
++                      id="item-type-filter"
++                      value={itemType}
++                      onChange={(e) => setItemType(e.target.value)}
++                      className="w-full text-xs px-2 py-1 rounded"
++                      style={{
++                        backgroundColor: 'var(--color-bg-base)',
++                        color: 'var(--color-text-primary)',
++                        border: '1px solid var(--color-bg-elevated)',
++                      }}
++                    >
++                      <option value="all">All types</option>
++                      {itemTypeOptions.map((t) => (
++                        <option key={t} value={t}>
++                          {t}
++                        </option>
++                      ))}
++                    </select>
++                  </div>
++
++                  <div>
++                    <label
++                      htmlFor="item-level-filter"
++                      className="text-[11px] uppercase tracking-wide mb-1.5 block"
++                      style={{ color: 'var(--color-text-muted)' }}
++                    >
++                      Item Level â‰¤ {sliderValue}
++                    </label>
++                    <input
++                      id="item-level-filter"
++                      type="range"
++                      min={sliderMin}
++                      max={sliderMax}
++                      value={sliderValue}
++                      onChange={(e) => setMaxLevel(Number(e.target.value))}
++                      className="w-full"
++                      aria-label="Maximum item level"
++                    />
++                    <div className="flex justify-between text-[10px]" style={{ color: 'var(--color-text-muted)' }}>
++                      <span>{sliderMin}</span>
++                      <span>{sliderMax}</span>
++                    </div>
++                  </div>
++                </aside>
++
++                {/* Results */}
++                <div className="flex-1 min-h-0 flex flex-col px-5 py-2">
++                  <div role="status" aria-live="polite" className="text-xs mb-2" style={{ color: 'var(--color-text-muted)' }}>
++                    {results.length === 0
++                      ? 'No items match these filters'
++                      : capped
++                        ? `Showing ${MAX_RENDERED} of ${results.length} items`
++                        : `${results.length} item${results.length === 1 ? '' : 's'}`}
++                  </div>
++
++                  {rendered.length === 0 ? (
++                    <div
++                      className="flex-1 flex items-center justify-center text-sm"
++                      style={{ color: 'var(--color-text-muted)' }}
++                    >
++                      Try a different search or filter.
++                    </div>
++                  ) : (
++                  <div
++                    role="grid"
++                    aria-label={`${slotName} items`}
++                    onKeyDown={handleGridKeyDown}
++                    className="flex-1 min-h-0 overflow-y-auto"
++                  >
++                    <div role="row" className="grid grid-cols-2 gap-2">
++                      {rendered.map((it) => {
++                        const rarityColor = getRarityColorForItemType(it.type)
++                        const isSelected = it.id === selectedId
++                        const isFocused = it.id === focusedId
++                        const isHovered = it.id === hoveredId
++                        const showTip = isHovered && it.tooltipLines.length > 0
++                        const ttId = `item-tt-${it.id}`
++                        const footer =
++                          it.type === 'unique'
++                            ? it.tooltipLines[0] ?? 'Unique'
++                            : `${it.affixCount} affix slots`
++                        return (
++                          <button
++                            key={it.id}
++                            role="gridcell"
++                            type="button"
++                            aria-selected={isSelected}
++                            aria-label={`${it.name}, ${it.baseType}`}
++                            aria-describedby={showTip ? ttId : undefined}
++                            tabIndex={isFocused ? 0 : -1}
++                            ref={(el) => {
++                              if (el) cellRefs.current.set(it.id, el)
++                              else cellRefs.current.delete(it.id)
++                            }}
++                            onClick={() => setSelectedId(it.id)}
++                            onDoubleClick={() => equip(it)}
++                            onMouseEnter={() => setHoveredId(it.id)}
++                            onMouseLeave={() => setHoveredId((h) => (h === it.id ? null : h))}
++                            onFocus={() => {
++                              setFocusedId(it.id)
++                              setHoveredId(it.id)
++                            }}
++                            onBlur={() => setHoveredId((h) => (h === it.id ? null : h))}
++                            className="relative text-left rounded p-2 flex gap-2 items-start"
++                            style={{
++                              backgroundColor: isSelected ? 'var(--color-bg-hover)' : 'var(--color-bg-elevated)',
++                              border: isSelected
++                                ? '1px solid var(--color-accent-gold)'
++                                : '1px solid var(--color-bg-elevated)',
++                              cursor: 'pointer',
++                            }}
++                          >
++                            <span className="shrink-0 mt-0.5">
++                              <SlotGlyph slotId={slotId} color={rarityColor} />
++                            </span>
++                            <span className="flex flex-col min-w-0">
++                              <span className="text-[13px] font-semibold truncate" style={{ color: rarityColor }}>
++                                {it.name}
++                              </span>
++                              <span className="text-[11px] truncate" style={{ color: 'var(--color-text-muted)' }}>
++                                {it.baseType}
++                              </span>
++                              <span className="text-[11px] truncate" style={{ color: 'var(--color-text-secondary)' }}>
++                                {footer}
++                              </span>
++                            </span>
++                            {showTip && (
++                              <span
++                                role="tooltip"
++                                id={ttId}
++                                className="absolute z-10 left-2 top-full mt-1 rounded p-2 text-[11px] flex flex-col gap-0.5 shadow-lg"
++                                style={{
++                                  backgroundColor: 'var(--color-bg-base)',
++                                  border: '1px solid var(--color-bg-elevated)',
++                                  color: 'var(--color-text-secondary)',
++                                  minWidth: 180,
++                                }}
++                              >
++                                {it.tooltipLines.map((line, i) => (
++                                  <span key={i}>{line}</span>
++                                ))}
++                              </span>
++                            )}
++                          </button>
++                        )
++                      })}
++                    </div>
++                  </div>
++                  )}
++                </div>
++              </div>
++
++              <div
++                className="flex items-center justify-end gap-3 px-5 py-3"
++                style={{ borderTop: '1px solid var(--color-bg-elevated)' }}
++              >
++                <button
++                  type="button"
++                  onClick={onClose}
++                  className="px-4 py-1.5 text-sm rounded"
++                  style={{
++                    backgroundColor: 'var(--color-bg-elevated)',
++                    color: 'var(--color-text-primary)',
++                    border: '1px solid var(--color-bg-hover)',
++                  }}
++                >
++                  Cancel
++                </button>
++                <button
++                  type="button"
++                  disabled={!selected}
++                  onClick={() => selected && equip(selected)}
++                  className="px-4 py-1.5 text-sm rounded font-medium"
++                  style={{
++                    backgroundColor: selected ? 'var(--color-accent-gold)' : 'var(--color-bg-elevated)',
++                    color: selected ? 'var(--color-bg-base)' : 'var(--color-text-muted)',
++                    border: 'none',
++                    cursor: selected ? 'pointer' : 'not-allowed',
++                  }}
++                >
++                  Equip Item
++                </button>
++              </div>
++            </div>
++          )}
++        </DialogPanel>
++      </div>
++    </Dialog>
++  )
++}
+diff --git a/lebo/src/features/item-database/SlotGlyph.test.tsx b/lebo/src/features/item-database/SlotGlyph.test.tsx
+new file mode 100644
+index 0000000..5fe35fc
+--- /dev/null
++++ b/lebo/src/features/item-database/SlotGlyph.test.tsx
+@@ -0,0 +1,22 @@
++import { describe, it, expect } from 'vitest'
++import { render } from '@testing-library/react'
++import { SlotGlyph } from './SlotGlyph'
++
++describe('SlotGlyph', () => {
++  it('renders an aria-hidden svg tinted by the rarity color', () => {
++    const { container } = render(<SlotGlyph slotId="helmet" color="#BB5D0B" />)
++    const svg = container.querySelector('svg')
++    expect(svg).not.toBeNull()
++    expect(svg!.getAttribute('stroke')).toBe('#BB5D0B')
++    expect(svg!.getAttribute('aria-hidden')).toBe('true')
++  })
++
++  it('renders a distinct motif per known slot and a fallback for unknown slots', () => {
++    for (const slotId of ['helmet', 'body', 'gloves', 'weapon', 'offhand', 'ring1', 'ring2', 'relic', 'amulet', 'belt', 'boots']) {
++      const { container } = render(<SlotGlyph slotId={slotId} color="#F4F4F4" />)
++      expect(container.querySelector('svg')).not.toBeNull()
++    }
++    const { container } = render(<SlotGlyph slotId="lens" color="#6ADA76" />)
++    expect(container.querySelector('svg')).not.toBeNull()
++  })
++})
+diff --git a/lebo/src/features/item-database/SlotGlyph.tsx b/lebo/src/features/item-database/SlotGlyph.tsx
+new file mode 100644
+index 0000000..8e56a0e
+--- /dev/null
++++ b/lebo/src/features/item-database/SlotGlyph.tsx
+@@ -0,0 +1,100 @@
++interface SlotGlyphProps {
++  slotId: string
++  color: string
++  size?: number
++}
++
++// Inline SVG slot glyphs â€” abstract, original line-art (no ripped game imagery), one motif per gear
++// slot, tinted by the item's rarity color via the `color` prop. There is no item-icon asset pipeline
++// (useIconTextures is PixiJS skill-tree only), so the card icon is a slot glyph. Mirrors the
++// ClassGlyph inline-SVG pattern locally (item-database owns its own copy â€” no cross-feature import).
++export function SlotGlyph({ slotId, color, size = 20 }: SlotGlyphProps) {
++  const props = {
++    width: size,
++    height: size,
++    viewBox: '0 0 24 24',
++    fill: 'none',
++    stroke: color,
++    strokeWidth: 1.6,
++    strokeLinecap: 'round' as const,
++    strokeLinejoin: 'round' as const,
++    'aria-hidden': true,
++  }
++
++  switch (slotId) {
++    case 'helmet':
++      return (
++        <svg {...props}>
++          <path d="M5 13a7 7 0 0 1 14 0v3H5z" />
++          <path d="M5 16h14v3H5z" />
++        </svg>
++      )
++    case 'body':
++      return (
++        <svg {...props}>
++          <path d="M7 4l5 2 5-2 1 6-2 2v6H8v-6l-2-2z" />
++        </svg>
++      )
++    case 'gloves':
++      return (
++        <svg {...props}>
++          <path d="M8 11V5a1.5 1.5 0 0 1 3 0v4M11 9V4a1.5 1.5 0 0 1 3 0v5M14 9V6a1.5 1.5 0 0 1 3 0v8a5 5 0 0 1-5 5H10l-4-4 1.5-1.5L10 10" />
++        </svg>
++      )
++    case 'belt':
++      return (
++        <svg {...props}>
++          <rect x="3" y="9" width="18" height="6" rx="1" />
++          <rect x="10" y="9" width="4" height="6" />
++        </svg>
++      )
++    case 'boots':
++      return (
++        <svg {...props}>
++          <path d="M9 4v9l-3 3v4h11v-3c0-3-4-3-4-6V4z" />
++        </svg>
++      )
++    case 'ring1':
++    case 'ring2':
++      return (
++        <svg {...props}>
++          <circle cx="12" cy="14" r="6" />
++          <path d="M9.5 8.5L11 5h2l1.5 3.5" />
++        </svg>
++      )
++    case 'amulet':
++      return (
++        <svg {...props}>
++          <path d="M6 4l6 3 6-3" />
++          <path d="M12 7v3" />
++          <path d="M12 10l3 4-3 4-3-4z" />
++        </svg>
++      )
++    case 'relic':
++      return (
++        <svg {...props}>
++          <path d="M12 3l7 9-7 9-7-9z" />
++          <circle cx="12" cy="12" r="2.5" />
++        </svg>
++      )
++    case 'weapon':
++      return (
++        <svg {...props}>
++          <path d="M18 4l-9 9M6 15l3 3M4 17l3 3M5 16l3 3" />
++          <path d="M13 9l4-4 2 .5.5 2-4 4" />
++        </svg>
++      )
++    case 'offhand':
++      return (
++        <svg {...props}>
++          <path d="M12 3l7 3v5c0 4-3 7-7 9-4-2-7-5-7-9V6z" />
++        </svg>
++      )
++    default:
++      return (
++        <svg {...props}>
++          <rect x="5" y="5" width="14" height="14" rx="2" />
++        </svg>
++      )
++  }
++}
+diff --git a/lebo/src/features/item-database/itemSearch.ts b/lebo/src/features/item-database/itemSearch.ts
+index 991a026..3109987 100644
+--- a/lebo/src/features/item-database/itemSearch.ts
++++ b/lebo/src/features/item-database/itemSearch.ts
+@@ -1,6 +1,6 @@
+ import type { ItemDatabase, SearchResult } from '../../shared/types/itemDatabase'
+ 
+-function levenshtein(a: string, b: string): number {
++export function levenshtein(a: string, b: string): number {
+   const m = a.length
+   const n = b.length
+   const dp: number[] = Array.from({ length: n + 1 }, (_, j) => j)
+@@ -16,8 +16,9 @@ function levenshtein(a: string, b: string): number {
+   return dp[n]
+ }
+ 
+-function scoreItem(name: string, queryLower: string): number {
+-  const nameLower = name.toLowerCase()
++// Ranks an already-lowercased name against a lowercased query. Exported so the prebuilt
++// search index (itemSearchIndex.ts) can score precomputed tokens without re-lowercasing per keystroke.
++export function scoreLowered(nameLower: string, queryLower: string): number {
+   if (nameLower.startsWith(queryLower)) return 3
+   if (nameLower.includes(queryLower)) return 2
+   // Fuzzy: check each word in the name individually so "Jugernaut" matches "Juggernaut Helm"
+@@ -29,6 +30,10 @@ function scoreItem(name: string, queryLower: string): number {
+   return 0
+ }
+ 
++function scoreItem(name: string, queryLower: string): number {
++  return scoreLowered(name.toLowerCase(), queryLower)
++}
++
+ export function searchItems(query: string, database: ItemDatabase): SearchResult[] {
+   const queryLower = query.toLowerCase()
+ 
+diff --git a/lebo/src/features/item-database/itemSearchIndex.test.ts b/lebo/src/features/item-database/itemSearchIndex.test.ts
+new file mode 100644
+index 0000000..843a89f
+--- /dev/null
++++ b/lebo/src/features/item-database/itemSearchIndex.test.ts
+@@ -0,0 +1,162 @@
++import { describe, it, expect } from 'vitest'
++import { buildItemSearchIndex, queryItemIndex, CRAFTABLE_AFFIX_SLOTS } from './itemSearchIndex'
++import type { ItemDatabase } from '../../shared/types/itemDatabase'
++
++function makeDatabase(overrides?: Partial<ItemDatabase>): ItemDatabase {
++  return { baseItems: [], uniqueItems: [], affixes: [], setItems: [], ...overrides }
++}
++
++// Real-shaped fixture: carries levelRequirement + implicit/affix display text (the 4.1.5 fields
++// the modal filters and shows). Slots mirror the shipped 3-convention wrinkle: base/unique helms
++// are `helm`, the set helm is `helmet`.
++const richDb: ItemDatabase = makeDatabase({
++  baseItems: [
++    {
++      id: 'jewelled-circlet', name: 'Jewelled Circlet', baseType: 'Circlet', slot: 'helm',
++      implicitAffixIds: [], levelRequirement: 7,
++      implicits: [{ text: '(5-25)% increased Spell Damage' }, { text: '+(10-35) Mana' }],
++    },
++    {
++      id: 'iron-casque', name: 'Iron Casque', baseType: 'Plate Helm', slot: 'helm',
++      implicitAffixIds: [], levelRequirement: 10, implicits: [{ text: '+14 Armor' }],
++    },
++    {
++      id: 'refuge-helmet', name: 'Refuge Helmet', baseType: 'Helmet', slot: 'helm',
++      implicitAffixIds: [], levelRequirement: 0, implicits: [],
++    },
++    {
++      id: 'iron-sword', name: 'Iron Sword', baseType: 'Sword', slot: 'weapon',
++      implicitAffixIds: [], levelRequirement: 2, implicits: [],
++    },
++  ],
++  uniqueItems: [
++    {
++      id: 'calamity', name: 'Calamity', baseType: 'Circlet', slot: 'helm', levelRequirement: 44,
++      affixes: [
++        { affixId: 'c0', fixedMinValue: 20, fixedMaxValue: 80, text: '(20-80)% increased Fire Damage' },
++        { affixId: 'c1', fixedMinValue: 100, fixedMaxValue: 150, text: '+(100-150)% Chance to Ignite' },
++      ],
++    },
++    {
++      id: 'snowblind', name: 'Snowblind Grasp', baseType: 'Gloves', slot: 'gloves', levelRequirement: 10,
++      affixes: [{ affixId: 's0', fixedMinValue: 1, fixedMaxValue: 2, text: 'Cold conversion' }],
++    },
++  ],
++  setItems: [
++    {
++      id: 'forgotten-helm', name: 'Vestments of the Forgotten', baseType: 'Helmet', slot: 'helmet',
++      setName: 'Forgotten', description: 'A set helm.',
++      affixes: [{ affixId: 'f0', fixedMinValue: 1, fixedMaxValue: 1, text: '+1 to All Attributes' }],
++      setBonuses: [{ piecesRequired: 2, description: '20% increased Attack Speed' }],
++    },
++  ],
++})
++
++describe('buildItemSearchIndex', () => {
++  it('indexes bases, uniques AND set items (sets were absent from the legacy scan)', () => {
++    const index = buildItemSearchIndex(richDb)
++    expect(index.items).toHaveLength(7)
++    expect(index.items.filter((i) => i.type === 'base')).toHaveLength(4)
++    expect(index.items.filter((i) => i.type === 'unique')).toHaveLength(2)
++    expect(index.items.filter((i) => i.type === 'set')).toHaveLength(1)
++  })
++
++  it('computes min/max level bounds across the corpus (for the slider range)', () => {
++    const index = buildItemSearchIndex(richDb)
++    expect(index.minLevel).toBe(0)
++    expect(index.maxLevel).toBe(44)
++  })
++
++  it('affix count: unique = affixes.length; base + set = the rule constant', () => {
++    const index = buildItemSearchIndex(richDb)
++    expect(index.items.find((i) => i.id === 'calamity')!.affixCount).toBe(2)
++    expect(index.items.find((i) => i.id === 'snowblind')!.affixCount).toBe(1)
++    expect(index.items.find((i) => i.id === 'jewelled-circlet')!.affixCount).toBe(CRAFTABLE_AFFIX_SLOTS)
++    expect(index.items.find((i) => i.id === 'forgotten-helm')!.affixCount).toBe(CRAFTABLE_AFFIX_SLOTS)
++  })
++
++  it('precomputes real tooltip lines from base implicits and unique affix text (4.1.5 fields)', () => {
++    const index = buildItemSearchIndex(richDb)
++    expect(index.items.find((i) => i.id === 'jewelled-circlet')!.tooltipLines).toEqual([
++      '(5-25)% increased Spell Damage',
++      '+(10-35) Mana',
++    ])
++    expect(index.items.find((i) => i.id === 'calamity')!.tooltipLines).toContain('(20-80)% increased Fire Damage')
++    // No implicit â†’ empty (never a fabricated line)
++    expect(index.items.find((i) => i.id === 'refuge-helmet')!.tooltipLines).toEqual([])
++  })
++})
++
++describe('queryItemIndex', () => {
++  const index = buildItemSearchIndex(richDb)
++
++  it('empty query returns the full set alphabetically (browse-all state)', () => {
++    const results = queryItemIndex(index, '')
++    expect(results).toHaveLength(7)
++    expect(results[0].name).toBe('Calamity')
++  })
++
++  it('ranks and filters by query (prefix matches surface, non-matches drop)', () => {
++    const results = queryItemIndex(index, 'Iron')
++    const names = results.map((r) => r.name)
++    expect(names).toContain('Iron Casque')
++    expect(names).toContain('Iron Sword')
++    expect(names).not.toContain('Calamity')
++  })
++
++  it('finds set items by name (previously unsearchable)', () => {
++    const results = queryItemIndex(index, 'Vestments')
++    expect(results).toHaveLength(1)
++    expect(results[0].type).toBe('set')
++  })
++
++  it('slot filter narrows to the DB slots for a gear slot â€” set helm (helmet) included, wrong-slot excluded', () => {
++    const helms = queryItemIndex(index, '', { slots: ['helm', 'helmet'] })
++    const names = helms.map((r) => r.name)
++    expect(names).toContain('Jewelled Circlet') // base, slot 'helm'
++    expect(names).toContain('Calamity') // unique, slot 'helm'
++    expect(names).toContain('Vestments of the Forgotten') // set, slot 'helmet'
++    expect(names).not.toContain('Iron Sword') // weapon
++    expect(names).not.toContain('Snowblind Grasp') // gloves
++  })
++
++  it('collection filter narrows by rarity-as-collection (Unique hides bases and sets)', () => {
++    const uniques = queryItemIndex(index, '', { collection: 'unique' })
++    expect(uniques.every((r) => r.type === 'unique')).toBe(true)
++    expect(uniques.map((r) => r.name)).toEqual(['Calamity', 'Snowblind Grasp'])
++  })
++
++  it('item-level filter narrows by real levelRequirement (low shows, high hides)', () => {
++    const lowLevel = queryItemIndex(index, '', { maxLevel: 9 })
++    const names = lowLevel.map((r) => r.name)
++    expect(names).toContain('Jewelled Circlet') // lvl 7
++    expect(names).toContain('Refuge Helmet') // lvl 0
++    expect(names).not.toContain('Iron Casque') // lvl 10
++    expect(names).not.toContain('Calamity') // lvl 44
++  })
++
++  it('builds the index ONCE and answers many queries under 100ms each (NFR-5)', () => {
++    const baseItems = Array.from({ length: 900 }, (_, i) => ({
++      id: `b${i}`, name: `Base Item Name ${i} Helm`, baseType: 'Helm', slot: 'helm',
++      implicitAffixIds: [] as string[], levelRequirement: i % 100,
++    }))
++    const uniqueItems = Array.from({ length: 500 }, (_, i) => ({
++      id: `u${i}`, name: `Unique Item Name ${i} Ring`, baseType: 'Ring', slot: 'ring_1',
++      levelRequirement: i % 100, affixes: [] as [],
++    }))
++    const setItems = Array.from({ length: 23 }, (_, i) => ({
++      id: `s${i}`, name: `Set Item Name ${i} Body`, baseType: 'Body', slot: 'body',
++      setName: 'S', affixes: [] as [], setBonuses: [] as [],
++    }))
++    const big = makeDatabase({ baseItems, uniqueItems, setItems })
++
++    const bigIndex = buildItemSearchIndex(big) // built ONCE
++    expect(bigIndex.items).toHaveLength(1423)
++
++    for (const q of ['Ite', 'Ring', 'Body', 'name 5', '']) {
++      const start = performance.now()
++      queryItemIndex(bigIndex, q, { slots: ['helm', 'ring_1', 'body'], minLevel: 0, maxLevel: 100 })
++      expect(performance.now() - start).toBeLessThan(100)
++    }
++  })
++})
+diff --git a/lebo/src/features/item-database/itemSearchIndex.ts b/lebo/src/features/item-database/itemSearchIndex.ts
+new file mode 100644
+index 0000000..a743f87
+--- /dev/null
++++ b/lebo/src/features/item-database/itemSearchIndex.ts
+@@ -0,0 +1,126 @@
++import type { ItemDatabase, SearchResult } from '../../shared/types/itemDatabase'
++import { scoreLowered } from './itemSearch'
++
++// Documented Last Epoch rule: a craftable base item exposes 4 affix slots (2 prefix + 2 suffix).
++// A single declared rule-constant â€” NOT per-item invented data (Story 4.2 Source Audit).
++export const CRAFTABLE_AFFIX_SLOTS = 4
++
++export interface IndexedItem extends SearchResult {
++  // Precomputed at build time so per-keystroke query never re-lowercases (NFR-5 prebuilt index).
++  nameLower: string
++  levelRequirement: number
++  affixCount: number
++  // Real display text (base implicits / unique+set affix stat lines) â€” sourced by Story 4.1.5.
++  tooltipLines: string[]
++}
++
++export interface ItemSearchIndex {
++  items: IndexedItem[]
++  minLevel: number
++  maxLevel: number
++}
++
++export interface ItemFilter {
++  slots?: string[] // DB `slot` values valid for the open gear slot (undefined = no slot scoping)
++  collection?: 'base' | 'unique' | 'set' // rarity-as-collection (undefined = all)
++  minLevel?: number
++  maxLevel?: number
++}
++
++function nonEmptyTexts(texts: (string | undefined)[]): string[] {
++  return texts.filter((t): t is string => typeof t === 'string' && t.trim().length > 0)
++}
++
++// Built ONCE from a loaded ItemDatabase (memoize at the call site). Precomputes lowercased name,
++// level, affix count and tooltip lines across bases + uniques + SETS (set items were absent from
++// the legacy per-keystroke `searchItems` scan). A query is then a filter + rank over precomputed
++// tokens â€” no scan-from-scratch, no re-lowercasing, no new dependency (AR-8).
++export function buildItemSearchIndex(db: ItemDatabase): ItemSearchIndex {
++  const items: IndexedItem[] = []
++
++  for (const b of db.baseItems) {
++    items.push({
++      id: b.id,
++      name: b.name,
++      baseType: b.baseType,
++      slot: b.slot,
++      type: 'base',
++      nameLower: b.name.toLowerCase(),
++      levelRequirement: b.levelRequirement ?? 0,
++      affixCount: CRAFTABLE_AFFIX_SLOTS,
++      tooltipLines: nonEmptyTexts((b.implicits ?? []).map((i) => i.text)),
++    })
++  }
++
++  for (const u of db.uniqueItems) {
++    items.push({
++      id: u.id,
++      name: u.name,
++      baseType: u.baseType,
++      slot: u.slot,
++      type: 'unique',
++      nameLower: u.name.toLowerCase(),
++      levelRequirement: u.levelRequirement ?? 0,
++      affixCount: u.affixes.length,
++      tooltipLines: nonEmptyTexts(u.affixes.map((a) => a.text)),
++    })
++  }
++
++  for (const s of db.setItems) {
++    items.push({
++      id: s.id,
++      name: s.name,
++      baseType: s.baseType,
++      slot: s.slot,
++      type: 'set',
++      nameLower: s.name.toLowerCase(),
++      // SetItem carries no levelRequirement in the shipped data â€” honest 0 (never level-gated out).
++      levelRequirement: 0,
++      affixCount: CRAFTABLE_AFFIX_SLOTS,
++      tooltipLines: nonEmptyTexts(s.affixes.map((a) => a.text)),
++    })
++  }
++
++  let minLevel = 0
++  let maxLevel = 0
++  for (const it of items) {
++    if (it.levelRequirement < minLevel) minLevel = it.levelRequirement
++    if (it.levelRequirement > maxLevel) maxLevel = it.levelRequirement
++  }
++
++  return { items, minLevel, maxLevel }
++}
++
++// Filter (slot / collection / level) then rank by query. Empty query returns the full filtered set
++// alphabetically (the modal's "browse all" state). Keeps the legacy prefix/substring/fuzzy ranking.
++export function queryItemIndex(
++  index: ItemSearchIndex,
++  query: string,
++  filter?: ItemFilter,
++): IndexedItem[] {
++  const slots = filter?.slots
++  const collection = filter?.collection
++  const minLevel = filter?.minLevel
++  const maxLevel = filter?.maxLevel
++
++  const filtered = index.items.filter((it) => {
++    if (slots && !slots.includes(it.slot)) return false
++    if (collection && it.type !== collection) return false
++    if (minLevel !== undefined && it.levelRequirement < minLevel) return false
++    if (maxLevel !== undefined && it.levelRequirement > maxLevel) return false
++    return true
++  })
++
++  const queryLower = query.trim().toLowerCase()
++  if (queryLower.length === 0) {
++    return filtered.slice().sort((a, b) => a.name.localeCompare(b.name))
++  }
++
++  const scored: { it: IndexedItem; score: number }[] = []
++  for (const it of filtered) {
++    const score = scoreLowered(it.nameLower, queryLower)
++    if (score > 0) scored.push({ it, score })
++  }
++  scored.sort((a, b) => (b.score !== a.score ? b.score - a.score : a.it.name.localeCompare(b.it.name)))
++  return scored.map((s) => s.it)
++}
+diff --git a/lebo/src/features/item-database/slotMap.test.ts b/lebo/src/features/item-database/slotMap.test.ts
+new file mode 100644
+index 0000000..1c4172a
+--- /dev/null
++++ b/lebo/src/features/item-database/slotMap.test.ts
+@@ -0,0 +1,35 @@
++import { describe, it, expect } from 'vitest'
++import { GEAR_SLOT_TO_DB_SLOTS, dbSlotsForGearSlot } from './slotMap'
++import { GEAR_SLOTS } from '../context-panel/gearData'
++
++describe('slotMap', () => {
++  it('maps helmet to both the base/unique (helm) and set (helmet) conventions', () => {
++    expect(dbSlotsForGearSlot('helmet')).toEqual(['helm', 'helmet'])
++  })
++
++  it('maps body to both chest (base/unique) and body (set)', () => {
++    expect(dbSlotsForGearSlot('body')).toEqual(['chest', 'body'])
++  })
++
++  it('maps both ring slots to the only shipped ring value (ring_1)', () => {
++    expect(dbSlotsForGearSlot('ring1')).toEqual(['ring_1'])
++    expect(dbSlotsForGearSlot('ring2')).toEqual(['ring_1'])
++  })
++
++  it('maps offhand to off_hand, the set off-hand hyphen variant, and catalyst', () => {
++    expect(dbSlotsForGearSlot('offhand')).toEqual(['off_hand', 'off-hand', 'catalyst'])
++  })
++
++  it('returns [] for a DB slot that has no equippable gear slot', () => {
++    expect(dbSlotsForGearSlot('blessing')).toEqual([])
++    expect(dbSlotsForGearSlot('idol')).toEqual([])
++    expect(dbSlotsForGearSlot('lens')).toEqual([])
++    expect(dbSlotsForGearSlot('nonexistent')).toEqual([])
++  })
++
++  it('every GEAR_SLOTS id has a non-empty DB-slot mapping', () => {
++    for (const { slotId } of GEAR_SLOTS) {
++      expect(GEAR_SLOT_TO_DB_SLOTS[slotId]?.length ?? 0).toBeGreaterThan(0)
++    }
++  })
++})
+diff --git a/lebo/src/features/item-database/slotMap.ts b/lebo/src/features/item-database/slotMap.ts
+new file mode 100644
+index 0000000..cb71afa
+--- /dev/null
++++ b/lebo/src/features/item-database/slotMap.ts
+@@ -0,0 +1,26 @@
++// Maps a GEAR_SLOTS id (context-panel/gearData.ts) â†’ the item-DB `slot` values valid for it.
++//
++// The shipped item DB uses THREE slot-naming conventions (data-verified 2026-07-03 over
++// src-tauri/resources/items/*.json): base + unique items use `helm` / `chest` / `off_hand`;
++// set items use `helmet` / `body` / `off-hand` (note the hyphen). Only `ring_1` exists in the
++// data (no `ring_2`) â€” both ring slots map to it. `catalyst` is a caster off-hand item, so it
++// maps to `offhand`. DB slots that have no equippable gear slot (`blessing`, `idol`, `lens`) are
++// intentionally unmapped â€” those live in their own systems and must not surface in a gear picker.
++export const GEAR_SLOT_TO_DB_SLOTS: Record<string, string[]> = {
++  helmet: ['helm', 'helmet'],
++  body: ['chest', 'body'],
++  gloves: ['gloves'],
++  belt: ['belt'],
++  boots: ['boots'],
++  ring1: ['ring_1'],
++  ring2: ['ring_1'],
++  amulet: ['amulet'],
++  relic: ['relic'],
++  weapon: ['weapon'],
++  offhand: ['off_hand', 'off-hand', 'catalyst'],
++}
++
++// The DB `slot` values valid for a GEAR_SLOTS id, or [] when the id has no DB mapping.
++export function dbSlotsForGearSlot(gearSlotId: string): string[] {
++  return GEAR_SLOT_TO_DB_SLOTS[gearSlotId] ?? []
++}
+diff --git a/lebo/src/shared/types/itemDatabase.ts b/lebo/src/shared/types/itemDatabase.ts
+index feb04d6..b0983d0 100644
+--- a/lebo/src/shared/types/itemDatabase.ts
++++ b/lebo/src/shared/types/itemDatabase.ts
+@@ -90,5 +90,5 @@ export interface SearchResult {
+   name: string
+   baseType: string
+   slot: string
+-  type: 'base' | 'unique'
++  type: 'base' | 'unique' | 'set'
+ }
+diff --git a/lebo/src/shared/utils/rarityColors.ts b/lebo/src/shared/utils/rarityColors.ts
+index 46950ef..8111aa3 100644
+--- a/lebo/src/shared/utils/rarityColors.ts
++++ b/lebo/src/shared/utils/rarityColors.ts
+@@ -12,8 +12,10 @@ export const RARITY_COLORS: Record<string, string> = {
+   legendary: '#E12166', // red
+ }
+ 
+-export function getRarityColorForItemType(type: 'base' | 'unique'): string {
+-  return type === 'unique' ? RARITY_COLORS.unique : RARITY_COLORS.common
++export function getRarityColorForItemType(type: 'base' | 'unique' | 'set'): string {
++  if (type === 'unique') return RARITY_COLORS.unique
++  if (type === 'set') return RARITY_COLORS.set
++  return RARITY_COLORS.common
+ }
+ 
+ export const DAMAGE_TYPE_COLORS: Record<DamageType, string> = {
+
+===== 2026-07-03 12:30:39  [lebo]  [AutoSave] 2026-07-03 12:30 =====
+ _bmad-output/implementation-artifacts/4-3-affix-picker-modal.md |  4 ++--
+ _bmad-output/implementation-artifacts/sprint-status.yaml        |  3 ++-
+ lebo/src/features/item-database/affixDescription.test.ts        | 63 ++++++++++++++++++++++++++++++++++++++++++++++++-
+ lebo/src/features/item-database/affixDescription.ts             | 28 ++++++++++++----------
+ 4 files changed, 82 insertions(+), 16 deletions(-)
+--- staged source diff (.ts/.tsx/.js/.jsx/.rs) ---
+diff --git a/lebo/src/features/item-database/affixDescription.test.ts b/lebo/src/features/item-database/affixDescription.test.ts
+index 3211404..7abfefb 100644
+--- a/lebo/src/features/item-database/affixDescription.test.ts
++++ b/lebo/src/features/item-database/affixDescription.test.ts
+@@ -67,6 +67,41 @@ const inertStub: AffixEntry = {
+   tiers: [{ tier: 1, minValue: 0, maxValue: 0 }],
+ }
+ 
++// Negative-valued affixes mirroring the real corpus (Review-Findings patch). affix-chill-immunity-prefix
++// carries a flat fire_resistance penalty (-7 â†’ 0); affix-cursed-prefix is a DESCENDING increased affix
++// (each tier more negative), the case first.minâ†’last.max mis-rendered as an interior "-75â€“-96%".
++const flatNegativeResistance: AffixEntry = {
++  id: 'affix-chill-immunity-prefix',
++  name: 'of Chill Immunity',
++  type: 'prefix',
++  itemSlots: ['relic'],
++  statKey: 'fire_resistance',
++  modifierType: 'flat',
++  scope: 'generic',
++  damageType: null,
++  tiers: [
++    { tier: 1, minValue: -7, maxValue: -7 },
++    { tier: 2, minValue: 0, maxValue: 0 },
++  ],
++  extraStats: [],
++}
++
++const increasedNegativeDescending: AffixEntry = {
++  id: 'affix-cursed-prefix',
++  name: 'Cursed',
++  type: 'prefix',
++  itemSlots: ['relic'],
++  statKey: 'increased_minion_damage',
++  modifierType: 'increased',
++  scope: 'generic',
++  damageType: null,
++  tiers: [
++    { tier: 1, minValue: -75, maxValue: -50 },
++    { tier: 2, minValue: -120, maxValue: -96 },
++  ],
++  extraStats: [],
++}
++
+ describe('humanizeStatKey', () => {
+   it('title-cases a compound damage key', () => {
+     expect(humanizeStatKey('increased_fire_damage')).toBe('Increased Fire Damage')
+@@ -121,6 +156,32 @@ describe('formatFullTierRange', () => {
+     expect(formatFullTierRange(increasedFireDamage)).toBe('6â€“64%')
+   })
+   it('bridges the full flat range with signs', () => {
+-    expect(formatFullTierRange(flatArmour)).toBe('+4 â†’ +8')
++    // flatArmour is non-monotonic (T1 4â€“24 is wider than T2 8â€“8): the honest full range is the TRUE
++    // span 4â†’24 (T1 can roll 24), not first.minâ†’last.max.
++    expect(formatFullTierRange(flatArmour)).toBe('+4 â†’ +24')
++  })
++})
++
++// Review-Findings patch (2026-07-03): negative-valued corpus affixes (curse / penalty rolls) must not
++// render a doubled sign ("+-7"), and the full range must span the TRUE minâ†’max, not first.minâ†’last.max.
++describe('negative-valued affixes (Review-Findings patch)', () => {
++  it('formats a negative flat value without a doubled sign', () => {
++    expect(formatTierRange(flatNegativeResistance, 1)).toBe('-7')
++  })
++  it('keeps the leading + for a non-negative flat value', () => {
++    expect(formatTierRange(flatNegativeResistance, 2)).toBe('+0')
++  })
++  it('spans the true flat minâ†’max across tiers, not first.minâ†’last.max', () => {
++    expect(formatFullTierRange(flatNegativeResistance)).toBe('-7 â†’ +0')
++  })
++  it('spans the true numeric minâ€“max for a descending negative increased affix', () => {
++    // affix-cursed-prefix: T1 -75/-50, T2 -120/-96 â†’ true span -120% to -50%,
++    // NOT the interior -75â€“-96% that first.minâ†’last.max produced.
++    expect(formatFullTierRange(increasedNegativeDescending)).toBe('-120â€“-50%')
++    expect(formatFullTierRange(increasedNegativeDescending)).not.toBe('-75â€“-96%')
++  })
++  it('renders each negative increased tier range', () => {
++    expect(formatTierRange(increasedNegativeDescending, 1)).toBe('-75â€“-50%')
++    expect(formatTierRange(increasedNegativeDescending, 2)).toBe('-120â€“-96%')
+   })
+ })
+diff --git a/lebo/src/features/item-database/affixDescription.ts b/lebo/src/features/item-database/affixDescription.ts
+index a083d8e..7cd8a29 100644
+--- a/lebo/src/features/item-database/affixDescription.ts
++++ b/lebo/src/features/item-database/affixDescription.ts
+@@ -45,6 +45,12 @@ function fmtNum(n: number): string {
+   return Number.isInteger(n) ? String(n) : String(Math.round(n * 100) / 100)
+ }
+ 
++// Flat additive values read as a signed number ("+4", "-7"). A bare "+" prefix must NOT be prepended
++// to a negative value (that renders "+-7") â€” only non-negative flats get the leading "+".
++function fmtSigned(n: number): string {
++  return n < 0 ? fmtNum(n) : `+${fmtNum(n)}`
++}
++
+ // A deterministic one-line description synthesized from real fields. Falls back to the affix name
+ // when no statKey resolved (the 514 inert stubs â€” which the picker never renders anyway).
+ export function formatAffixDescription(affix: AffixEntry): string {
+@@ -60,25 +66,23 @@ export function formatAffixDescription(affix: AffixEntry): string {
+ export function formatTierRange(affix: AffixEntry, tier: number): string {
+   const t = affix.tiers[tier - 1]
+   if (!t) return ''
+-  const min = fmtNum(t.minValue)
+-  const max = fmtNum(t.maxValue)
+   const collapsed = t.minValue === t.maxValue
+   if (isFlat(affix.modifierType)) {
+-    return collapsed ? `+${min}` : `+${min} â†’ +${max}`
++    return collapsed ? fmtSigned(t.minValue) : `${fmtSigned(t.minValue)} â†’ ${fmtSigned(t.maxValue)}`
+   }
+-  return collapsed ? `${min}%` : `${min}â€“${max}%`
++  return collapsed ? `${fmtNum(t.minValue)}%` : `${fmtNum(t.minValue)}â€“${fmtNum(t.maxValue)}%`
+ }
+ 
+-// The full-tier stat range across T1â†’Tmax, used in the picker row (AC1). Bridges the lowest tier's
+-// min to the highest tier's max, e.g. "6â€“240%".
++// The full-tier stat range across all tiers, used in the picker row (AC1), e.g. "6â€“240%". Spans the
++// TRUE numeric minâ†’max over every tier's bounds â€” not first.minâ†’last.max, which assumes ascending,
++// positive tiers and picks interior values for a descending/negative affix (e.g. curse rolls).
+ export function formatFullTierRange(affix: AffixEntry): string {
+   if (affix.tiers.length === 0) return ''
+-  const first = affix.tiers[0]
+-  const last = affix.tiers[affix.tiers.length - 1]
+-  const min = fmtNum(first.minValue)
+-  const max = fmtNum(last.maxValue)
++  const bounds = affix.tiers.flatMap((t) => [t.minValue, t.maxValue])
++  const lo = Math.min(...bounds)
++  const hi = Math.max(...bounds)
+   if (isFlat(affix.modifierType)) {
+-    return min === max ? `+${min}` : `+${min} â†’ +${max}`
++    return lo === hi ? fmtSigned(lo) : `${fmtSigned(lo)} â†’ ${fmtSigned(hi)}`
+   }
+-  return min === max ? `${min}%` : `${min}â€“${max}%`
++  return lo === hi ? `${fmtNum(lo)}%` : `${fmtNum(lo)}â€“${fmtNum(hi)}%`
+ }
+
+===== 2026-07-03 13:08:27  [lebo]  [AutoSave] 2026-07-03 13:08 =====
+ _bmad-output/implementation-artifacts/4-3-affix-picker-modal.md |  6 +++++
+ _bmad-output/implementation-artifacts/sprint-status.yaml        |  2 +-
+ lebo/src/features/item-database/GearSlot.test.tsx               | 52 +++++++++++++++++++++++++++++++++++++++++
+ lebo/src/features/item-database/GearSlot.tsx                    | 62 +++++++++++++++++++++++++++++++++++++++++++------
+ lebo/src/features/item-database/itemSearch.test.ts              | 39 ++++++++++++++++++++++++++++++-
+ lebo/src/features/item-database/itemSearch.ts                   | 28 ++++++++++++++++++++++
+ lebo/src/features/layout/tabs/GearTab.test.tsx                  | 50 +++++++++++++++++++++++++++++++++++++++
+ lebo/src/features/layout/tabs/GearTab.tsx                       | 14 +++++++++++
+ 8 files changed, 244 insertions(+), 9 deletions(-)
+--- staged source diff (.ts/.tsx/.js/.jsx/.rs) ---
+diff --git a/lebo/src/features/item-database/GearSlot.test.tsx b/lebo/src/features/item-database/GearSlot.test.tsx
+index 430fdb3..b0c9bbc 100644
+--- a/lebo/src/features/item-database/GearSlot.test.tsx
++++ b/lebo/src/features/item-database/GearSlot.test.tsx
+@@ -699,4 +699,56 @@ describe('GearSlot', () => {
+     // fixed set item â€” no craft affordance leaks in
+     expect(screen.queryByRole('button', { name: 'Add custom affix to Helmet' })).toBeNull()
+   })
++
++  // Review follow-up (tab-reset fix): GearSlot's display is rehydrated from the persisted build on
++  // mount, so the equipped item + crafted affixes survive a Gear-tab unmount (tab switch) or a build load.
++
++  it('rehydrates the equipped base item + crafted affixes from the store on mount (no interaction)', async () => {
++    useBuildStore.getState().setActiveBuild({
++      ...mockBuild,
++      contextData: {
++        ...mockBuild.contextData,
++        gear: [
++          {
++            slotId: 'helmet',
++            itemId: 'iron-helm',
++            itemName: 'Iron Helm',
++            affixes: [
++              { affixId: 'affix-armor', name: 'Added Armor', tier: 2, position: 'prefix' },
++              { affixId: 'affix-speed', name: 'Movement Speed', tier: 1, position: 'suffix' },
++            ],
++          },
++        ],
++      },
++    })
++
++    render(<GearSlot slotId="helmet" slotName="Helmet" itemDatabase={mockItemDatabase} />)
++
++    // No user interaction â€” the slot must restore the item, its implicit, and the crafted affix.
++    await waitFor(() => {
++      expect(screen.getByText('Iron Helm')).toBeInTheDocument()
++      expect(screen.getByRole('slider', { name: 'Added Armor tier' })).toBeInTheDocument()
++      expect(screen.getByRole('slider', { name: 'Movement Speed tier' })).toBeInTheDocument()
++      // implicit stays a plain label; the crafted affix is swap-able
++      expect(screen.getByRole('button', { name: 'Replace Movement Speed' })).toBeInTheDocument()
++    })
++    expect(screen.queryByPlaceholderText('Search itemsâ€¦')).toBeNull()
++  })
++
++  it('rehydrates a free-text slot from the store on mount', async () => {
++    useBuildStore.getState().setActiveBuild({
++      ...mockBuild,
++      contextData: {
++        ...mockBuild.contextData,
++        gear: [{ slotId: 'helmet', itemName: 'hand-typed helm', affixes: [] }],
++      },
++    })
++
++    render(<GearSlot slotId="helmet" slotName="Helmet" itemDatabase={mockItemDatabase} />)
++
++    await waitFor(() => {
++      const ta = screen.getByRole('textbox', { name: 'Free text for Helmet' }) as HTMLTextAreaElement
++      expect(ta.value).toBe('hand-typed helm')
++    })
++  })
+ })
+diff --git a/lebo/src/features/item-database/GearSlot.tsx b/lebo/src/features/item-database/GearSlot.tsx
+index d149f80..d3f94fb 100644
+--- a/lebo/src/features/item-database/GearSlot.tsx
++++ b/lebo/src/features/item-database/GearSlot.tsx
+@@ -11,7 +11,7 @@ import { AffixPickerModal } from './AffixPickerModal'
+ import type { ItemDatabase, AffixEntry, SearchResult } from '../../shared/types/itemDatabase'
+ import type { AffixEntryV2 } from '../../shared/types/build'
+ import { useBuildStore } from '../../shared/stores/buildStore'
+-import { searchItems } from './itemSearch'
++import { searchItems, findSearchResultById } from './itemSearch'
+ import { getRarityColorForItemType } from '../../shared/utils/rarityColors'
+ import { ItemPickerModal } from './ItemPickerModal'
+ import { showSuccessToast } from '../../shared/components/Toast'
+@@ -83,16 +83,64 @@ export function GearSlot({ slotId, slotName, itemDatabase }: GearSlotProps) {
+ 
+   const activeBuildId = useBuildStore((s) => s.activeBuild?.id ?? null)
+ 
++  // Rehydrate this slot from the persisted build on mount / build change. Gear lives in the store, but
++  // CenterCanvas unmounts the Gear tab on a tab switch (and a saved build can load with gear already
++  // set) â€” without restoring from the store here, the slot blanks even though the data is still there.
+   useEffect(() => {
+     setQuery('')
+-    setSelectedItem(null)
+-    setAffixTiers({})
+-    setIsFreeText(false)
+-    setFreeText('')
+     setAffixModal(null)
+-    setCustomAffixIds([])
+     setPickerOpen(false)
+-  }, [activeBuildId])
++
++    const stored = useBuildStore
++      .getState()
++      .activeBuild?.contextData.gear?.find((g) => g.slotId === slotId)
++
++    if (!stored || (!stored.itemId && !stored.itemName)) {
++      setSelectedItem(null)
++      setCustomAffixIds([])
++      setAffixTiers({})
++      setIsFreeText(false)
++      setFreeText('')
++      return
++    }
++
++    // Genuine free-text entry (a name with no DB itemId): restore the textarea path.
++    if (!stored.itemId) {
++      setSelectedItem(null)
++      setCustomAffixIds([])
++      setAffixTiers({})
++      setIsFreeText(true)
++      setFreeText(stored.itemName)
++      return
++    }
++
++    // A DB item â€” reconstruct it. If the DB isn't loaded yet (or the id no longer resolves), show empty
++    // for now; the effect re-runs when itemDatabase arrives and hydrates then (no persisted data lost).
++    const item = itemDatabase ? findSearchResultById(stored.itemId, stored.itemName, itemDatabase) : null
++    if (!item || !itemDatabase) {
++      setSelectedItem(null)
++      setCustomAffixIds([])
++      setAffixTiers({})
++      setIsFreeText(false)
++      setFreeText('')
++      return
++    }
++
++    setIsFreeText(false)
++    setFreeText('')
++    setSelectedItem(item)
++    const implicitIds = new Set(resolveAffixes(item, itemDatabase).map((r) => r.affixId))
++    // AffixEntryV2.affixId / tier are optional in the type â€” skip any without an id; carry the tier when present.
++    const customIds: string[] = []
++    const nextTiers: Record<string, number> = {}
++    for (const a of stored.affixes) {
++      if (a.affixId === undefined) continue
++      if (!implicitIds.has(a.affixId)) customIds.push(a.affixId)
++      if (a.tier !== undefined) nextTiers[a.affixId] = a.tier
++    }
++    setCustomAffixIds(customIds)
++    setAffixTiers(nextTiers)
++  }, [activeBuildId, itemDatabase, slotId])
+ 
+   const searchResults = useMemo(() => {
+     if (!itemDatabase || query.trim().length < 1) return []
+diff --git a/lebo/src/features/item-database/itemSearch.test.ts b/lebo/src/features/item-database/itemSearch.test.ts
+index 1e8dc38..8a762b0 100644
+--- a/lebo/src/features/item-database/itemSearch.test.ts
++++ b/lebo/src/features/item-database/itemSearch.test.ts
+@@ -1,5 +1,5 @@
+ import { describe, it, expect } from 'vitest'
+-import { searchItems } from './itemSearch'
++import { searchItems, findSearchResultById } from './itemSearch'
+ import type { ItemDatabase } from '../../shared/types/itemDatabase'
+ 
+ function makeDatabase(overrides?: Partial<ItemDatabase>): ItemDatabase {
+@@ -148,3 +148,40 @@ describe('searchItems', () => {
+     expect(elapsed).toBeLessThan(50)
+   })
+ })
++
++describe('findSearchResultById', () => {
++  const db = makeDatabase({
++    baseItems: [
++      { id: 'iron-helm', name: 'Iron Helm', baseType: 'Helmet', slot: 'helmet', implicitAffixIds: [] },
++    ],
++    uniqueItems: [
++      { id: 'u1', name: 'Ring of Despair', baseType: 'Ring', slot: 'ring', affixes: [] },
++    ],
++    setItems: [
++      { id: 's1', name: 'Forgotten Vestments', baseType: 'Helmet', slot: 'helmet', setName: 'Forgotten', affixes: [], setBonuses: [] },
++    ],
++  })
++
++  it('reconstructs a base SearchResult from an id', () => {
++    expect(findSearchResultById('iron-helm', 'Iron Helm', db)).toEqual({
++      id: 'iron-helm', name: 'Iron Helm', baseType: 'Helmet', slot: 'helmet', type: 'base',
++    })
++  })
++  it('reconstructs a unique SearchResult from an id', () => {
++    expect(findSearchResultById('u1', 'Ring of Despair', db)?.type).toBe('unique')
++  })
++  it('reconstructs a set SearchResult from an id', () => {
++    expect(findSearchResultById('s1', 'Forgotten Vestments', db)?.type).toBe('set')
++  })
++  it('returns null for an unknown id', () => {
++    expect(findSearchResultById('nope', 'Nothing', db)).toBeNull()
++  })
++  it('disambiguates a colliding set/unique id by the stored name', () => {
++    const collide = makeDatabase({
++      uniqueItems: [{ id: 'dup', name: 'Twin Unique', baseType: 'Amulet', slot: 'amulet', affixes: [] }],
++      setItems: [{ id: 'dup', name: 'Twin Set Piece', baseType: 'Amulet', slot: 'amulet', setName: 'Twins', affixes: [], setBonuses: [] }],
++    })
++    expect(findSearchResultById('dup', 'Twin Unique', collide)?.type).toBe('unique')
++    expect(findSearchResultById('dup', 'Twin Set Piece', collide)?.type).toBe('set')
++  })
++})
+diff --git a/lebo/src/features/item-database/itemSearch.ts b/lebo/src/features/item-database/itemSearch.ts
+index 3109987..ac64a5a 100644
+--- a/lebo/src/features/item-database/itemSearch.ts
++++ b/lebo/src/features/item-database/itemSearch.ts
+@@ -70,3 +70,31 @@ export function searchItems(query: string, database: ItemDatabase): SearchResult
+     type: r.type,
+   }))
+ }
++
++function toResult(
++  item: { id: string; name: string; baseType: string; slot: string },
++  type: SearchResult['type']
++): SearchResult {
++  return { id: item.id, name: item.name, baseType: item.baseType, slot: item.slot, type }
++}
++
++// Reconstruct a SearchResult from a persisted GearItemV2.itemId so a loaded / tab-restored gear slot
++// can re-derive its display. Base ids are unique; set and unique ids can collide (see
++// GearSlot.resolveAffixes), so when both exist for one id the stored name breaks the tie â€” defaulting
++// to the set (which the equip path routes collisions to).
++export function findSearchResultById(
++  id: string,
++  name: string,
++  database: ItemDatabase
++): SearchResult | null {
++  const base = database.baseItems.find((b) => b.id === id)
++  if (base) return toResult(base, 'base')
++  const set = database.setItems.find((s) => s.id === id)
++  const unique = database.uniqueItems.find((u) => u.id === id)
++  if (set && unique) {
++    return unique.name === name && set.name !== name ? toResult(unique, 'unique') : toResult(set, 'set')
++  }
++  if (set) return toResult(set, 'set')
++  if (unique) return toResult(unique, 'unique')
++  return null
++}
+diff --git a/lebo/src/features/layout/tabs/GearTab.test.tsx b/lebo/src/features/layout/tabs/GearTab.test.tsx
+new file mode 100644
+index 0000000..74e1156
+--- /dev/null
++++ b/lebo/src/features/layout/tabs/GearTab.test.tsx
+@@ -0,0 +1,50 @@
++import { describe, it, expect, beforeAll, beforeEach } from 'vitest'
++import { render, screen } from '@testing-library/react'
++import { GearTab } from './GearTab'
++import { useBuildStore } from '../../../shared/stores/buildStore'
++import { useGameDataStore } from '../../../shared/stores/gameDataStore'
++import type { BuildState } from '../../../shared/types/build'
++
++const mockBuild: BuildState = {
++  schemaVersion: 2,
++  id: 'build-1',
++  name: 'Test Build',
++  classId: 'acolyte',
++  masteryId: 'lich',
++  characterLevel: 1,
++  budgetEnforced: false,
++  nodeAllocations: {},
++  skillNodeAllocations: {},
++  activeSkillLevels: {},
++  weaverAllocations: {},
++  contextData: { gear: [], skills: [], idols: [] },
++  isPersisted: false,
++  createdAt: '2026-01-01T00:00:00Z',
++  updatedAt: '2026-01-01T00:00:00Z',
++}
++
++describe('GearTab', () => {
++  let initialBuildState: ReturnType<typeof useBuildStore.getState>
++
++  beforeAll(() => {
++    initialBuildState = useBuildStore.getState()
++  })
++
++  beforeEach(() => {
++    useBuildStore.setState(initialBuildState, true)
++    useGameDataStore.getState().setItemDatabase(null)
++  })
++
++  it('shows a guard prompt when there is no active build (gear cannot persist without one)', () => {
++    render(<GearTab />)
++    expect(screen.getByText('Create or load a build to edit gear.')).toBeInTheDocument()
++    expect(screen.queryByText('Equipment')).toBeNull()
++  })
++
++  it('renders the equipment slots once a build is active', () => {
++    useBuildStore.getState().setActiveBuild(mockBuild)
++    render(<GearTab />)
++    expect(screen.getByText('Equipment')).toBeInTheDocument()
++    expect(screen.queryByText('Create or load a build to edit gear.')).toBeNull()
++  })
++})
+diff --git a/lebo/src/features/layout/tabs/GearTab.tsx b/lebo/src/features/layout/tabs/GearTab.tsx
+index d264ccf..20c6774 100644
+--- a/lebo/src/features/layout/tabs/GearTab.tsx
++++ b/lebo/src/features/layout/tabs/GearTab.tsx
+@@ -1,9 +1,23 @@
+ import { GearSlot } from '../../item-database/GearSlot'
+ import { GEAR_SLOTS } from '../../context-panel/gearData'
+ import { useGameDataStore } from '../../../shared/stores/gameDataStore'
++import { useBuildStore } from '../../../shared/stores/buildStore'
+ 
+ export function GearTab() {
+   const itemDatabase = useGameDataStore((s) => s.itemDatabase)
++  const activeBuild = useBuildStore((s) => s.activeBuild)
++
++  // Gear persists onto the active build (updateContextGear no-ops with no build) â€” require one first,
++  // rather than silently discarding equips and losing them on the next tab switch.
++  if (!activeBuild) {
++    return (
++      <div className="h-full flex items-center justify-center">
++        <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>
++          Create or load a build to edit gear.
++        </p>
++      </div>
++    )
++  }
+ 
+   return (
+     <div className="h-full overflow-y-auto p-4">

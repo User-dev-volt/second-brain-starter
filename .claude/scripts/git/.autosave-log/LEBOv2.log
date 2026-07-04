@@ -357,3 +357,1603 @@ index b21a843..feb04d6 100644
  }
  
  export interface SetBonus {
+
+===== 2026-07-03 11:13:51  [LEBOv2]  [AutoSave] 2026-07-03 11:13 =====
+ _bmad-output/implementation-artifacts/4-3-affix-picker-modal.md | 245 ++++++++++++++++++++++++++++++++++++++++++++++++
+ _bmad-output/implementation-artifacts/sprint-status.yaml        |   3 +-
+ 2 files changed, 247 insertions(+), 1 deletion(-)
+
+===== 2026-07-03 11:43:51  [LEBOv2]  [AutoSave] 2026-07-03 11:43 =====
+ _bmad-output/implementation-artifacts/4-3-affix-picker-modal.md | 122 +++++++++++++---------
+ _bmad-output/implementation-artifacts/sprint-status.yaml        |   3 +-
+ lebo/src/features/item-database/AffixPicker.test.tsx            | 153 ---------------------------
+ lebo/src/features/item-database/AffixPicker.tsx                 |  72 -------------
+ lebo/src/features/item-database/AffixPickerModal.test.tsx       | 239 ++++++++++++++++++++++++++++++++++++++++++
+ lebo/src/features/item-database/AffixPickerModal.tsx            | 268 ++++++++++++++++++++++++++++++++++++++++++++++++
+ lebo/src/features/item-database/AffixTierControl.test.tsx       |  12 ++-
+ lebo/src/features/item-database/AffixTierControl.tsx            |  15 +--
+ lebo/src/features/item-database/GearSlot.test.tsx               |  94 ++++++++++++-----
+ lebo/src/features/item-database/GearSlot.tsx                    |  70 ++++++++-----
+ lebo/src/features/item-database/affixCategory.test.ts           |  43 ++++++++
+ lebo/src/features/item-database/affixCategory.ts                | 100 ++++++++++++++++++
+ lebo/src/features/item-database/affixDescription.test.ts        | 126 +++++++++++++++++++++++
+ lebo/src/features/item-database/affixDescription.ts             |  84 +++++++++++++++
+ lebo/src/shared/types/itemDatabase.ts                           |  21 +++-
+ 15 files changed, 1085 insertions(+), 337 deletions(-)
+--- staged source diff (.ts/.tsx/.js/.jsx/.rs) ---
+diff --git a/lebo/src/features/item-database/AffixPicker.test.tsx b/lebo/src/features/item-database/AffixPicker.test.tsx
+deleted file mode 100644
+index 73ad3ba..0000000
+--- a/lebo/src/features/item-database/AffixPicker.test.tsx
++++ /dev/null
+@@ -1,153 +0,0 @@
+-import { describe, it, expect, vi } from 'vitest'
+-import { render, screen, waitFor } from '@testing-library/react'
+-import userEvent from '@testing-library/user-event'
+-import { axe } from 'vitest-axe'
+-import { AffixPicker } from './AffixPicker'
+-import type { AffixEntry } from '../../shared/types/itemDatabase'
+-
+-const mockAffixes: AffixEntry[] = [
+-  {
+-    id: 'affix-armor',
+-    name: 'Added Armor',
+-    type: 'implicit',
+-    itemSlots: ['helmet'],
+-    tiers: [
+-      { tier: 1, minValue: 10, maxValue: 20 },
+-      { tier: 2, minValue: 21, maxValue: 40 },
+-      { tier: 3, minValue: 41, maxValue: 60 },
+-    ],
+-  },
+-  {
+-    id: 'affix-life',
+-    name: 'Increased Health',
+-    type: 'prefix',
+-    itemSlots: ['body'],
+-    tiers: [
+-      { tier: 1, minValue: 10, maxValue: 20 },
+-      { tier: 2, minValue: 21, maxValue: 40 },
+-    ],
+-  },
+-  {
+-    id: 'affix-speed',
+-    name: 'Movement Speed',
+-    type: 'suffix',
+-    itemSlots: ['boots'],
+-    tiers: [{ tier: 1, minValue: 5, maxValue: 10 }],
+-  },
+-]
+-
+-describe('AffixPicker', () => {
+-  it('renders an input with placeholder "Search affixesâ€¦"', () => {
+-    render(
+-      <AffixPicker
+-        allAffixes={mockAffixes}
+-        excludeIds={[]}
+-        onSelect={vi.fn()}
+-        onClose={vi.fn()}
+-      />
+-    )
+-    expect(screen.getByPlaceholderText('Search affixesâ€¦')).toBeInTheDocument()
+-  })
+-
+-  it('empty query shows affixes from allAffixes (up to cap of 8)', async () => {
+-    render(
+-      <AffixPicker
+-        allAffixes={mockAffixes}
+-        excludeIds={[]}
+-        onSelect={vi.fn()}
+-        onClose={vi.fn()}
+-      />
+-    )
+-    await waitFor(() => {
+-      expect(screen.getByText('Added Armor')).toBeInTheDocument()
+-      expect(screen.getByText('Increased Health')).toBeInTheDocument()
+-      expect(screen.getByText('Movement Speed')).toBeInTheDocument()
+-    })
+-  })
+-
+-  it('typing filters affixes by name', async () => {
+-    render(
+-      <AffixPicker
+-        allAffixes={mockAffixes}
+-        excludeIds={[]}
+-        onSelect={vi.fn()}
+-        onClose={vi.fn()}
+-      />
+-    )
+-    const input = screen.getByPlaceholderText('Search affixesâ€¦')
+-    await userEvent.type(input, 'health')
+-
+-    await waitFor(() => {
+-      expect(screen.getByText('Increased Health')).toBeInTheDocument()
+-    })
+-    expect(screen.queryByText('Added Armor')).toBeNull()
+-    expect(screen.queryByText('Movement Speed')).toBeNull()
+-  })
+-
+-  it('excludeIds hides excluded affixes from results', async () => {
+-    render(
+-      <AffixPicker
+-        allAffixes={mockAffixes}
+-        excludeIds={['affix-armor']}
+-        onSelect={vi.fn()}
+-        onClose={vi.fn()}
+-      />
+-    )
+-    await waitFor(() => {
+-      expect(screen.getByText('Increased Health')).toBeInTheDocument()
+-    })
+-    expect(screen.queryByText('Added Armor')).toBeNull()
+-  })
+-
+-  it('selecting an option calls onSelect with the full AffixEntry and calls onClose', async () => {
+-    const onSelect = vi.fn()
+-    const onClose = vi.fn()
+-    render(
+-      <AffixPicker
+-        allAffixes={mockAffixes}
+-        excludeIds={[]}
+-        onSelect={onSelect}
+-        onClose={onClose}
+-      />
+-    )
+-    await waitFor(() => {
+-      expect(screen.getByText('Movement Speed')).toBeInTheDocument()
+-    })
+-    await userEvent.click(screen.getByText('Movement Speed'))
+-
+-    await waitFor(() => {
+-      expect(onSelect).toHaveBeenCalledWith(mockAffixes[2])
+-      expect(onClose).toHaveBeenCalled()
+-    })
+-  })
+-
+-  it('pressing Escape calls onClose', async () => {
+-    const onClose = vi.fn()
+-    render(
+-      <AffixPicker
+-        allAffixes={mockAffixes}
+-        excludeIds={[]}
+-        onSelect={vi.fn()}
+-        onClose={onClose}
+-      />
+-    )
+-    const input = screen.getByPlaceholderText('Search affixesâ€¦')
+-    await userEvent.type(input, '{Escape}')
+-
+-    await waitFor(() => {
+-      expect(onClose).toHaveBeenCalled()
+-    })
+-  })
+-
+-  it('axe accessibility: zero violations', async () => {
+-    const { container } = render(
+-      <AffixPicker
+-        allAffixes={mockAffixes}
+-        excludeIds={[]}
+-        onSelect={vi.fn()}
+-        onClose={vi.fn()}
+-      />
+-    )
+-    expect(await axe(container)).toHaveNoViolations()
+-  })
+-})
+diff --git a/lebo/src/features/item-database/AffixPicker.tsx b/lebo/src/features/item-database/AffixPicker.tsx
+deleted file mode 100644
+index 114470d..0000000
+--- a/lebo/src/features/item-database/AffixPicker.tsx
++++ /dev/null
+@@ -1,72 +0,0 @@
+-import { useState, useMemo } from 'react'
+-import {
+-  Combobox,
+-  ComboboxInput,
+-  ComboboxOptions,
+-  ComboboxOption,
+-} from '@headlessui/react'
+-import type { AffixEntry } from '../../shared/types/itemDatabase'
+-
+-interface AffixPickerProps {
+-  allAffixes: AffixEntry[]
+-  excludeIds: string[]
+-  onSelect: (affix: AffixEntry) => void
+-  onClose: () => void
+-}
+-
+-export function AffixPicker({ allAffixes, excludeIds, onSelect, onClose }: AffixPickerProps) {
+-  const [query, setQuery] = useState('')
+-
+-  const filteredAffixes = useMemo(() => {
+-    return allAffixes
+-      .filter((a) => !excludeIds.includes(a.id))
+-      .filter((a) => a.name.toLowerCase().includes(query.toLowerCase()))
+-      .slice(0, 8)
+-  }, [allAffixes, excludeIds, query])
+-
+-  return (
+-    <div className="relative">
+-      <Combobox<AffixEntry | null>
+-        value={null}
+-        onChange={(affix) => {
+-          if (affix) {
+-            onSelect(affix)
+-            onClose()
+-          }
+-        }}
+-        immediate
+-      >
+-        <ComboboxInput
+-          displayValue={() => query}
+-          onChange={(e) => setQuery(e.target.value)}
+-          onKeyDown={(e) => { if (e.key === 'Escape') onClose() }}
+-          placeholder="Search affixesâ€¦"
+-          autoFocus
+-          className="w-full text-xs px-2 py-1 rounded"
+-          style={{
+-            backgroundColor: 'var(--color-bg-base)',
+-            color: 'var(--color-text-primary)',
+-            border: '1px solid var(--color-bg-elevated)',
+-          }}
+-        />
+-        <ComboboxOptions
+-          className="absolute z-20 w-full max-h-40 overflow-y-auto rounded mt-1"
+-          style={{ backgroundColor: 'var(--color-bg-elevated)' }}
+-        >
+-          {filteredAffixes.map((affix) => (
+-            <ComboboxOption
+-              key={affix.id}
+-              value={affix}
+-              className="px-2 py-1 text-xs cursor-pointer data-[focus]:bg-[var(--color-bg-hover)]"
+-            >
+-              <span style={{ color: 'var(--color-text-primary)' }}>{affix.name}</span>
+-              <span className="ml-2 text-[10px]" style={{ color: 'var(--color-text-muted)' }}>
+-                {affix.type}
+-              </span>
+-            </ComboboxOption>
+-          ))}
+-        </ComboboxOptions>
+-      </Combobox>
+-    </div>
+-  )
+-}
+diff --git a/lebo/src/features/item-database/AffixPickerModal.test.tsx b/lebo/src/features/item-database/AffixPickerModal.test.tsx
+new file mode 100644
+index 0000000..3f04619
+--- /dev/null
++++ b/lebo/src/features/item-database/AffixPickerModal.test.tsx
+@@ -0,0 +1,239 @@
++import { describe, it, expect, vi } from 'vitest'
++import { render, screen, within } from '@testing-library/react'
++import userEvent from '@testing-library/user-event'
++import { axe } from 'vitest-axe'
++import { AffixPickerModal } from './AffixPickerModal'
++import type { ItemDatabase, AffixEntry } from '../../shared/types/itemDatabase'
++
++// Real-shaped corpus (Story 4.0 fields): statKey, modifierType, itemSlots, per-tier min/max, type.
++// The picker DERIVES grouping/description and FILTERS by slot from these â€” assert real behaviour,
++// not "a modal opens".
++const affixes: AffixEntry[] = [
++  {
++    id: 'affix-fire',
++    name: "Pyromancer's",
++    type: 'prefix',
++    itemSlots: ['weapon', 'gloves'],
++    statKey: 'increased_fire_damage',
++    modifierType: 'increased',
++    damageType: 'fire',
++    tiers: [
++      { tier: 1, minValue: 6, maxValue: 12 },
++      { tier: 2, minValue: 48, maxValue: 64 },
++    ],
++    extraStats: [],
++  },
++  {
++    id: 'affix-void',
++    name: 'Inevitable',
++    type: 'prefix',
++    itemSlots: ['weapon'], // WEAPON-ONLY â€” the AC3 probe
++    statKey: 'void_penetration',
++    modifierType: 'flat',
++    damageType: 'void',
++    tiers: [
++      { tier: 1, minValue: 4, maxValue: 4 },
++      { tier: 2, minValue: 5, maxValue: 5 },
++      { tier: 3, minValue: 6, maxValue: 6 },
++    ],
++    extraStats: [],
++  },
++  {
++    id: 'affix-fireres',
++    name: 'of Embers',
++    type: 'suffix',
++    itemSlots: ['weapon', 'helm', 'chest', 'boots'],
++    statKey: 'fire_resistance',
++    modifierType: 'flat',
++    damageType: null,
++    tiers: [{ tier: 1, minValue: 5, maxValue: 9 }],
++    extraStats: [],
++  },
++  {
++    id: 'affix-str',
++    name: 'of the Bear',
++    type: 'suffix',
++    itemSlots: ['weapon', 'helm'],
++    statKey: 'strength',
++    modifierType: 'flat',
++    damageType: null,
++    tiers: [
++      { tier: 1, minValue: 1, maxValue: 2 },
++      { tier: 2, minValue: 3, maxValue: 4 },
++    ],
++    extraStats: [],
++  },
++  {
++    id: 'affix-boots-ms',
++    name: 'of Haste',
++    type: 'suffix',
++    itemSlots: ['boots'],
++    statKey: 'movement_speed',
++    modifierType: 'flat',
++    damageType: null,
++    tiers: [{ tier: 1, minValue: 4, maxValue: 8 }],
++    extraStats: [],
++  },
++  {
++    // Inert stub: null statKey + empty itemSlots (one of the 514). Must NEVER render.
++    id: 'affix-stub',
++    name: 'of Nothing',
++    type: 'suffix',
++    itemSlots: [],
++    statKey: null,
++    tiers: [{ tier: 1, minValue: 0, maxValue: 0 }],
++  },
++]
++
++const itemDatabase: ItemDatabase = { baseItems: [], uniqueItems: [], affixes, setItems: [] }
++
++function renderModal(overrides: Partial<React.ComponentProps<typeof AffixPickerModal>> = {}) {
++  const onApply = vi.fn()
++  const onClose = vi.fn()
++  const utils = render(
++    <AffixPickerModal
++      slotId="weapon"
++      slotName="Weapon"
++      itemDatabase={itemDatabase}
++      existingAffixIds={[]}
++      onApply={onApply}
++      onClose={onClose}
++      {...overrides}
++    />,
++  )
++  return { onApply, onClose, ...utils }
++}
++
++describe('AffixPickerModal', () => {
++  it('groups affixes under Offense / Defense / Utility (derived)', () => {
++    renderModal()
++    expect(screen.getByRole('group', { name: 'Offense' })).toBeInTheDocument()
++    expect(screen.getByRole('group', { name: 'Defense' })).toBeInTheDocument()
++    expect(screen.getByRole('group', { name: 'Utility' })).toBeInTheDocument()
++    // increased_fire_damage â†’ Offense
++    const offense = screen.getByRole('group', { name: 'Offense' })
++    expect(within(offense).getByRole('button', { name: /Pyromancer's/ })).toBeInTheDocument()
++    // fire_resistance â†’ Defense; strength â†’ Utility
++    expect(within(screen.getByRole('group', { name: 'Defense' })).getByRole('button', { name: /of Embers/ })).toBeInTheDocument()
++    expect(within(screen.getByRole('group', { name: 'Utility' })).getByRole('button', { name: /of the Bear/ })).toBeInTheDocument()
++  })
++
++  it('renders the category tag "{Category} Â· max T{n}" from tiers.length', () => {
++    renderModal()
++    // Pyromancer's has 2 tiers â†’ "Offense Â· max T2"; Inevitable has 3 â†’ "Offense Â· max T3"
++    expect(screen.getByText('Offense Â· max T2')).toBeInTheDocument()
++    expect(screen.getByText('Offense Â· max T3')).toBeInTheDocument()
++  })
++
++  it('renders the synthesized description and full-tier range on a row', () => {
++    renderModal()
++    expect(screen.getByText('Increased Fire Damage')).toBeInTheDocument()
++    expect(screen.getByText('6â€“64%')).toBeInTheDocument() // T1 min â†’ Tmax max
++  })
++
++  it('EXCLUDES the inert stubs (null statKey / empty itemSlots) â€” the 514 never render', () => {
++    renderModal()
++    expect(screen.queryByRole('button', { name: /of Nothing/ })).toBeNull()
++  })
++
++  it('AC3: a weapon-only affix shows for the weapon slot', () => {
++    renderModal({ slotId: 'weapon', slotName: 'Weapon' })
++    expect(screen.getByRole('button', { name: /Inevitable/ })).toBeInTheDocument()
++  })
++
++  it('AC3: the same weapon-only affix is HIDDEN for a boots slot', () => {
++    renderModal({ slotId: 'boots', slotName: 'Boots' })
++    expect(screen.queryByRole('button', { name: /Inevitable/ })).toBeNull()
++    // a boots-valid affix still shows
++    expect(screen.getByRole('button', { name: /of Haste/ })).toBeInTheDocument()
++    // and the weapon fire affix does not
++    expect(screen.queryByRole('button', { name: /Pyromancer's/ })).toBeNull()
++  })
++
++  it('search matches the humanized stat name, not just the affix name', async () => {
++    renderModal()
++    await userEvent.type(screen.getByRole('textbox', { name: 'Search affixes' }), 'fire')
++    // Pyromancer's (name lacks "fire" but statKey â†’ "Increased Fire Damage") + of Embers (Fire Resistance)
++    expect(screen.getByRole('button', { name: /Pyromancer's/ })).toBeInTheDocument()
++    expect(screen.getByRole('button', { name: /of Embers/ })).toBeInTheDocument()
++    // non-fire affixes gone
++    expect(screen.queryByRole('button', { name: /Inevitable/ })).toBeNull()
++    expect(screen.queryByRole('button', { name: /of the Bear/ })).toBeNull()
++  })
++
++  it('reports the slot-scoped match count in a live region', () => {
++    renderModal()
++    // weapon-visible: fire, void, fireres, str = 4
++    expect(screen.getByRole('status')).toHaveTextContent('4 affixes for Weapon')
++  })
++
++  it('AC2: selecting an affix reveals the tier control; clicking a pip updates the live value', async () => {
++    renderModal()
++    await userEvent.click(screen.getByRole('button', { name: /Inevitable/ }))
++    // seeded to medianTier = ceil(3/2) = 2 â†’ "T2 â†’ +5"
++    const slider = await screen.findByRole('slider', { name: 'Inevitable tier' })
++    expect(slider).toBeInTheDocument()
++    expect(screen.getByText('T2 â†’ +5')).toBeInTheDocument()
++    slider.focus()
++    await userEvent.keyboard('{ArrowRight}')
++    // tier 3 â†’ +6
++    expect(screen.getByText('T3 â†’ +6')).toBeInTheDocument()
++  })
++
++  it('AC2: Apply (add mode) calls onApply with the chosen affix and tier', async () => {
++    const { onApply } = renderModal()
++    await userEvent.click(screen.getByRole('button', { name: /Inevitable/ }))
++    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
++    expect(onApply).toHaveBeenCalledTimes(1)
++    const [affix, tier] = onApply.mock.calls[0]
++    expect(affix.id).toBe('affix-void')
++    expect(tier).toBe(2) // median seed
++  })
++
++  it('Apply is disabled until an affix is selected', () => {
++    renderModal()
++    expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
++  })
++
++  it('replace mode pre-selects the affix at the given tier and excludes the others', async () => {
++    const { onApply } = renderModal({
++      replacingAffixId: 'affix-void',
++      initialTier: 1,
++      existingAffixIds: ['affix-void', 'affix-fire'],
++    })
++    // pre-selected â†’ Apply enabled immediately, tier seeded to initialTier 1
++    expect(screen.getByText('T1 â†’ +4')).toBeInTheDocument()
++    // the OTHER existing affix (affix-fire) is excluded; the one being replaced stays
++    expect(screen.queryByRole('button', { name: /Pyromancer's/ })).toBeNull()
++    expect(screen.getByRole('button', { name: /Inevitable/ })).toBeInTheDocument()
++    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
++    const [affix, tier] = onApply.mock.calls[0]
++    expect(affix.id).toBe('affix-void')
++    expect(tier).toBe(1)
++  })
++
++  it('renders "Database unavailable" when the item DB is null', () => {
++    renderModal({ itemDatabase: null })
++    expect(screen.getByText('Database unavailable')).toBeInTheDocument()
++  })
++
++  // Accessibility (NFR-14 / Task 7) â€” axe in empty, grouped, and selected states.
++  it('axe: zero violations in the grouped-list state', async () => {
++    const { container } = renderModal()
++    expect(await axe(container)).toHaveNoViolations()
++  })
++
++  it('axe: zero violations in the no-match (empty) state', async () => {
++    const { container } = renderModal()
++    await userEvent.type(screen.getByRole('textbox', { name: 'Search affixes' }), 'zzzznomatch')
++    expect(screen.getByText('Try a different search.')).toBeInTheDocument()
++    expect(await axe(container)).toHaveNoViolations()
++  })
++
++  it('axe: zero violations with an affix selected', async () => {
++    const { container } = renderModal()
++    await userEvent.click(screen.getByRole('button', { name: /Inevitable/ }))
++    await screen.findByRole('slider', { name: 'Inevitable tier' })
++    expect(await axe(container)).toHaveNoViolations()
++  })
++})
+diff --git a/lebo/src/features/item-database/AffixPickerModal.tsx b/lebo/src/features/item-database/AffixPickerModal.tsx
+new file mode 100644
+index 0000000..4d2de8e
+--- /dev/null
++++ b/lebo/src/features/item-database/AffixPickerModal.tsx
+@@ -0,0 +1,268 @@
++import { useMemo, useState } from 'react'
++import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
++import type { AffixEntry, ItemDatabase } from '../../shared/types/itemDatabase'
++import { dbSlotsForGearSlot } from './slotMap'
++import { getAffixCategory, CATEGORY_LABEL, CATEGORY_ORDER, type AffixCategory } from './affixCategory'
++import { formatAffixDescription, formatFullTierRange, humanizeStatKey } from './affixDescription'
++import { AffixTierControl } from './AffixTierControl'
++
++interface AffixPickerModalProps {
++  slotId: string
++  slotName: string
++  itemDatabase: ItemDatabase | null
++  // Affixes already on the item. In ADD mode all are excluded (no duplicates). In REPLACE mode the
++  // affix being swapped (`replacingAffixId`) stays selectable so the user can re-pick it or change tier.
++  existingAffixIds: string[]
++  replacingAffixId?: string
++  initialTier?: number
++  onApply: (affix: AffixEntry, tier: number) => void
++  onClose: () => void
++}
++
++function medianTier(affix: AffixEntry): number {
++  return Math.ceil(affix.tiers.length / 2)
++}
++
++export function AffixPickerModal({
++  slotId,
++  slotName,
++  itemDatabase,
++  existingAffixIds,
++  replacingAffixId,
++  initialTier,
++  onApply,
++  onClose,
++}: AffixPickerModalProps) {
++  const dbSlots = useMemo(() => dbSlotsForGearSlot(slotId), [slotId])
++  const isReplace = replacingAffixId !== undefined
++
++  const [query, setQuery] = useState('')
++  const [selectedId, setSelectedId] = useState<string | null>(replacingAffixId ?? null)
++  const [tierOverride, setTierOverride] = useState<number | null>(null)
++
++  // Slot-scoped, picker-visible affixes (AC3 + the 603 scope in one predicate): a non-empty
++  // `itemSlots` (â‡” resolved statKey â€” the 514 inert stubs have empty slots) that intersects this
++  // gear slot's DB slots. Array-intersection â€” NOT the 4.2 scalar item predicate. Empty = show nowhere.
++  const pickerAffixes = useMemo(() => {
++    if (!itemDatabase) return []
++    const exclude = new Set(existingAffixIds.filter((id) => id !== replacingAffixId))
++    return itemDatabase.affixes.filter(
++      (a) =>
++        !exclude.has(a.id) &&
++        a.itemSlots.length > 0 &&
++        a.itemSlots.some((s) => dbSlots.includes(s)),
++    )
++  }, [itemDatabase, existingAffixIds, replacingAffixId, dbSlots])
++
++  const filtered = useMemo(() => {
++    const q = query.trim().toLowerCase()
++    if (!q) return pickerAffixes
++    return pickerAffixes.filter((a) => {
++      const haystack = `${a.name} ${a.statKey ? humanizeStatKey(a.statKey) : ''} ${formatAffixDescription(a)}`
++      return haystack.toLowerCase().includes(q)
++    })
++  }, [pickerAffixes, query])
++
++  const groups = useMemo(() => {
++    const byCat: Record<AffixCategory, AffixEntry[]> = { offense: [], defense: [], utility: [] }
++    for (const a of filtered) byCat[getAffixCategory(a.statKey)].push(a)
++    for (const cat of CATEGORY_ORDER) byCat[cat].sort((a, b) => a.name.localeCompare(b.name))
++    return CATEGORY_ORDER.map((cat) => ({ cat, affixes: byCat[cat] })).filter((g) => g.affixes.length > 0)
++  }, [filtered])
++
++  const selectedAffix = useMemo(
++    () => (selectedId ? itemDatabase?.affixes.find((a) => a.id === selectedId) ?? null : null),
++    [selectedId, itemDatabase],
++  )
++
++  const seedTier = selectedAffix
++    ? selectedId === replacingAffixId && initialTier !== undefined
++      ? initialTier
++      : medianTier(selectedAffix)
++    : 1
++  const displayTier = tierOverride ?? seedTier
++
++  function selectAffix(id: string) {
++    setSelectedId(id)
++    setTierOverride(null)
++  }
++
++  function apply() {
++    if (selectedAffix) onApply(selectedAffix, displayTier)
++  }
++
++  return (
++    <Dialog open onClose={onClose} className="relative z-50">
++      <div className="fixed inset-0" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} aria-hidden="true" />
++
++      <div className="fixed inset-0 flex items-center justify-center p-4">
++        <DialogPanel
++          className="rounded-lg w-full max-w-2xl max-h-[85vh] flex flex-col shadow-xl overflow-hidden"
++          style={{ backgroundColor: 'var(--color-bg-surface)', border: '1px solid var(--color-bg-elevated)' }}
++        >
++          <div className="flex items-center justify-between px-5 pt-4 pb-3">
++            <DialogTitle className="text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>
++              {isReplace ? 'Replace' : 'Add'} affix â€” {slotName}
++            </DialogTitle>
++            <button
++              type="button"
++              onClick={onClose}
++              aria-label="Close affix picker"
++              className="text-lg leading-none"
++              style={{ color: 'var(--color-text-muted)', background: 'none', border: 'none', cursor: 'pointer' }}
++            >
++              Ã—
++            </button>
++          </div>
++
++          {itemDatabase === null ? (
++            <div className="px-5 pb-6" style={{ color: 'var(--color-text-muted)' }}>
++              <p className="text-sm">Database unavailable</p>
++            </div>
++          ) : (
++            <div className="flex-1 min-h-0 flex flex-col">
++              <div className="px-5 pb-3">
++                <input
++                  type="text"
++                  value={query}
++                  onChange={(e) => setQuery(e.target.value)}
++                  placeholder="Search by affix or stat nameâ€¦"
++                  aria-label="Search affixes"
++                  autoFocus
++                  className="w-full text-sm px-3 py-2 rounded"
++                  style={{
++                    backgroundColor: 'var(--color-bg-base)',
++                    color: 'var(--color-text-primary)',
++                    border: '1px solid var(--color-bg-elevated)',
++                  }}
++                />
++                <div role="status" aria-live="polite" className="text-xs mt-2" style={{ color: 'var(--color-text-muted)' }}>
++                  {filtered.length === 0
++                    ? 'No affixes match these filters'
++                    : `${filtered.length} affix${filtered.length === 1 ? '' : 'es'} for ${slotName}`}
++                </div>
++              </div>
++
++              <div className="flex-1 min-h-0 overflow-y-auto px-5 pb-2 flex flex-col gap-4">
++                {groups.length === 0 ? (
++                  <div className="flex-1 flex items-center justify-center text-sm py-8" style={{ color: 'var(--color-text-muted)' }}>
++                    Try a different search.
++                  </div>
++                ) : (
++                  groups.map((group) => (
++                    <div key={group.cat} role="group" aria-label={CATEGORY_LABEL[group.cat]}>
++                      <div
++                        className="text-[11px] uppercase tracking-wide mb-1.5 flex items-center gap-2"
++                        style={{ color: 'var(--color-text-muted)' }}
++                      >
++                        <span>{CATEGORY_LABEL[group.cat]}</span>
++                        <span style={{ color: 'var(--color-text-secondary)' }}>{group.affixes.length}</span>
++                      </div>
++                      <div className="flex flex-col gap-1">
++                        {group.affixes.map((affix) => {
++                          const isSelected = affix.id === selectedId
++                          return (
++                            <button
++                              key={affix.id}
++                              type="button"
++                              aria-pressed={isSelected}
++                              onClick={() => selectAffix(affix.id)}
++                              className="text-left rounded px-3 py-2 flex flex-col gap-0.5"
++                              style={{
++                                backgroundColor: isSelected ? 'var(--color-bg-hover)' : 'var(--color-bg-elevated)',
++                                border: isSelected
++                                  ? '1px solid var(--color-accent-gold)'
++                                  : '1px solid var(--color-bg-elevated)',
++                                cursor: 'pointer',
++                              }}
++                            >
++                              <span className="flex items-baseline justify-between gap-2">
++                                <span
++                                  className="text-[13px] font-semibold truncate"
++                                  style={{ color: isSelected ? 'var(--color-accent-gold)' : 'var(--color-text-primary)' }}
++                                >
++                                  {affix.name}
++                                </span>
++                                <span className="text-[11px] shrink-0" style={{ color: 'var(--color-text-muted)' }}>
++                                  {CATEGORY_LABEL[group.cat]} Â· max T{affix.tiers.length}
++                                </span>
++                              </span>
++                              <span className="flex items-baseline justify-between gap-2">
++                                <span className="text-[12px] truncate" style={{ color: 'var(--color-text-secondary)' }}>
++                                  {formatAffixDescription(affix)}
++                                </span>
++                                <span
++                                  className="text-[11px] shrink-0"
++                                  style={{ color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}
++                                >
++                                  {formatFullTierRange(affix)}
++                                </span>
++                              </span>
++                            </button>
++                          )
++                        })}
++                      </div>
++                    </div>
++                  ))
++                )}
++              </div>
++
++              {/* Selected-affix tier row + Apply (AC2). Reuses AffixTierControl â€” the de-facto TierPips. */}
++              <div
++                className="flex items-center justify-between gap-3 px-5 py-3"
++                style={{ borderTop: '1px solid var(--color-bg-elevated)' }}
++              >
++                <div className="flex items-center gap-3 min-w-0">
++                  {selectedAffix ? (
++                    <>
++                      <span className="text-[13px] font-semibold truncate" style={{ color: 'var(--color-text-primary)' }}>
++                        {selectedAffix.name}
++                      </span>
++                      <AffixTierControl
++                        affixEntry={selectedAffix}
++                        currentTier={displayTier}
++                        onChange={(tier) => setTierOverride(tier)}
++                      />
++                    </>
++                  ) : (
++                    <span className="text-[12px]" style={{ color: 'var(--color-text-muted)' }}>
++                      Select an affix to set its tier
++                    </span>
++                  )}
++                </div>
++                <div className="flex items-center gap-3 shrink-0">
++                  <button
++                    type="button"
++                    onClick={onClose}
++                    className="px-4 py-1.5 text-sm rounded"
++                    style={{
++                      backgroundColor: 'var(--color-bg-elevated)',
++                      color: 'var(--color-text-primary)',
++                      border: '1px solid var(--color-bg-hover)',
++                    }}
++                  >
++                    Cancel
++                  </button>
++                  <button
++                    type="button"
++                    disabled={!selectedAffix}
++                    onClick={apply}
++                    className="px-4 py-1.5 text-sm rounded font-medium"
++                    style={{
++                      backgroundColor: selectedAffix ? 'var(--color-accent-gold)' : 'var(--color-bg-elevated)',
++                      color: selectedAffix ? 'var(--color-bg-base)' : 'var(--color-text-muted)',
++                      border: 'none',
++                      cursor: selectedAffix ? 'pointer' : 'not-allowed',
++                    }}
++                  >
++                    Apply
++                  </button>
++                </div>
++              </div>
++            </div>
++          )}
++        </DialogPanel>
++      </div>
++    </Dialog>
++  )
++}
+diff --git a/lebo/src/features/item-database/AffixTierControl.test.tsx b/lebo/src/features/item-database/AffixTierControl.test.tsx
+index 7fe095d..b9b9a1b 100644
+--- a/lebo/src/features/item-database/AffixTierControl.test.tsx
++++ b/lebo/src/features/item-database/AffixTierControl.test.tsx
+@@ -10,6 +10,7 @@ const mockAffixEntry: AffixEntry = {
+   name: 'Added Fire Damage',
+   type: 'prefix',
+   itemSlots: [],
++  modifierType: 'flat',
+   tiers: [
+     { tier: 1, minValue: 1, maxValue: 5 },
+     { tier: 2, minValue: 6, maxValue: 12 },
+@@ -73,10 +74,15 @@ describe('AffixTierControl', () => {
+     expect(onChange).not.toHaveBeenCalled()
+   })
+ 
+-  test('aria-valuetext shows correct minâ€“max string for current tier', () => {
++  test('aria-valuetext shows the tier range for current tier', () => {
+     renderControl(2)
+     const slider = screen.getByRole('slider')
+-    expect(slider).toHaveAttribute('aria-valuetext', 'Tier 2: 6â€“12')
++    expect(slider).toHaveAttribute('aria-valuetext', 'Tier 2: +6 â†’ +12')
++  })
++
++  test('visible value text is "T{n} â†’ {range}" (AC2)', () => {
++    renderControl(2)
++    expect(screen.getByText('T2 â†’ +6 â†’ +12')).toBeInTheDocument()
+   })
+ 
+   test('aria-valuetext shows single value when min equals max', () => {
+@@ -88,7 +94,7 @@ describe('AffixTierControl', () => {
+       <AffixTierControl affixEntry={singleValueAffix} currentTier={1} onChange={vi.fn()} />
+     )
+     const slider = screen.getByRole('slider')
+-    expect(slider).toHaveAttribute('aria-valuetext', 'Tier 1: 10')
++    expect(slider).toHaveAttribute('aria-valuetext', 'Tier 1: +10')
+   })
+ 
+   test('single-tier: Left and Right arrow both do NOT call onChange', async () => {
+diff --git a/lebo/src/features/item-database/AffixTierControl.tsx b/lebo/src/features/item-database/AffixTierControl.tsx
+index 10f3cdc..7ba23be 100644
+--- a/lebo/src/features/item-database/AffixTierControl.tsx
++++ b/lebo/src/features/item-database/AffixTierControl.tsx
+@@ -1,4 +1,5 @@
+ import type { AffixEntry } from '../../shared/types/itemDatabase'
++import { formatTierRange } from './affixDescription'
+ 
+ interface AffixTierControlProps {
+   affixEntry: AffixEntry
+@@ -8,11 +9,10 @@ interface AffixTierControlProps {
+ 
+ export function AffixTierControl({ affixEntry, currentTier, onChange }: AffixTierControlProps) {
+   const tierCount = affixEntry.tiers.length
+-  const tierData = affixEntry.tiers[currentTier - 1]
+-  const valueText =
+-    tierData.minValue === tierData.maxValue
+-      ? String(tierData.minValue)
+-      : `${tierData.minValue}â€“${tierData.maxValue}`
++  // Story 4.3: visible text is now "T{n} â†’ {range}{unit}" (AC2) â€” the range + derived unit come from
++  // the shared formatTierRange; previously only the bare "minâ€“max" showed and the tier was aria-only.
++  const rangeText = formatTierRange(affixEntry, currentTier)
++  const valueText = `T${currentTier} â†’ ${rangeText}`
+ 
+   function handleKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+     if (e.key === 'ArrowRight') {
+@@ -31,7 +31,7 @@ export function AffixTierControl({ affixEntry, currentTier, onChange }: AffixTie
+       aria-valuemax={tierCount}
+       aria-valuenow={currentTier}
+       aria-label={`${affixEntry.name} tier`}
+-      aria-valuetext={`Tier ${currentTier}: ${valueText}`}
++      aria-valuetext={`Tier ${currentTier}: ${rangeText}`}
+       tabIndex={0}
+       onKeyDown={handleKeyDown}
+       style={{ display: 'flex', alignItems: 'center', gap: 8 }}
+@@ -68,8 +68,9 @@ export function AffixTierControl({ affixEntry, currentTier, onChange }: AffixTie
+       <span
+         style={{
+           fontFamily: 'var(--font-mono)',
+-          width: 40,
++          minWidth: 88,
+           textAlign: 'right',
++          whiteSpace: 'nowrap',
+           fontSize: 13,
+           color: 'var(--color-text-primary)',
+         }}
+diff --git a/lebo/src/features/item-database/GearSlot.test.tsx b/lebo/src/features/item-database/GearSlot.test.tsx
+index c6ac049..430fdb3 100644
+--- a/lebo/src/features/item-database/GearSlot.test.tsx
++++ b/lebo/src/features/item-database/GearSlot.test.tsx
+@@ -7,23 +7,44 @@ import { useBuildStore } from '../../shared/stores/buildStore'
+ import type { ItemDatabase, AffixEntry } from '../../shared/types/itemDatabase'
+ import type { BuildState } from '../../shared/types/build'
+ 
+-vi.mock('./AffixPicker', () => ({
+-  AffixPicker: ({ onSelect, onClose }: { onSelect: (a: AffixEntry) => void; onClose: () => void }) => (
+-    <button
+-      data-testid="mock-affix-picker"
+-      onClick={() => {
+-        onSelect({
+-          id: 'affix-speed',
+-          name: 'Movement Speed',
+-          type: 'suffix',
+-          itemSlots: ['boots'],
+-          tiers: [{ tier: 1, minValue: 5, maxValue: 10 }],
+-        })
+-        onClose()
+-      }}
+-    >
+-      Pick affix
+-    </button>
++// Story 4.3: the inline AffixPicker combobox was replaced by AffixPickerModal. GearSlot's own tests
++// mock the modal (its internals are covered by AffixPickerModal.test.tsx) and assert GearSlot's
++// wiring: open add/replace mode, receive onApply, write through the store.
++vi.mock('./AffixPickerModal', () => ({
++  AffixPickerModal: ({
++    onApply,
++    onClose,
++    replacingAffixId,
++  }: {
++    onApply: (a: AffixEntry, tier: number) => void
++    onClose: () => void
++    replacingAffixId?: string
++  }) => (
++    <div data-testid="mock-affix-modal">
++      <span data-testid="mock-replacing">{replacingAffixId ?? 'none'}</span>
++      <button
++        data-testid="mock-apply-affix"
++        onClick={() =>
++          onApply(
++            {
++              id: 'affix-speed',
++              name: 'Movement Speed',
++              type: 'suffix',
++              itemSlots: ['helm', 'helmet'],
++              statKey: 'movement_speed',
++              modifierType: 'flat',
++              tiers: [{ tier: 1, minValue: 5, maxValue: 10 }],
++            },
++            1,
++          )
++        }
++      >
++        Apply affix
++      </button>
++      <button data-testid="mock-close-affix" onClick={onClose}>
++        Close
++      </button>
++    </div>
+   ),
+ }))
+ 
+@@ -501,7 +522,7 @@ describe('GearSlot', () => {
+     })
+   })
+ 
+-  it('clicking "+" shows AffixPicker (mocked)', async () => {
++  it('clicking "+ Add affix" opens the affix picker modal (add mode)', async () => {
+     render(
+       <GearSlot slotId="helmet" slotName="Helmet" itemDatabase={mockItemDatabase} />
+     )
+@@ -514,11 +535,13 @@ describe('GearSlot', () => {
+     await userEvent.click(addBtn)
+ 
+     await waitFor(() => {
+-      expect(screen.getByTestId('mock-affix-picker')).toBeInTheDocument()
++      expect(screen.getByTestId('mock-affix-modal')).toBeInTheDocument()
++      // add mode â†’ no affix being replaced
++      expect(screen.getByTestId('mock-replacing')).toHaveTextContent('none')
+     })
+   })
+ 
+-  it('selecting an affix from AffixPicker adds an AffixTierControl for that affix', async () => {
++  it('applying an affix from the modal adds an AffixTierControl for that affix', async () => {
+     render(
+       <GearSlot slotId="helmet" slotName="Helmet" itemDatabase={mockItemDatabase} />
+     )
+@@ -529,14 +552,14 @@ describe('GearSlot', () => {
+ 
+     const addBtn = await screen.findByRole('button', { name: 'Add custom affix to Helmet' })
+     await userEvent.click(addBtn)
+-    await userEvent.click(screen.getByTestId('mock-affix-picker'))
++    await userEvent.click(screen.getByTestId('mock-apply-affix'))
+ 
+     await waitFor(() => {
+       expect(screen.getByRole('slider', { name: 'Movement Speed tier' })).toBeInTheDocument()
+     })
+   })
+ 
+-  it('custom affix tier change updates the encoded affix string in the store', async () => {
++  it('applying an affix writes it into the store', async () => {
+     render(
+       <GearSlot slotId="helmet" slotName="Helmet" itemDatabase={mockItemDatabase} />
+     )
+@@ -547,7 +570,7 @@ describe('GearSlot', () => {
+ 
+     const addBtn = await screen.findByRole('button', { name: 'Add custom affix to Helmet' })
+     await userEvent.click(addBtn)
+-    await userEvent.click(screen.getByTestId('mock-affix-picker'))
++    await userEvent.click(screen.getByTestId('mock-apply-affix'))
+ 
+     // Movement Speed has only 1 tier (5â€“10), so store should contain it
+     await waitFor(() => {
+@@ -557,6 +580,27 @@ describe('GearSlot', () => {
+     })
+   })
+ 
++  it('clicking an existing custom affix opens the modal in replace mode', async () => {
++    render(
++      <GearSlot slotId="helmet" slotName="Helmet" itemDatabase={mockItemDatabase} />
++    )
++    const input = screen.getByPlaceholderText('Search itemsâ€¦')
++    await userEvent.type(input, 'Iron')
++    await waitFor(() => expect(screen.getByText('Iron Helm')).toBeInTheDocument())
++    await userEvent.click(screen.getByText('Iron Helm'))
++
++    // Add a custom affix first
++    await userEvent.click(await screen.findByRole('button', { name: 'Add custom affix to Helmet' }))
++    await userEvent.click(screen.getByTestId('mock-apply-affix'))
++    await screen.findByRole('slider', { name: 'Movement Speed tier' })
++
++    // Click the custom affix name â†’ replace mode, pre-targeting that affix id
++    await userEvent.click(screen.getByRole('button', { name: 'Replace Movement Speed' }))
++    await waitFor(() => {
++      expect(screen.getByTestId('mock-replacing')).toHaveTextContent('affix-speed')
++    })
++  })
++
+   // Story 4.1 â€” position sourced from item-DB AffixEntry.type
+ 
+   it('sources position from affix type â€” implicit affix maps to prefix (D3)', async () => {
+@@ -588,12 +632,12 @@ describe('GearSlot', () => {
+ 
+     const addBtn = await screen.findByRole('button', { name: 'Add custom affix to Helmet' })
+     await userEvent.click(addBtn)
+-    await userEvent.click(screen.getByTestId('mock-affix-picker'))
++    await userEvent.click(screen.getByTestId('mock-apply-affix'))
+ 
+     await waitFor(() => {
+       const gear = useBuildStore.getState().activeBuild!.contextData.gear
+       const slot = gear.find((g) => g.slotId === 'helmet')
+-      // mock picker adds affix-speed (type 'suffix') â†’ position 'suffix'
++      // modal applies affix-speed (type 'suffix') â†’ position 'suffix'
+       const speed = slot?.affixes.find((a) => a.affixId === 'affix-speed')
+       expect(speed?.position).toBe('suffix')
+     })
+diff --git a/lebo/src/features/item-database/GearSlot.tsx b/lebo/src/features/item-database/GearSlot.tsx
+index 25a8fb4..d149f80 100644
+--- a/lebo/src/features/item-database/GearSlot.tsx
++++ b/lebo/src/features/item-database/GearSlot.tsx
+@@ -7,7 +7,7 @@ import {
+   ComboboxOption,
+ } from '@headlessui/react'
+ import { AffixTierControl } from './AffixTierControl'
+-import { AffixPicker } from './AffixPicker'
++import { AffixPickerModal } from './AffixPickerModal'
+ import type { ItemDatabase, AffixEntry, SearchResult } from '../../shared/types/itemDatabase'
+ import type { AffixEntryV2 } from '../../shared/types/build'
+ import { useBuildStore } from '../../shared/stores/buildStore'
+@@ -76,7 +76,8 @@ export function GearSlot({ slotId, slotName, itemDatabase }: GearSlotProps) {
+ 
+   const [isFreeText, setIsFreeText] = useState<boolean>(false)
+   const [freeText, setFreeText] = useState<string>('')
+-  const [affixPickerOpen, setAffixPickerOpen] = useState<boolean>(false)
++  // null = closed. {} = add mode. { replacingAffixId, initialTier } = replace mode (Story 4.3).
++  const [affixModal, setAffixModal] = useState<{ replacingAffixId?: string; initialTier?: number } | null>(null)
+   const [customAffixIds, setCustomAffixIds] = useState<string[]>([])
+   const [pickerOpen, setPickerOpen] = useState<boolean>(false)
+ 
+@@ -88,7 +89,7 @@ export function GearSlot({ slotId, slotName, itemDatabase }: GearSlotProps) {
+     setAffixTiers({})
+     setIsFreeText(false)
+     setFreeText('')
+-    setAffixPickerOpen(false)
++    setAffixModal(null)
+     setCustomAffixIds([])
+     setPickerOpen(false)
+   }, [activeBuildId])
+@@ -143,7 +144,7 @@ export function GearSlot({ slotId, slotName, itemDatabase }: GearSlotProps) {
+     setSelectedItem(item)
+     setQuery('')
+     setCustomAffixIds([])
+-    setAffixPickerOpen(false)
++    setAffixModal(null)
+     const resolved = itemDatabase ? resolveAffixes(item, itemDatabase) : []
+     const initialTiers: Record<string, number> = {}
+     for (const r of resolved) {
+@@ -159,7 +160,7 @@ export function GearSlot({ slotId, slotName, itemDatabase }: GearSlotProps) {
+     setAffixTiers({})
+     setIsFreeText(false)
+     setFreeText('')
+-    setAffixPickerOpen(false)
++    setAffixModal(null)
+     setCustomAffixIds([])
+     writeToStore(null, [], {})
+   }
+@@ -171,20 +172,27 @@ export function GearSlot({ slotId, slotName, itemDatabase }: GearSlotProps) {
+     writeToStore(selectedItem, [...resolvedAffixes, ...customResolvedAffixes], nextTiers)
+   }
+ 
+-  function handleAddCustomAffix(affix: AffixEntry) {
++  // Story 4.3: single apply path for the modal â€” ADD appends a new custom affix, REPLACE swaps an
++  // existing custom affix in place (no duplicate). Both write the chosen tier through writeToStore.
++  function handleApplyAffix(affix: AffixEntry, tier: number, replacingAffixId?: string) {
+     // Fixed-affix items (unique/set) are read-only â€” never craft affixes onto them.
+     if (selectedItem?.type !== 'base') return
+-    const initialTier = medianTier(affix)
+-    const newCustomIds = [...customAffixIds, affix.id]
+-    const newTiers = { ...affixTiersRef.current, [affix.id]: initialTier }
++    const newCustomIds = replacingAffixId
++      ? customAffixIds.map((id) => (id === replacingAffixId ? affix.id : id))
++      : customAffixIds.includes(affix.id)
++        ? customAffixIds
++        : [...customAffixIds, affix.id]
++    const newTiers = { ...affixTiersRef.current, [affix.id]: tier }
++    if (replacingAffixId && replacingAffixId !== affix.id) delete newTiers[replacingAffixId]
+     setCustomAffixIds(newCustomIds)
+     setAffixTiers(newTiers)
+-    setAffixPickerOpen(false)
++    setAffixModal(null)
+     const newCustomResolved: ResolvedAffix[] = newCustomIds.flatMap((id) => {
+       const entry = itemDatabase?.affixes.find((a) => a.id === id)
+       return entry ? [{ affixId: id, name: entry.name, affixEntry: entry }] : []
+     })
+     writeToStore(selectedItem, [...resolvedAffixes, ...newCustomResolved], newTiers)
++    showSuccessToast(replacingAffixId ? `Updated ${affix.name}` : `Added ${affix.name}`)
+   }
+ 
+   return (
+@@ -393,12 +401,19 @@ export function GearSlot({ slotId, slotName, itemDatabase }: GearSlotProps) {
+               ))}
+               {customResolvedAffixes.map((r) => (
+                 <div key={r.affixId} className="flex items-center gap-2 px-1">
+-                  <span
+-                    className="flex-1 text-[13px] truncate"
+-                    style={{ color: 'var(--color-text-secondary)' }}
++                  <button
++                    onClick={() =>
++                      setAffixModal({
++                        replacingAffixId: r.affixId,
++                        initialTier: affixTiers[r.affixId] ?? medianTier(r.affixEntry),
++                      })
++                    }
++                    aria-label={`Replace ${r.name}`}
++                    className="flex-1 text-left text-[13px] truncate"
++                    style={{ color: 'var(--color-text-secondary)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                   >
+                     {r.name}
+-                  </span>
++                  </button>
+                   <AffixTierControl
+                     affixEntry={r.affixEntry}
+                     currentTier={affixTiers[r.affixId] ?? medianTier(r.affixEntry)}
+@@ -407,26 +422,13 @@ export function GearSlot({ slotId, slotName, itemDatabase }: GearSlotProps) {
+                 </div>
+               ))}
+               <button
+-                onClick={() => setAffixPickerOpen(true)}
++                onClick={() => setAffixModal({})}
+                 aria-label={`Add custom affix to ${slotName}`}
+                 className="text-[11px] self-start mt-1"
+                 style={{ color: 'var(--color-text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+               >
+                 + Add affix
+               </button>
+-              {affixPickerOpen && itemDatabase && (
+-                <div className="relative mt-1">
+-                  <AffixPicker
+-                    allAffixes={itemDatabase.affixes}
+-                    excludeIds={[
+-                      ...resolvedAffixes.map((r) => r.affixId),
+-                      ...customAffixIds,
+-                    ]}
+-                    onSelect={handleAddCustomAffix}
+-                    onClose={() => setAffixPickerOpen(false)}
+-                  />
+-                </div>
+-              )}
+             </>
+           )}
+         </>
+@@ -445,6 +447,18 @@ export function GearSlot({ slotId, slotName, itemDatabase }: GearSlotProps) {
+           onClose={() => setPickerOpen(false)}
+         />
+       )}
++      {affixModal && itemDatabase && selectedItem?.type === 'base' && (
++        <AffixPickerModal
++          slotId={slotId}
++          slotName={slotName}
++          itemDatabase={itemDatabase}
++          existingAffixIds={[...resolvedAffixes.map((r) => r.affixId), ...customAffixIds]}
++          replacingAffixId={affixModal.replacingAffixId}
++          initialTier={affixModal.initialTier}
++          onApply={(affix, tier) => handleApplyAffix(affix, tier, affixModal.replacingAffixId)}
++          onClose={() => setAffixModal(null)}
++        />
++      )}
+     </>
+   )
+ }
+diff --git a/lebo/src/features/item-database/affixCategory.test.ts b/lebo/src/features/item-database/affixCategory.test.ts
+new file mode 100644
+index 0000000..4409f28
+--- /dev/null
++++ b/lebo/src/features/item-database/affixCategory.test.ts
+@@ -0,0 +1,43 @@
++import { describe, it, expect } from 'vitest'
++import { getAffixCategory, CATEGORY_LABEL, CATEGORY_ORDER } from './affixCategory'
++
++describe('getAffixCategory', () => {
++  it('maps damage / crit / penetration / speed keys to Offense', () => {
++    expect(getAffixCategory('increased_fire_damage')).toBe('offense')
++    expect(getAffixCategory('critical_strike_multiplier')).toBe('offense')
++    expect(getAffixCategory('void_penetration')).toBe('offense')
++    expect(getAffixCategory('attack_speed')).toBe('offense')
++  })
++
++  it('maps resistances / HP / armour / dodge keys to Defense', () => {
++    expect(getAffixCategory('fire_resistance')).toBe('defense')
++    expect(getAffixCategory('max_hp')).toBe('defense')
++    expect(getAffixCategory('armor')).toBe('defense')
++    expect(getAffixCategory('dodge_rating')).toBe('defense')
++  })
++
++  it('maps attributes / movement / leech keys to Utility', () => {
++    expect(getAffixCategory('strength')).toBe('utility')
++    expect(getAffixCategory('movement_speed')).toBe('utility')
++    expect(getAffixCategory('life_leech_percent')).toBe('utility')
++  })
++
++  it('routes minion damage to Utility (minion wins over the damage signal)', () => {
++    expect(getAffixCategory('increased_minion_damage')).toBe('utility')
++  })
++
++  it('falls back to Utility for an unmapped key (declared default)', () => {
++    expect(getAffixCategory('some_future_unmapped_key')).toBe('utility')
++  })
++
++  it('falls back to Utility for a null / undefined statKey (the inert stubs)', () => {
++    expect(getAffixCategory(null)).toBe('utility')
++    expect(getAffixCategory(undefined)).toBe('utility')
++  })
++})
++
++describe('category presentation', () => {
++  it('renders Offense â†’ Defense â†’ Utility in order', () => {
++    expect(CATEGORY_ORDER.map((c) => CATEGORY_LABEL[c])).toEqual(['Offense', 'Defense', 'Utility'])
++  })
++})
+diff --git a/lebo/src/features/item-database/affixCategory.ts b/lebo/src/features/item-database/affixCategory.ts
+new file mode 100644
+index 0000000..e1e99ee
+--- /dev/null
++++ b/lebo/src/features/item-database/affixCategory.ts
+@@ -0,0 +1,100 @@
++// Story 4.3 â€” DERIVED Offense / Defense / Utility grouping for the affix picker.
++//
++// FR-28 mandates an Offense/Defense/Utility tag on every affix, but the shipped corpus
++// (affixes.json) carries NO `category` field (0/1117). This is an authored map over the 55 resolved
++// statKeys, seeded from the engine's own StatKey section headers (scoring-core modifier.rs /
++// game_data_loader.rs `stat_key_from_str`). It reads the real `statKey` â€” it fabricates nothing.
++//
++// Rule (declared in the Source Audit): any statKey NOT explicitly mapped here â€” including a null
++// statKey (the 514 inert stubs) â€” falls to Utility. The buckets are grouped by the seed reasoning so
++// the classification is auditable at a glance.
++
++export type AffixCategory = 'offense' | 'defense' | 'utility'
++
++// Damage / crit / penetration / attack+cast speed / area.
++const OFFENSE_KEYS: readonly string[] = [
++  'increased_damage',
++  'increased_spell_damage',
++  'increased_melee_damage',
++  'increased_ranged_damage',
++  'increased_fire_damage',
++  'increased_cold_damage',
++  'increased_lightning_damage',
++  'increased_physical_damage',
++  'increased_void_damage',
++  'increased_necrotic_damage',
++  'increased_poison_damage',
++  'increased_bleed_damage',
++  'more_damage',
++  'critical_strike_chance',
++  'critical_strike_multiplier',
++  'physical_penetration',
++  'fire_penetration',
++  'cold_penetration',
++  'lightning_penetration',
++  'void_penetration',
++  'elemental_penetration',
++  'attack_speed',
++  'cast_speed',
++  'area_of_effect',
++]
++
++// Resistances / max HP / ward / armour / dodge / block / endurance / crit-avoidance /
++// healing-effectiveness / regen.
++const DEFENSE_KEYS: readonly string[] = [
++  'fire_resistance',
++  'cold_resistance',
++  'lightning_resistance',
++  'void_resistance',
++  'necrotic_resistance',
++  'poison_resistance',
++  'physical_resistance',
++  'all_resistances',
++  'max_hp',
++  'max_hp_percent',
++  'hp_regen_per_sec',
++  'ward_per_second',
++  'armor',
++  'dodge_rating',
++  'block_chance',
++  'endurance_threshold',
++  'endurance_percent',
++  'critical_strike_avoidance',
++  'healing_effectiveness',
++]
++
++// Attributes / movement speed / leech / ailment durations / minion (minion wins over the "damage"
++// signal in increased_minion_damage â€” per the seed, minion â†’ Utility).
++const UTILITY_KEYS: readonly string[] = [
++  'strength',
++  'dexterity',
++  'intelligence',
++  'vitality',
++  'attunement',
++  'movement_speed',
++  'life_leech_percent',
++  'bleed_duration',
++  'poison_duration',
++  'ignite_duration',
++  'freeze_rate_multiplier',
++  'increased_minion_damage',
++]
++
++const CATEGORY_BY_KEY: Record<string, AffixCategory> = {}
++for (const k of OFFENSE_KEYS) CATEGORY_BY_KEY[k] = 'offense'
++for (const k of DEFENSE_KEYS) CATEGORY_BY_KEY[k] = 'defense'
++for (const k of UTILITY_KEYS) CATEGORY_BY_KEY[k] = 'utility'
++
++export function getAffixCategory(statKey: string | null | undefined): AffixCategory {
++  if (!statKey) return 'utility'
++  return CATEGORY_BY_KEY[statKey] ?? 'utility'
++}
++
++export const CATEGORY_LABEL: Record<AffixCategory, string> = {
++  offense: 'Offense',
++  defense: 'Defense',
++  utility: 'Utility',
++}
++
++// Fixed render order for the grouped picker (Offense â†’ Defense â†’ Utility).
++export const CATEGORY_ORDER: readonly AffixCategory[] = ['offense', 'defense', 'utility']
+diff --git a/lebo/src/features/item-database/affixDescription.test.ts b/lebo/src/features/item-database/affixDescription.test.ts
+new file mode 100644
+index 0000000..3211404
+--- /dev/null
++++ b/lebo/src/features/item-database/affixDescription.test.ts
+@@ -0,0 +1,126 @@
++import { describe, it, expect } from 'vitest'
++import type { AffixEntry } from '../../shared/types/itemDatabase'
++import { humanizeStatKey, formatAffixDescription, formatTierRange, formatFullTierRange } from './affixDescription'
++
++// Real-shaped affixes mirroring affixes.json (Story 4.0 corpus). Values are asserted, not snapshotted â€”
++// these are the SYNTHESIZED / DERIVED honesty surfaces (Source Audit).
++
++const increasedFireDamage: AffixEntry = {
++  id: 'affix-pyromancer-s-prefix',
++  name: "Pyromancer's",
++  type: 'prefix',
++  itemSlots: ['weapon', 'gloves'],
++  statKey: 'increased_fire_damage',
++  modifierType: 'increased',
++  scope: 'generic',
++  damageType: 'fire',
++  tiers: [
++    { tier: 1, minValue: 6, maxValue: 12 },
++    { tier: 2, minValue: 48, maxValue: 64 },
++  ],
++  extraStats: [],
++}
++
++const flatArmour: AffixEntry = {
++  id: 'affix-flat-armour',
++  name: 'of Plating',
++  type: 'suffix',
++  itemSlots: ['chest'],
++  statKey: 'armor',
++  modifierType: 'flat',
++  scope: 'generic',
++  damageType: null,
++  tiers: [
++    { tier: 1, minValue: 4, maxValue: 24 },
++    { tier: 2, minValue: 8, maxValue: 8 },
++  ],
++  extraStats: [],
++}
++
++const hybridGlacial: AffixEntry = {
++  id: 'affix-glacial-prefix',
++  name: 'Glacial',
++  type: 'prefix',
++  itemSlots: ['weapon'],
++  statKey: 'freeze_rate_multiplier',
++  modifierType: 'flat',
++  scope: 'generic',
++  damageType: null,
++  tiers: [{ tier: 1, minValue: 20, maxValue: 40 }],
++  extraStats: [
++    {
++      statKey: 'cold_resistance',
++      modifierType: 'flat',
++      scope: 'generic',
++      damageType: null,
++      tiers: [{ tier: 1, minValue: 5, maxValue: 5 }],
++    },
++  ],
++}
++
++const inertStub: AffixEntry = {
++  id: 'affix-inert',
++  name: 'of Nothing',
++  type: 'suffix',
++  itemSlots: [],
++  statKey: null,
++  tiers: [{ tier: 1, minValue: 0, maxValue: 0 }],
++}
++
++describe('humanizeStatKey', () => {
++  it('title-cases a compound damage key', () => {
++    expect(humanizeStatKey('increased_fire_damage')).toBe('Increased Fire Damage')
++  })
++  it('humanizes a penetration key', () => {
++    expect(humanizeStatKey('void_penetration')).toBe('Void Penetration')
++  })
++  it('applies abbreviation overrides (hp â†’ Health, max â†’ Maximum)', () => {
++    expect(humanizeStatKey('max_hp')).toBe('Maximum Health')
++    expect(humanizeStatKey('hp_regen_per_sec')).toBe('Health Regen per Second')
++  })
++  it('keeps connector words lowercase', () => {
++    expect(humanizeStatKey('area_of_effect')).toBe('Area of Effect')
++  })
++  it('uses the LE spelling for armour', () => {
++    expect(humanizeStatKey('armor')).toBe('Armour')
++  })
++  it('drops the redundant percent token (unit conveys it)', () => {
++    expect(humanizeStatKey('max_hp_percent')).toBe('Maximum Health')
++  })
++})
++
++describe('formatAffixDescription', () => {
++  it('synthesizes the description from the real statKey', () => {
++    expect(formatAffixDescription(increasedFireDamage)).toBe('Increased Fire Damage')
++  })
++  it('appends the second stat for a hybrid affix', () => {
++    expect(formatAffixDescription(hybridGlacial)).toBe('Freeze Rate Multiplier + Cold Resistance')
++  })
++  it('falls back to the affix name when no statKey resolved', () => {
++    expect(formatAffixDescription(inertStub)).toBe('of Nothing')
++  })
++})
++
++describe('formatTierRange', () => {
++  it('renders an increased range with a percent unit', () => {
++    expect(formatTierRange(increasedFireDamage, 2)).toBe('48â€“64%')
++  })
++  it('renders a flat range as a signed number', () => {
++    expect(formatTierRange(flatArmour, 1)).toBe('+4 â†’ +24')
++  })
++  it('collapses a zero-width flat range to a single signed value', () => {
++    expect(formatTierRange(flatArmour, 2)).toBe('+8')
++  })
++  it('returns empty string for an out-of-range tier', () => {
++    expect(formatTierRange(increasedFireDamage, 99)).toBe('')
++  })
++})
++
++describe('formatFullTierRange', () => {
++  it('bridges T1 min to Tmax max for an increased affix', () => {
++    expect(formatFullTierRange(increasedFireDamage)).toBe('6â€“64%')
++  })
++  it('bridges the full flat range with signs', () => {
++    expect(formatFullTierRange(flatArmour)).toBe('+4 â†’ +8')
++  })
++})
+diff --git a/lebo/src/features/item-database/affixDescription.ts b/lebo/src/features/item-database/affixDescription.ts
+new file mode 100644
+index 0000000..a083d8e
+--- /dev/null
++++ b/lebo/src/features/item-database/affixDescription.ts
+@@ -0,0 +1,84 @@
++// Story 4.3 â€” SYNTHESIZED one-line affix descriptions and tier-range strings.
++//
++// FR-28 mandates a one-line description for every affix, but the shipped corpus carries NO
++// `description` field (0/1117) â€” only unique/set items ship display text, craftable affixes do not.
++// These helpers synthesize a display string from the REAL fields the corpus DOES carry
++// (name, statKey, modifierType, damageType, per-tier min/max). They fabricate nothing; the statKey
++// vocabulary is self-describing (e.g. `increased_fire_damage` already encodes modifier + element).
++//
++// Declared derivations (Source Audit): the description text and the "%" unit are DERIVED, not stored.
++
++import type { AffixEntry, AffixModifierType } from '../../shared/types/itemDatabase'
++
++// LE in-game spellings / abbreviations that a bare title-case would mangle.
++const TOKEN_OVERRIDE: Record<string, string> = {
++  hp: 'Health',
++  max: 'Maximum',
++  regen: 'Regen',
++  sec: 'Second',
++  armor: 'Armour',
++}
++// Connector words kept lowercase when they are not the first token.
++const LOWER_TOKENS = new Set(['of', 'per', 'and'])
++// The "percent" token is redundant with the derived "%" unit â€” drop it from the name.
++const DROP_TOKENS = new Set(['percent'])
++
++// Humanize a snake_case statKey into a display name. Deterministic; reads only the statKey.
++export function humanizeStatKey(statKey: string): string {
++  const tokens = statKey.split('_').filter((t) => t.length > 0 && !DROP_TOKENS.has(t))
++  return tokens
++    .map((t, i) => {
++      if (TOKEN_OVERRIDE[t]) return TOKEN_OVERRIDE[t]
++      if (i > 0 && LOWER_TOKENS.has(t)) return t
++      return t.charAt(0).toUpperCase() + t.slice(1)
++    })
++    .join(' ')
++}
++
++// Flat additive stats read as a signed number ("+4 â†’ +24"); increased/more/conversion read as a
++// percentage ("48â€“64%"). No unit is stored in the corpus â€” this is derived from modifierType.
++function isFlat(modifierType: AffixModifierType | undefined): boolean {
++  return modifierType === 'flat'
++}
++
++function fmtNum(n: number): string {
++  return Number.isInteger(n) ? String(n) : String(Math.round(n * 100) / 100)
++}
++
++// A deterministic one-line description synthesized from real fields. Falls back to the affix name
++// when no statKey resolved (the 514 inert stubs â€” which the picker never renders anyway).
++export function formatAffixDescription(affix: AffixEntry): string {
++  if (!affix.statKey) return affix.name
++  let description = humanizeStatKey(affix.statKey)
++  const second = affix.extraStats?.[0]?.statKey
++  if (second) description += ` + ${humanizeStatKey(second)}`
++  return description
++}
++
++// The stat range for a given tier, e.g. "48â€“64%" (increased) or "+4 â†’ +24" (flat). Returns '' if the
++// tier is out of range. Collapses a zero-width range (min === max) to a single value.
++export function formatTierRange(affix: AffixEntry, tier: number): string {
++  const t = affix.tiers[tier - 1]
++  if (!t) return ''
++  const min = fmtNum(t.minValue)
++  const max = fmtNum(t.maxValue)
++  const collapsed = t.minValue === t.maxValue
++  if (isFlat(affix.modifierType)) {
++    return collapsed ? `+${min}` : `+${min} â†’ +${max}`
++  }
++  return collapsed ? `${min}%` : `${min}â€“${max}%`
++}
++
++// The full-tier stat range across T1â†’Tmax, used in the picker row (AC1). Bridges the lowest tier's
++// min to the highest tier's max, e.g. "6â€“240%".
++export function formatFullTierRange(affix: AffixEntry): string {
++  if (affix.tiers.length === 0) return ''
++  const first = affix.tiers[0]
++  const last = affix.tiers[affix.tiers.length - 1]
++  const min = fmtNum(first.minValue)
++  const max = fmtNum(last.maxValue)
++  if (isFlat(affix.modifierType)) {
++    return min === max ? `+${min}` : `+${min} â†’ +${max}`
++  }
++  return min === max ? `${min}%` : `${min}â€“${max}%`
++}
+diff --git a/lebo/src/shared/types/itemDatabase.ts b/lebo/src/shared/types/itemDatabase.ts
+index b0983d0..685cd61 100644
+--- a/lebo/src/shared/types/itemDatabase.ts
++++ b/lebo/src/shared/types/itemDatabase.ts
+@@ -13,15 +13,32 @@ export interface AffixTier {
+   maxValue: number
+ }
+ 
++export type AffixModifierType = 'increased' | 'more' | 'flat' | 'conversion'
++export type AffixScope = 'melee' | 'ranged' | 'spell' | 'minion' | 'generic'
++
++// One additional stat clause of a hybrid affix (Story 4.0). Mirrors the Rust `RawAffixStat`
++// (item_data.rs) serialized camelCase over IPC â€” the primary stat lives on the parent AffixEntry.
++export interface AffixExtraStat {
++  statKey?: string | null
++  modifierType?: AffixModifierType
++  scope?: AffixScope
++  damageType?: DamageType | null
++  tiers: AffixTier[]
++}
++
+ export interface AffixEntry {
+   id: string
+   name: string
+   type: 'prefix' | 'suffix' | 'implicit'
+   itemSlots: string[]
+   tiers: AffixTier[]
+-  modifierType?: 'increased' | 'more' | 'flat'
+-  scope?: 'melee' | 'ranged' | 'spell' | 'minion' | 'generic'
++  // Story 4.0 corpus fields â€” they flow over IPC (RawAffix) but were under-declared in TS until
++  // Story 4.3 surfaced them for the affix picker's grouping / description / slot-scope derivations.
++  statKey?: string | null
++  modifierType?: AffixModifierType
++  scope?: AffixScope
+   damageType?: DamageType | null
++  extraStats?: AffixExtraStat[]
+ }
+ 
+ export interface BaseImplicit {
+
+===== 2026-07-03 12:15:12  [LEBOv2]  [AutoSave] 2026-07-03 12:15 =====
+ _bmad-output/implementation-artifacts/4-3-affix-picker-modal.md | 20 ++++++++++++++++++++
+ _bmad-output/implementation-artifacts/deferred-work.md          |  5 +++++
+ 2 files changed, 25 insertions(+)

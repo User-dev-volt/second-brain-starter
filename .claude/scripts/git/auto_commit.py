@@ -32,6 +32,21 @@ def is_git_repo(cwd: Path) -> bool:
     return _git(["rev-parse", "--git-dir"], cwd).returncode == 0
 
 
+def in_submodule(cwd: Path) -> bool:
+    """True if cwd sits inside a git submodule (i.e. it has a superproject).
+
+    Autosave must never commit INSIDE a submodule: load_config() in git_router
+    walks UP parent dirs to find a .gitaccount, so an autosave whose cwd landed
+    in a submodule (e.g. external/pob-engine) would resolve the SUPERPROJECT's
+    config and then `git add -A; git commit` the submodule's own working tree,
+    creating a stray [AutoSave] commit that moves the submodule HEAD off its
+    pinned gitlink. A top-level repo has no superproject, so its normal
+    root-cwd autosave is unaffected.
+    """
+    r = _git(["rev-parse", "--show-superproject-working-tree"], cwd)
+    return r.returncode == 0 and bool(r.stdout.strip())
+
+
 def has_changes(cwd: Path) -> bool:
     return bool(_git(["status", "--porcelain"], cwd).stdout.strip())
 
@@ -146,6 +161,16 @@ def auto_commit_push(
     result = {"skipped": True, "committed": False, "pushed": False, "error": None}
 
     if not is_git_repo(cwd):
+        return result
+
+    # Automatic autosave must NEVER commit inside a submodule (see in_submodule):
+    # a --autosave whose cwd landed in one would `git add -A; git commit` the
+    # submodule's working tree and knock its HEAD off the pinned gitlink. A
+    # deliberate /gitpush (autosave=False) is left untouched; a superproject's own
+    # root-cwd autosave has no superproject and is unaffected.
+    if autosave and in_submodule(cwd):
+        if verbose:
+            print("git-auto: refused autosave inside a submodule (cwd has a superproject)")
         return result
 
     config = load_config(cwd)
