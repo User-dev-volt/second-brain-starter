@@ -12,20 +12,68 @@ from vault_router import route, VAULT_ROOT
 from standing_order_reader import get_standing_orders_context
 
 
-def read_file_safe(path, max_lines: int = None) -> str:
-    """Read a file, return empty string if missing or unreadable."""
+def read_file_safe(path, max_lines: int = None, head: bool = False) -> str:
+    """Read a file, return empty string if missing or unreadable.
+
+    max_lines caps the content. By default the most-recent (tail) lines are kept,
+    which is right for append-at-bottom files (daily logs, LEARNINGS). Pass
+    head=True to keep the FIRST N lines instead — right for files whose current
+    state lives at the top (Snapshot.md: Status / Current Focus / Next Action),
+    where the growing tail (Decision Log, Session History) is what we want to drop.
+    """
     try:
         text = Path(path).read_text(encoding="utf-8", errors="replace")
         if max_lines:
             lines = text.splitlines()
-            text = "\n".join(lines[-max_lines:])
+            text = "\n".join(lines[:max_lines] if head else lines[-max_lines:])
         return text.strip()
     except Exception:
         return ""
 
 
+# Signatures of captured tool-less refusals. The session-end / daily-reflect
+# hook sometimes fires in a context with no filesystem access, and Claude's
+# "I can't run this — here's what I can do instead" reply gets logged as a
+# session summary. Pure noise that would otherwise be re-injected into every
+# future session, so drop any SessionEnd block whose body matches these.
+_REFUSAL_SIGNATURES = (
+    "i cannot execute",
+    "what i can do instead",
+    "i need to pause here",
+    "no python runtime",
+    "without filesystem access",
+    "language model without",
+    "which would be most useful right now",
+)
+
+
+def filter_refusal_blocks(text: str) -> str:
+    """Drop '## [SessionEnd:...]' sections whose body is a captured refusal."""
+    current: list[str] = []
+    blocks: list[str] = []
+
+    def flush():
+        if not current:
+            return
+        is_session_end = current[0].lstrip().startswith("## [SessionEnd")
+        body = "\n".join(current).lower()
+        if is_session_end and any(sig in body for sig in _REFUSAL_SIGNATURES):
+            return  # skip this block entirely
+        blocks.append("\n".join(current))
+
+    for line in text.splitlines():
+        if line.lstrip().startswith("## [SessionEnd"):
+            flush()
+            current = [line]
+        else:
+            current.append(line)
+    flush()
+    return "\n".join(blocks).strip()
+
+
 def get_last_daily_logs(n: int = 3) -> str:
-    """Read the last n daily logs (most recent first), last 100 lines each."""
+    """Read the last n daily logs (most recent first), captured-refusal blocks
+    removed, then the most-recent 80 lines of what remains for each."""
     daily_dir = VAULT_ROOT / "00_Meta" / "daily"
     if not daily_dir.exists():
         return ""
@@ -33,32 +81,14 @@ def get_last_daily_logs(n: int = 3) -> str:
     logs = sorted(daily_dir.glob("*.md"), reverse=True)[:n]
     parts = []
     for log_path in logs:
-        content = read_file_safe(log_path, max_lines=100)
-        if content:
-            parts.append(f"### {log_path.stem}\n{content}")
+        raw = read_file_safe(log_path)
+        if not raw:
+            continue
+        cleaned = filter_refusal_blocks(raw)
+        cleaned = "\n".join(cleaned.splitlines()[-80:]).strip()
+        if cleaned:
+            parts.append(f"### {log_path.stem}\n{cleaned}")
     return "\n\n".join(parts)
-
-
-def get_bmad_status_files(cwd: str) -> list[Path]:
-    """
-    If cwd is inside a BMAD project (has _bmad-output/ directory), return the
-    paths to sprint-status.yaml, epics.md, and bmm/config.yaml so they can be
-    pre-loaded once at session start — preventing repeated re-reads mid-session.
-    Returns [] if not a BMAD project or files are missing.
-    """
-    cwd_path = Path(cwd)
-    # Walk up until we find a directory containing _bmad-output/
-    for parent in [cwd_path, *cwd_path.parents]:
-        bmad_dir = parent / "_bmad-output"
-        if bmad_dir.is_dir():
-            candidates = [
-                bmad_dir / "implementation-artifacts" / "sprint-status.yaml",
-                bmad_dir / "planning-artifacts" / "epics.md",
-                # bmm config never changes session-to-session — inject once
-                parent / "_bmad" / "bmm" / "config.yaml",
-            ]
-            return [p for p in candidates if p.exists()]
-    return []
 
 
 def build_context(cwd: str) -> str:
@@ -89,9 +119,11 @@ def build_context(cwd: str) -> str:
     except Exception:
         pass
 
-    # Project snapshot (if cwd matches a known project)
+    # Project snapshot (if cwd matches a known project) — head-capped: the current
+    # state (Status / Current Focus / Next Action) lives at the top; the tail
+    # (Decision Log, Session History) grows unbounded and is dropped from injection.
     if r["project_snapshot"]:
-        content = read_file_safe(r["project_snapshot"])
+        content = read_file_safe(r["project_snapshot"], max_lines=120, head=True)
         if content:
             project_name = Path(r["project_snapshot"]).parent.name
             sections.append(f"## Project Snapshot: {project_name}\n{content}")
@@ -102,21 +134,6 @@ def build_context(cwd: str) -> str:
         if content:
             domain = Path(r["learnings_file"]).parent.name
             sections.append(f"## {domain} Learnings\n{content}")
-
-    # BMAD project: pre-load sprint-status + epics live from disk (once per session).
-    # This prevents repeated re-reads mid-session without using stale summaries.
-    bmad_files = get_bmad_status_files(cwd)
-    if bmad_files:
-        bmad_parts = []
-        for f in bmad_files:
-            content = read_file_safe(f)
-            if content:
-                bmad_parts.append(f"### {f.name}\n{content}")
-        if bmad_parts:
-            sections.append(
-                "## BMAD Project Status (live — do not re-read these files during this session)\n\n"
-                + "\n\n---\n\n".join(bmad_parts)
-            )
 
     # Last 3 daily logs
     daily = get_last_daily_logs(3)
