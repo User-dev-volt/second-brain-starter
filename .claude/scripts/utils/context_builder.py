@@ -9,7 +9,6 @@ from datetime import datetime
 # Ensure vault_router is importable when this module is used from hooks
 sys.path.insert(0, str(Path(__file__).parent))
 from vault_router import route, VAULT_ROOT
-from standing_order_reader import get_standing_orders_context
 
 
 def read_file_safe(path, max_lines: int = None, head: bool = False) -> str:
@@ -109,15 +108,6 @@ def build_context(cwd: str) -> str:
         if content:
             name = Path(file_path).stem
             sections.append(f"## {name}\n{content}")
-
-    # Standing Orders — active agent directives from intent.md (injected early so
-    # agents see directives before project-specific context)
-    try:
-        standing_orders = get_standing_orders_context(VAULT_ROOT)
-        if standing_orders:
-            sections.append(standing_orders)
-    except Exception:
-        pass
 
     # Project snapshot (if cwd matches a known project) — head-capped: the current
     # state (Status / Current Focus / Next Action) lives at the top; the tail
