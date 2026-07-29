@@ -12,6 +12,8 @@ Usage:
   python auto_commit.py --cwd <path> --setup        # rewrite remote URL + validate
 """
 import argparse
+import json
+import os
 import subprocess
 import sys
 from datetime import datetime
@@ -45,6 +47,58 @@ def in_submodule(cwd: Path) -> bool:
     """
     r = _git(["rev-parse", "--show-superproject-working-tree"], cwd)
     return r.returncode == 0 and bool(r.stdout.strip())
+
+
+def _pid_alive(pid: int) -> bool:
+    """Cross-platform 'is this PID running?' with no psutil dependency.
+
+    os.kill(pid, 0) is unsafe on Windows (that signal path can terminate or error
+    rather than probe), so probe with tasklist there and signal-0 on POSIX.
+    """
+    if sys.platform == "win32":
+        try:
+            out = subprocess.run(
+                ["tasklist", "/FI", f"PID eq {pid}", "/NH"],
+                capture_output=True, text=True, timeout=5,
+            ).stdout
+        except Exception:
+            return False
+        return "No tasks" not in out and str(pid) in out
+    try:
+        os.kill(pid, 0)
+    except OSError:
+        return False
+    return True
+
+
+def bmad_loop_run_active(cwd: Path) -> bool:
+    """True if a live bmad-loop orchestration run owns this repo right now.
+
+    Autosave must never commit mid-run: the bmad-loop dev/review Claude session's
+    OWN Stop fires this same autosave hook, and a `git add -A; git commit` churns
+    the working tree UNDER the running agent — which can derail its completion-
+    artifact write and strand the run in a stall/nudge loop (Project Chimera,
+    2026-07-23). A run counts as live only when its state.json is non-terminal AND
+    its engine PID is still running, so a concluded or crashed run never blocks
+    autosave. Any read/parse failure is treated as "not this run" and skipped.
+    """
+    runs = cwd / ".bmad-loop" / "runs"
+    if not runs.is_dir():
+        return False
+    for state_file in runs.glob("*/state.json"):
+        try:
+            state = json.loads(state_file.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if state.get("finished") or state.get("stopped") or state.get("crashed"):
+            continue
+        try:
+            pid = int((state_file.parent / "engine.pid").read_text(encoding="utf-8").split()[0])
+        except Exception:
+            continue
+        if _pid_alive(pid):
+            return True
+    return False
 
 
 def has_changes(cwd: Path) -> bool:
@@ -171,6 +225,18 @@ def auto_commit_push(
     if autosave and in_submodule(cwd):
         if verbose:
             print("git-auto: refused autosave inside a submodule (cwd has a superproject)")
+        return result
+
+    # Automatic autosave must NEVER commit while a bmad-loop run owns this repo:
+    # the running dev/review agent's own Stop fires this hook, and a mid-run
+    # `git add -A; git commit` churns the tree under it — derailing its completion-
+    # artifact write and stranding the run in a stall/nudge loop (Project Chimera,
+    # 2026-07-23). The orchestrator makes the story's real commit itself, so the
+    # autosave is redundant here as well as harmful. A deliberate /gitpush
+    # (autosave=False) is intentionally still allowed mid-run.
+    if autosave and bmad_loop_run_active(cwd):
+        if verbose:
+            print("git-auto: refused autosave while a bmad-loop run is live in this repo")
         return result
 
     config = load_config(cwd)
