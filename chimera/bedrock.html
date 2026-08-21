@@ -1,0 +1,419 @@
+<title>The Bedrock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;600;800&family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,300;0,400;0,600;1,300&display=swap">
+<style>
+:root{
+  --ink:#14120F; --stone:#211E19; --stone-2:#2A2620; --edge:#3A342B; --edge-2:#4C443A;
+  --ash:#8A8173; --bone:#E6E1D4; --bone-dim:#BDB6A7;
+  --brass:#D8B25C; --cold:#6FA0B0; --heat:#C05A32; --wrong:#9A9184;
+  --display:"Big Shoulders Display","Arial Narrow",sans-serif;
+  --body:"Spectral",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--bone-dim);
+  font-family:var(--body);font-weight:300;font-size:16.5px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:clamp(26px,4vw,54px) clamp(16px,3.5vw,38px) 90px}
+
+header{border-bottom:1px solid var(--edge);padding-bottom:26px;margin-bottom:34px}
+.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ash);margin:0 0 12px}
+h1{font-family:var(--display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(42px,9vw,96px);line-height:.88;margin:0 0 16px;color:var(--bone)}
+.thesis{max-width:60ch;margin:0;font-size:clamp(17px,2vw,21px);color:var(--bone-dim)}
+.thesis b{color:var(--bone);font-weight:600}
+
+.grid{display:grid;gap:20px;grid-template-columns:1fr}
+@media(min-width:900px){.grid{grid-template-columns:1fr 1fr}}
+.card{border:1px solid var(--edge);background:var(--stone);padding:22px 24px 24px;display:flex;flex-direction:column;gap:12px}
+.card.wide{grid-column:1/-1}
+.k{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--brass);margin:0}
+.card h2{font-family:var(--display);font-weight:600;text-transform:uppercase;font-size:29px;line-height:1;margin:0;color:var(--bone);text-wrap:balance}
+.card p{margin:0;font-size:15.5px}
+.card p b{color:var(--bone);font-weight:600}
+.card em{font-style:italic;color:var(--bone)}
+
+figure{margin:4px 0 0;background:var(--stone-2);border:1px solid var(--edge);padding:16px 14px 10px}
+figure svg{display:block;width:100%;height:auto}
+figcaption{font-family:var(--mono);font-size:10.5px;line-height:1.6;color:var(--ash);margin-top:12px;padding-top:10px;border-top:1px solid var(--edge)}
+
+.pull{border-left:2px solid var(--brass);padding:4px 0 4px 15px;margin:2px 0;font-size:15px;color:var(--bone)}
+.mono-note{font-family:var(--mono);font-size:11.5px;line-height:1.65;color:var(--ash)}
+
+.law{grid-column:1/-1;border:1px solid var(--edge);border-top:3px solid var(--brass);background:var(--stone);padding:34px 28px}
+.law q{display:block;quotes:none;font-family:var(--display);font-weight:600;text-transform:uppercase;
+  font-size:clamp(30px,6vw,62px);line-height:.98;color:var(--brass);margin:0 0 16px;text-wrap:balance}
+.law p{margin:0;max-width:66ch;font-size:16px}
+.law p b{color:var(--bone);font-weight:600}
+
+.check{margin-top:46px;border-top:1px solid var(--edge);padding-top:30px}
+.check h2{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(30px,5vw,52px);line-height:.95;margin:0 0 8px;color:var(--bone)}
+.check .lede{max-width:64ch;margin:0 0 26px}
+.rows{display:grid;gap:1px;background:var(--edge);border:1px solid var(--edge)}
+.row{background:var(--stone);padding:17px 20px;display:grid;gap:8px}
+@media(min-width:820px){.row{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}}
+.row .took{color:var(--bone);font-weight:600;font-size:15.5px}
+.row .took span{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--brass);font-weight:400;margin-bottom:5px}
+.row .inst,.row .risk{font-size:14.5px;color:var(--bone-dim)}
+.row .inst span,.row .risk span{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ash);margin-bottom:5px}
+
+footer{margin-top:40px;border-top:1px solid var(--edge);padding-top:22px;
+  font-family:var(--mono);font-size:11.5px;line-height:1.75;color:var(--ash)}
+footer b{color:var(--bone-dim);font-weight:500}
+</style>
+
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Project Chimera · Gate 1 · the whole bedrock in five minutes</p>
+  <h1>The Bedrock</h1>
+  <p class="thesis">Matter is <b>grain</b> — fine particles in families that never become one another. Every working is two motions: <b>SOLVE</b> parts the hold that keeps an arrangement together, <b>SET</b> re-ties it into a new one. The charge you spend is the hold itself, and it is called <b>sap</b>.</p>
+</header>
+
+<div class="grid">
+
+  <!-- ONE — the arithmetic -->
+  <div class="card wide">
+    <p class="k">01 · The whole system in one paragraph</p>
+    <h2>A working is an inventory, and it does not stop to ask</h2>
+    <p>You name a product. The product has a composition. You lay a boundary, and inside that boundary is what the working will take. If what's inside matches what the product needs, you get the product. <b>If it doesn't, the working doesn't abandon the job — it finishes out of whatever is nearest that will serve.</b> There is always something nearest.</p>
+    <p class="pull">Brass is copper and zinc, seven to three. So: wire, zinc powder, any shape of brass I like. Not steel — there is no iron in brass. Ask anyway and the working goes and finds iron: the nails in that door, the buckle on my belt. <em>Ask short of lime or water, and the nearest source is the man standing behind me.</em></p>
+    <p class="mono-note">Three facts and no others: families never convert · proportion is arithmetic · nothing is discarded and nothing is invented.</p>
+  </div>
+
+  <!-- TWO — the two clocks -->
+  <div class="card wide">
+    <p class="k">02 · The rule every fight inherits</p>
+    <h2>Two clocks, running opposite ways</h2>
+    <p>Once you solve, two timers start. The <b>window</b> is how long the matter will still take a shape you choose. The <b>re-hold</b> is how long it stays dangerous. As the volume grows, the window shrinks and the re-hold grows — so <b>big workings lose steerability fastest and stay open longest.</b> That's precisely what makes them the worst thing to abandon.</p>
+    <figure>
+      <svg viewBox="0 0 660 250" role="img" aria-label="Three volumes compared. As volume grows the steerable window shrinks from two seconds to a fraction of a second, while the dangerous re-hold time grows from ninety seconds to a day and a half.">
+        <g font-family="IBM Plex Mono, monospace" font-size="10.5" letter-spacing="1.4" fill="#8A8173">
+          <text x="0" y="20">VOLUME</text>
+          <text x="150" y="20" fill="#D8B25C">STEERABLE — THE WINDOW</text>
+          <text x="410" y="20" fill="#9A9184">DANGEROUS — THE RE-HOLD</text>
+        </g>
+        <line x1="0" y1="30" x2="660" y2="30" stroke="#3A342B"/>
+        <line x1="140" y1="30" x2="140" y2="215" stroke="#3A342B"/>
+        <line x1="400" y1="30" x2="400" y2="215" stroke="#3A342B"/>
+
+        <g font-family="IBM Plex Mono, monospace" font-size="11" fill="#BDB6A7">
+          <text x="0" y="62">a fitting</text>
+          <text x="0" y="122">a door leaf</text>
+          <text x="0" y="182">a wall's worth</text>
+        </g>
+
+        <rect x="150" y="48"  width="230" height="20" fill="#D8B25C"/>
+        <rect x="150" y="108" width="92"  height="20" fill="#D8B25C"/>
+        <rect x="150" y="168" width="34"  height="20" fill="#D8B25C"/>
+        <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#14120F" font-weight="500">
+          <text x="158" y="62">2 s</text><text x="158" y="122">under 1 s</text>
+        </g>
+        <text x="192" y="182" font-family="IBM Plex Mono, monospace" font-size="10" fill="#D8B25C">a moment</text>
+
+        <rect x="410" y="48"  width="34"  height="20" fill="#4C443A"/>
+        <rect x="410" y="108" width="128" height="20" fill="#6E6558"/>
+        <rect x="410" y="168" width="240" height="20" fill="#9A9184"/>
+        <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#BDB6A7">
+          <text x="452" y="62">90 s</text>
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#14120F" font-weight="500">
+          <text x="418" y="122">20 min</text><text x="418" y="182">a day and a half</text>
+        </g>
+
+        <path d="M266 200 L266 232 M258 224 l8 8 8 -8" stroke="#D8B25C" stroke-width="1.5" fill="none"/>
+        <text x="276" y="230" font-family="IBM Plex Mono, monospace" font-size="10" fill="#D8B25C" letter-spacing="1">CONTROL FALLS</text>
+        <path d="M530 200 L530 232 M522 224 l8 8 8 -8" stroke="#9A9184" stroke-width="1.5" fill="none"/>
+        <text x="540" y="230" font-family="IBM Plex Mono, monospace" font-size="10" fill="#9A9184" letter-spacing="1">HAZARD RISES</text>
+      </svg>
+      <figcaption>Bars are scaled within each column, not against each other — the direction is the claim. A caster cannot take a large working on unfamiliar material at all: large means chained, and chained means from memory.</figcaption>
+    </figure>
+  </div>
+
+  <!-- THREE — failure tree -->
+  <div class="card wide">
+    <p class="k">03 · The four ways it goes wrong</p>
+    <h2>Rules, never randomness</h2>
+    <figure>
+      <svg viewBox="0 0 700 330" role="img" aria-label="Decision tree. Did it solve? No: mode one, fails to solve, sap spent, the lucky outcome. Yes, then did it set? No: mode two, half-set matter, persistent. Yes, then was there enough substance inside the line? Yes: you get what you asked for. No, and nothing in range: mode three, sets wrong, full size with the difference as void. No, but something is in range: mode four, it reaches.">
+        <defs><marker id="a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#8A8173"/></marker></defs>
+        <g font-family="IBM Plex Mono, monospace" font-size="10.5" letter-spacing=".6">
+
+          <rect x="0" y="14" width="112" height="30" fill="#3A342B"/>
+          <text x="56" y="33" fill="#E6E1D4" text-anchor="middle">THE STROKE</text>
+          <line x1="56" y1="44" x2="56" y2="66" stroke="#8A8173" marker-end="url(#a)"/>
+
+          <rect x="0" y="70" width="150" height="30" fill="none" stroke="#8A8173"/>
+          <text x="75" y="89" fill="#BDB6A7" text-anchor="middle">did it solve?</text>
+          <line x1="150" y1="85" x2="196" y2="85" stroke="#8A8173" marker-end="url(#a)"/>
+          <text x="160" y="79" fill="#8A8173">no</text>
+          <rect x="200" y="70" width="230" height="30" fill="#211E19" stroke="#6FA0B0"/>
+          <text x="212" y="89" fill="#6FA0B0">1 · FAILS TO SOLVE</text>
+          <text x="440" y="83" fill="#8A8173">sap spent, nothing opened.</text>
+          <text x="440" y="96" fill="#8A8173">the lucky one</text>
+
+          <line x1="75" y1="100" x2="75" y2="126" stroke="#8A8173" marker-end="url(#a)"/>
+          <text x="82" y="118" fill="#8A8173">yes</text>
+
+          <rect x="0" y="130" width="150" height="30" fill="none" stroke="#8A8173"/>
+          <text x="75" y="149" fill="#BDB6A7" text-anchor="middle">did it set?</text>
+          <line x1="150" y1="145" x2="196" y2="145" stroke="#8A8173" marker-end="url(#a)"/>
+          <text x="160" y="139" fill="#8A8173">no</text>
+          <rect x="200" y="130" width="230" height="30" fill="#211E19" stroke="#9A9184"/>
+          <text x="212" y="149" fill="#E6E1D4">2 · HALF-SET</text>
+          <text x="440" y="143" fill="#8A8173">open and nothing shut it.</text>
+          <text x="440" y="156" fill="#8A8173">still there tomorrow</text>
+
+          <line x1="75" y1="160" x2="75" y2="186" stroke="#8A8173" marker-end="url(#a)"/>
+          <text x="82" y="178" fill="#8A8173">yes</text>
+
+          <rect x="0" y="190" width="150" height="42" fill="none" stroke="#8A8173"/>
+          <text x="75" y="207" fill="#BDB6A7" text-anchor="middle">enough substance</text>
+          <text x="75" y="221" fill="#BDB6A7" text-anchor="middle">inside the line?</text>
+          <line x1="150" y1="211" x2="196" y2="211" stroke="#8A8173" marker-end="url(#a)"/>
+          <text x="160" y="205" fill="#8A8173">yes</text>
+          <rect x="200" y="196" width="230" height="30" fill="#211E19" stroke="#3A342B"/>
+          <text x="212" y="215" fill="#BDB6A7">WHAT YOU ASKED FOR</text>
+
+          <line x1="75" y1="232" x2="75" y2="258" stroke="#8A8173" marker-end="url(#a)"/>
+          <text x="82" y="250" fill="#8A8173">no</text>
+
+          <rect x="0" y="262" width="150" height="42" fill="none" stroke="#8A8173"/>
+          <text x="75" y="279" fill="#BDB6A7" text-anchor="middle">a source in range</text>
+          <text x="75" y="293" fill="#BDB6A7" text-anchor="middle">that will serve?</text>
+
+          <line x1="150" y1="272" x2="196" y2="272" stroke="#8A8173" marker-end="url(#a)"/>
+          <text x="160" y="266" fill="#8A8173">no</text>
+          <rect x="200" y="257" width="230" height="30" fill="#211E19" stroke="#D8B25C"/>
+          <text x="212" y="276" fill="#D8B25C">3 · SETS WRONG</text>
+          <text x="440" y="276" fill="#8A8173">full size, the difference as void</text>
+
+          <line x1="150" y1="294" x2="196" y2="294" stroke="#8A8173" marker-end="url(#a)"/>
+          <text x="160" y="288" fill="#8A8173">yes</text>
+          <rect x="200" y="292" width="230" height="30" fill="#2A2620" stroke="#C05A32" stroke-width="1.5"/>
+          <text x="212" y="311" fill="#C05A32">4 · IT REACHES</text>
+          <text x="440" y="311" fill="#8A8173">and it does not care what it takes</text>
+        </g>
+      </svg>
+      <figcaption>Which of 3 and 4 you get is decided by what is in range, not by how good your line is. Zinc, silver, tin — rarely lying about, so a short working warps. Water and lime are in walls, in cisterns, and in people.</figcaption>
+    </figure>
+  </div>
+
+  <!-- FOUR — who can do it -->
+  <div class="card">
+    <p class="k">04 · Who can do it</p>
+    <h2>Everyone has some</h2>
+    <p>You read composition <b>by touch</b>. It's a real perceptual capacity, it is not hereditary, and nobody is tested and shut out at twelve. The extremes are far apart, but the low end is a slope, not a wall. It splits into two axes that never collapse into one number.</p>
+    <figure>
+      <svg viewBox="0 0 480 400" role="img" aria-label="Acuity on the vertical axis is natal and capped by a hard ceiling. Library on the horizontal axis is earned and uncapped. Four quadrants: the prodigy in a strange room, the finished professional, the beginner, and the grinder who wins on speed. Disguise attacks acuity, substitution attacks library.">
+        <line x1="70" y1="330" x2="450" y2="330" stroke="#8A8173"/>
+        <line x1="70" y1="330" x2="70" y2="40" stroke="#8A8173"/>
+        <line x1="70" y1="62" x2="450" y2="62" stroke="#C05A32" stroke-dasharray="5 5"/>
+        <text x="450" y="56" font-family="IBM Plex Mono, monospace" font-size="10" fill="#C05A32" text-anchor="end" letter-spacing="1">YOUR CEILING — HARD, PERSONAL, NO TECHNIQUE RAISES IT</text>
+        <line x1="70" y1="196" x2="450" y2="196" stroke="#3A342B"/>
+        <line x1="260" y1="62" x2="260" y2="330" stroke="#3A342B"/>
+
+        <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#BDB6A7" letter-spacing=".5">
+          <text x="80" y="88">PRODIGY IN A</text><text x="80" y="102">STRANGE ROOM</text>
+          <text x="80" y="120" fill="#8A8173">reads everything.</text><text x="80" y="133" fill="#8A8173">slowly.</text>
+
+          <text x="270" y="88" fill="#D8B25C">THE FINISHED</text><text x="270" y="102" fill="#D8B25C">PROFESSIONAL</text>
+          <text x="270" y="120" fill="#8A8173">rare, and expensive</text><text x="270" y="133" fill="#8A8173">to insure</text>
+
+          <text x="80" y="228">THE BEGINNER</text>
+          <text x="80" y="246" fill="#8A8173">everything is heavy</text>
+
+          <text x="270" y="228" fill="#D8B25C">THE GRINDER</text>
+          <text x="270" y="246" fill="#8A8173">out-fights the prodigy</text>
+          <text x="270" y="259" fill="#8A8173">on speed, in a room</text>
+          <text x="270" y="272" fill="#8A8173">neither has met</text>
+        </g>
+
+        <text x="70" y="356" font-family="IBM Plex Mono, monospace" font-size="11" fill="#E6E1D4" letter-spacing="1.5">LIBRARY →</text>
+        <text x="70" y="371" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8A8173">what you've read and kept. earned. uncapped</text>
+        <text x="70" y="388" font-family="IBM Plex Mono, monospace" font-size="10" fill="#C05A32">SUBSTITUTION ATTACKS THIS — swap the fittings</text>
+        <g transform="translate(24,214) rotate(-90)">
+          <text x="0" y="0" font-family="IBM Plex Mono, monospace" font-size="11" fill="#E6E1D4" letter-spacing="1.5">ACUITY →</text>
+          <text x="0" y="14" font-family="IBM Plex Mono, monospace" font-size="10" fill="#C05A32">DISGUISE ATTACKS THIS</text>
+        </g>
+      </svg>
+      <figcaption>Recognising is not reading — it's matching, and it takes under a quarter-second at any acuity. That is the whole of the FAST tier. Home ground is <em>known</em> ground, not rich ground.</figcaption>
+    </figure>
+  </div>
+
+  <!-- FIVE — sap -->
+  <div class="card">
+    <p class="k">05 · Where the power comes from</p>
+    <h2>The ground is a refinery, not a reservoir</h2>
+    <p>A living body is matter that never settles. At death that unrest leaves into whatever the body is touching — and <b>it is not sap when it arrives.</b> The strata refine it over about nine days. A caster standing over a corpse has nothing.</p>
+    <figure>
+      <svg viewBox="0 0 480 300" role="img" aria-label="Sap cycle. A living body never settles; at death its unrest enters the ground, where the strata refine it over about nine days. It gathers into pools, which can be channelled or impounded in a basin, then tapped into flasks and implants. Raw unrest straight from a body is unusable.">
+        <defs><marker id="b" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#8A8173"/></marker></defs>
+        <g font-family="IBM Plex Mono, monospace" font-size="10.5" letter-spacing=".5">
+          <rect x="0" y="10" width="150" height="34" fill="none" stroke="#8A8173"/>
+          <text x="75" y="25" fill="#BDB6A7" text-anchor="middle">A LIVING BODY</text>
+          <text x="75" y="38" fill="#8A8173" text-anchor="middle">never settles</text>
+          <line x1="75" y1="44" x2="75" y2="66" stroke="#8A8173" marker-end="url(#b)"/>
+          <text x="84" y="60" fill="#8A8173">death</text>
+
+          <rect x="0" y="70" width="150" height="34" fill="none" stroke="#C05A32"/>
+          <text x="75" y="85" fill="#C05A32" text-anchor="middle">RAW UNREST</text>
+          <text x="75" y="98" fill="#8A8173" text-anchor="middle">not sap. useless</text>
+
+          <line x1="150" y1="87" x2="196" y2="87" stroke="#C05A32" stroke-dasharray="4 4"/>
+          <path d="M206 79 l16 16 M222 79 l-16 16" stroke="#C05A32" stroke-width="2"/>
+          <text x="238" y="84" fill="#C05A32">no shortcut.</text>
+          <text x="238" y="97" fill="#8A8173">it has to go through</text>
+
+          <line x1="75" y1="104" x2="75" y2="126" stroke="#8A8173" marker-end="url(#b)"/>
+          <rect x="0" y="130" width="220" height="34" fill="#3A342B"/>
+          <text x="110" y="145" fill="#E6E1D4" text-anchor="middle">THE GROUND REFINES IT</text>
+          <text x="110" y="158" fill="#BDB6A7" text-anchor="middle">about nine days</text>
+
+          <line x1="110" y1="164" x2="110" y2="186" stroke="#8A8173" marker-end="url(#b)"/>
+          <rect x="0" y="190" width="150" height="34" fill="none" stroke="#D8B25C"/>
+          <text x="75" y="205" fill="#D8B25C" text-anchor="middle">A POOL</text>
+          <text x="75" y="218" fill="#8A8173" text-anchor="middle">this is what stores</text>
+
+          <line x1="150" y1="207" x2="196" y2="207" stroke="#8A8173" marker-end="url(#b)"/>
+          <rect x="200" y="190" width="170" height="34" fill="none" stroke="#8A8173"/>
+          <text x="285" y="205" fill="#BDB6A7" text-anchor="middle">CHANNEL · BASIN · SILL</text>
+          <text x="285" y="218" fill="#8A8173" text-anchor="middle">upstream and downstream</text>
+
+          <line x1="75" y1="224" x2="75" y2="246" stroke="#8A8173" marker-end="url(#b)"/>
+          <rect x="0" y="250" width="150" height="30" fill="none" stroke="#8A8173"/>
+          <text x="75" y="269" fill="#BDB6A7" text-anchor="middle">TAP → FLASK · IMPLANT</text>
+
+          <text x="200" y="262" fill="#8A8173">water rights,</text>
+          <text x="200" y="275" fill="#8A8173">not mining rights</text>
+        </g>
+      </svg>
+      <figcaption>A basin cut upstream is an act of war. Quietly connecting your works to a pool that isn't yours is the characteristic crime. A battlefield is the best ground in the country, and everyone in the trade knows it.</figcaption>
+    </figure>
+  </div>
+
+  <!-- SIX — thermal -->
+  <div class="card">
+    <p class="k">06 · What the camera sees</p>
+    <h2>The thermal grammar is locked</h2>
+    <p>Drawing and solving run <b>cold</b>. Setting delivers <b>heat</b>. Half-set matter is <b>body-temperature, always</b>, whatever it was made from — the wrong thing sits at neither end, and that is how you know it's wrong.</p>
+    <figure>
+      <svg viewBox="0 0 480 150" role="img" aria-label="A temperature strip. Solve runs cold and silent. Half-set matter sits at body temperature in the middle, which is the tell that it is wrong. Set delivers heat with one hard snap.">
+        <rect x="0" y="20" width="150" height="52" fill="#6FA0B0" opacity=".82"/>
+        <rect x="165" y="20" width="150" height="52" fill="#9A9184" opacity=".62"/>
+        <rect x="330" y="20" width="150" height="52" fill="#C05A32" opacity=".85"/>
+        <g font-family="IBM Plex Mono, monospace" font-size="11" fill="#14120F" font-weight="500" letter-spacing="1.2">
+          <text x="12" y="42">SOLVE</text><text x="177" y="42">HALF-SET</text><text x="342" y="42">SET</text>
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#14120F">
+          <text x="12" y="60">cold · matte · silent</text>
+          <text x="177" y="60">body-temp · no highlights</text>
+          <text x="342" y="60">heat · one hard snap</text>
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#8A8173" letter-spacing="1">
+          <text x="0" y="94">COLD</text><text x="480" y="94" text-anchor="end">HOT</text>
+          <text x="240" y="94" text-anchor="middle" fill="#E6E1D4">NEITHER — AND THAT IS THE TELL</text>
+        </g>
+        <line x1="0" y1="80" x2="480" y2="80" stroke="#3A342B"/>
+        <text x="0" y="122" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8A8173">THE BOUNDARY shows as a dry dust-fine line the moment the stroke fires —</text>
+        <text x="0" y="136" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8A8173">across skin as readily as stone. Am I inside it?</text>
+      </svg>
+      <figcaption>A reach is one frame: the dust-line <em>jumps</em> to a new object and everything between goes untouched. An aimed reach is the same jump, but the line was already sitting wrong — and she was looking at a person, not at her work.</figcaption>
+    </figure>
+  </div>
+
+  <!-- SEVEN — the body -->
+  <div class="card">
+    <p class="k">07 · The arithmetic a player will check</p>
+    <h2>What a body actually offers</h2>
+    <p>A reach into a person takes <b>water and lime</b>, because those are the only two things a body holds in bulk. Everything else is a rounding error — which is exactly what constrains the horror to one specific shape.</p>
+    <figure>
+      <svg viewBox="0 0 480 190" role="img" aria-label="In a seventy kilogram adult: about forty-two kilograms of water, two to three kilograms of lime as bone mineral, and about four grams of iron, which is roughly one nail.">
+        <g font-family="IBM Plex Mono, monospace" font-size="11">
+          <text x="0" y="26" fill="#BDB6A7">WATER</text>
+          <rect x="80" y="14" width="380" height="18" fill="#6FA0B0"/>
+          <text x="88" y="27" fill="#14120F" font-weight="500">~42 kg — several litres reachable</text>
+
+          <text x="0" y="66" fill="#BDB6A7">LIME</text>
+          <rect x="80" y="54" width="28" height="18" fill="#D8B25C"/>
+          <text x="116" y="67" fill="#D8B25C">2–3 kg, all of it bone mineral</text>
+
+          <text x="0" y="106" fill="#BDB6A7">IRON</text>
+          <rect x="80" y="94" width="2" height="18" fill="#C05A32"/>
+          <text x="90" y="107" fill="#C05A32">4 g — about one nail. nothing.</text>
+        </g>
+        <line x1="0" y1="128" x2="480" y2="128" stroke="#3A342B"/>
+        <text x="0" y="150" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8A8173">A working short of iron takes the buckle on your belt. It was nearer and denser anyway.</text>
+        <text x="0" y="166" font-family="IBM Plex Mono, monospace" font-size="10" fill="#E6E1D4">A working short of water or lime, in a room with a person and no cistern, takes the person.</text>
+        <text x="0" y="182" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8A8173">That is the entire shape of the danger, and it is arithmetic, not malice.</text>
+      </svg>
+      <figcaption>The selection is dumb; the consequence is personal. Four litres out of a field hand of twenty-two: sick for a month, back at work. The same four litres out of a woman in her seventies, from the hip that was standing closest: she walks with a stick from that day and never walks without one again.</figcaption>
+    </figure>
+  </div>
+
+  <!-- THE LAW -->
+  <div class="law">
+    <p class="k">08 · The Law</p>
+    <q>Name your source, or it'll name one for you.</q>
+    <p>Not an incantation — nothing listens. It's a workface line, what a foreman says at the top of a shift in the same breath as <em>check your footing</em>. <b>And the crack is that following it is the atrocity.</b> The Law commands you to name your source. It does not say what a source may be. A caster who names a person and lays the boundary on them has followed it exactly, and the working proceeds correctly. Correct procedure and atrocity are the same act, performed with the same hands, in the same order.</p>
+  </div>
+
+</div>
+
+<!-- DECISION CHECKLIST -->
+<section class="check">
+  <h2>Is this the right path?</h2>
+  <p class="lede">Seven load-bearing choices. Each one is expensive to reverse later and cheap to reverse now. The middle column is what I <em>didn't</em> pick, so you can see what you'd be trading for.</p>
+  <div class="rows">
+
+    <div class="row">
+      <p class="took"><span>What we took</span>Solve is the hard stroke; set is the follow-through</p>
+      <p class="inst"><span>Instead of</span>Set being hard — a world drowning in things nobody could close</p>
+      <p class="risk"><span>What it buys</span>Casters read as surgeons, and a crew shape: one solver, several hands who can steer a set. Take the solver and the setters are three people with chalk</p>
+    </div>
+
+    <div class="row">
+      <p class="took"><span>What we took</span>The read is a scale everyone sits on, split into acuity and library</p>
+      <p class="inst"><span>Instead of</span>A hereditary gift that shuts at twelve, or pure decade-long study with no gift at all</p>
+      <p class="risk"><span>What it buys</span>The grinder is genuinely viable. But scarcity is traded for mobility — the world has to explain why most people don't bother by cost and ceiling, never permission</p>
+    </div>
+
+    <div class="row">
+      <p class="took"><span>What we took</span>Sap is the hold itself, and only unrest carries spendable surplus</p>
+      <p class="inst"><span>Instead of</span>A fluid, a fuel, or a quantity you simply have</p>
+      <p class="risk"><span>What it buys</span>It's in everything and almost none of it is available, which is what lets map control matter without inventing a reason for scarcity</p>
+    </div>
+
+    <div class="row">
+      <p class="took"><span>What we took</span>Death feeds the ground; the ground refines over nine days</p>
+      <p class="inst"><span>Instead of</span>Sap that regenerates on its own, or a finite stock that only depletes</p>
+      <p class="risk"><span>What it buys</span>Hydraulic politics — channels, basins, upstream and downstream. This is the one closest to FFVII's Lifestream, and the refinery step is what keeps it from being that</p>
+    </div>
+
+    <div class="row">
+      <p class="took"><span>What we took</span>Reaching is aimable, and it's the villain's method</p>
+      <p class="inst"><span>Instead of</span>Reaching as pure indifferent accident nobody can steer</p>
+      <p class="risk"><span>What it buys</span>Gate 4 gets a villain whose technique is a correctly-executed procedure. But it must still happen by accident to people who didn't intend it, or the horror becomes ordinary villainy</p>
+    </div>
+
+    <div class="row">
+      <p class="took"><span>What we took</span>Overdraw eats what you were using hardest</p>
+      <p class="inst"><span>Instead of</span>A generic health cost, or damage rolled at random</p>
+      <p class="risk"><span>What it buys</span>Punishment that is personal by physics rather than by authorial choice — the runner loses her legs, the reader loses her hands. And it can take the man bracing the door instead of you</p>
+    </div>
+
+    <div class="row">
+      <p class="took"><span>What we took</span>The astral layer is out. The physical layer is the only one</p>
+      <p class="inst"><span>Instead of</span>A far side that explains relics, the dead, and anything else that gets hard</p>
+      <p class="risk"><span>What it buys</span>The grounding has to carry every explanation, which is what makes players able to reason from it. The one permitted mystery — <em>the difference</em> — has no mechanism and never gets one</p>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <b>Full specification:</b> 14,670 words in twelve sections — <em>Solve and Set</em>. <b>Coinages spent: zero of ten.</b> Every term above is ordinary English doing new work: grain, families, the hold, sap, unrest, the settling, the difference, slump, sill, thin ground.<br>
+  <b>Still unbuilt:</b> the schools (Gate 2) · the loophole and the small atrocity (Gate 3) · the antagonist (Gate 4) · the nation and its apparatus (Gate 5) · the lieutenants and the endgame (Gate 6).
+</footer>
+
+</div>
