@@ -1,0 +1,402 @@
+<title>The Five Schools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;600;800&family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap">
+<style>
+:root{
+  --ink:#14120F; --stone:#211E19; --stone-2:#2A2620; --edge:#3A342B; --edge-2:#4A4238;
+  --ash:#847B6E; --bone:#E6E1D4; --bone-dim:#BDB6A7;
+  --brass:#D8B25C; --slate:#6FA0B0; --rust:#C05A32;
+  --display:"Big Shoulders Display","Arial Narrow",sans-serif;
+  --body:"Spectral",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{
+  margin:0;background:var(--ink);color:var(--bone-dim);
+  font-family:var(--body);font-weight:300;font-size:17px;line-height:1.72;
+  -webkit-font-smoothing:antialiased;
+}
+#bar{position:fixed;top:0;left:0;height:2px;width:0;background:var(--brass);z-index:60}
+
+.shell{display:grid;grid-template-columns:1fr;max-width:1400px;margin:0 auto}
+@media(min-width:1000px){.shell{grid-template-columns:262px minmax(0,1fr);gap:44px}}
+
+/* ---- nav ---- */
+nav{padding:34px 20px 40px;border-bottom:1px solid var(--edge)}
+@media(min-width:1000px){
+  nav{position:sticky;top:0;align-self:start;max-height:100vh;overflow-y:auto;
+      border-bottom:0;border-right:1px solid var(--edge);padding:44px 22px 44px 30px}
+}
+nav .navtitle{
+  font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--ash);margin:0 0 16px
+}
+nav ol{list-style:none;margin:0;padding:0;display:grid;gap:1px}
+nav a{
+  display:grid;grid-template-columns:22px 1fr;gap:9px;align-items:baseline;
+  text-decoration:none;color:var(--bone-dim);padding:5px 8px;font-size:14px;line-height:1.35;
+  border-left:2px solid transparent
+}
+nav a:hover{color:var(--bone);background:var(--stone)}
+nav a:focus-visible{outline:2px solid var(--brass);outline-offset:1px}
+nav a.on{color:var(--brass);border-left-color:var(--brass);background:var(--stone)}
+.t-num{font-family:var(--mono);font-size:10.5px;color:var(--ash)}
+nav a.on .t-num{color:var(--brass)}
+
+/* ---- article ---- */
+main{padding:0 20px 100px;min-width:0}
+@media(min-width:1000px){main{padding:44px 48px 140px 0}}
+
+.masthead{padding:38px 0 30px;border-bottom:1px solid var(--edge);margin-bottom:38px}
+.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ash);margin:0 0 14px}
+h1{
+  font-family:var(--display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(40px,8vw,86px);line-height:.9;margin:0 0 6px;color:var(--bone);text-wrap:balance
+}
+.sub{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--brass);margin:0}
+
+article{max-width:70ch}
+article h2{
+  font-family:var(--display);font-weight:600;text-transform:uppercase;
+  font-size:clamp(27px,3.6vw,38px);line-height:1;letter-spacing:.01em;
+  color:var(--bone);margin:64px 0 20px;padding-top:22px;border-top:1px solid var(--edge);
+  display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:baseline;text-wrap:balance
+}
+article h2:first-child{margin-top:0;border-top:0;padding-top:0}
+.s-num{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--brass);letter-spacing:.1em}
+.s-num--none{color:var(--ash)}
+article h3{
+  font-family:var(--display);font-weight:600;text-transform:uppercase;font-size:30px;line-height:1;
+  letter-spacing:.01em;color:var(--brass);margin:48px 0 16px;padding-top:16px;
+  border-top:1px solid var(--edge);display:grid;grid-template-columns:auto 1fr;gap:12px;
+  align-items:baseline;text-wrap:balance
+}
+nav li.lvl3 a{padding-left:22px;font-size:13px}
+nav li.lvl3 .t-num{opacity:.5}
+article h4{
+  font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ash);margin:28px 0 10px;font-weight:500
+}
+article p{margin:0 0 17px}
+article strong{color:var(--bone);font-weight:600}
+article em{font-style:italic}
+article ul,article ol{margin:0 0 18px;padding-left:22px}
+article li{margin-bottom:8px}
+article li::marker{color:var(--ash)}
+article hr{border:0;border-top:1px solid var(--edge);margin:44px 0}
+article a{color:var(--brass)}
+
+blockquote{
+  margin:26px 0;padding:2px 0 2px 20px;border-left:2px solid var(--edge-2);
+  font-size:16px;color:var(--bone-dim)
+}
+blockquote p{margin:0 0 10px}
+blockquote p:last-child{margin:0}
+
+blockquote.the-law{
+  border:0;margin:38px 0;padding:34px 30px;background:var(--stone);
+  border-top:3px solid var(--brass);border-bottom:1px solid var(--edge)
+}
+blockquote.the-law p{
+  font-family:var(--display);font-weight:600;text-transform:uppercase;
+  font-size:clamp(28px,4.6vw,46px);line-height:1.02;color:var(--brass);
+  margin:0;letter-spacing:.005em
+}
+
+.tw{overflow-x:auto;margin:0 0 24px;border:1px solid var(--edge);background:var(--stone)}
+table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.55}
+th,td{padding:11px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--edge)}
+th{
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ash);font-weight:500;background:var(--stone-2);white-space:nowrap
+}
+tr:last-child td{border-bottom:0}
+td strong{color:var(--bone)}
+td{font-variant-numeric:tabular-nums}
+
+code{font-family:var(--mono);font-size:.86em;color:var(--bone);background:var(--stone-2);padding:1px 5px}
+</style>
+
+<div id="bar"></div>
+<div class="shell">
+  <nav>
+    <p class="navtitle">Contents</p>
+    <ol><li class="lvl2"><a href="#what-a-school-is"><span class="t-num">·</span><span>What a school is</span></a></li>
+<li class="lvl2"><a href="#what-is-true-of-all-five-said-once-here-so-no-school-has-to-say-it-again"><span class="t-num">·</span><span>What is true of all five, said once here so no school has to say it again</span></a></li>
+<li class="lvl3"><a href="#matchers"><span class="t-num">·</span><span>Matchers</span></a></li>
+<li class="lvl3"><a href="#rods"><span class="t-num">·</span><span>Rods</span></a></li>
+<li class="lvl3"><a href="#surveyors"><span class="t-num">·</span><span>Surveyors</span></a></li>
+<li class="lvl3"><a href="#quicks"><span class="t-num">·</span><span>Quicks</span></a></li>
+<li class="lvl3"><a href="#take-off-hands"><span class="t-num">·</span><span>Take-off hands</span></a></li>
+<li class="lvl2"><a href="#the-counter-graph"><span class="t-num">·</span><span>THE COUNTER GRAPH</span></a></li>
+<li class="lvl2"><a href="#comparison-table"><span class="t-num">·</span><span>COMPARISON TABLE</span></a></li>
+<li class="lvl2"><a href="#what-this-leaves-open-for-later-gates"><span class="t-num">·</span><span>WHAT THIS LEAVES OPEN FOR LATER GATES</span></a></li>
+<li class="lvl2"><a href="#1-which-schools-are-playable"><span class="t-num">1</span><span>Which schools are playable</span></a></li>
+<li class="lvl2"><a href="#2-enemy-only-and-what-it-buys"><span class="t-num">2</span><span>Enemy-only, and what it buys</span></a></li>
+<li class="lvl2"><a href="#3-where-the-protagonist-starts"><span class="t-num">3</span><span>Where the protagonist starts</span></a></li>
+<li class="lvl2"><a href="#4-decisions-not-on-that-list-that-are-expensive-to-reverse"><span class="t-num">4</span><span>Decisions not on that list that are expensive to reverse</span></a></li></ol>
+  </nav>
+  <main>
+    <div class="masthead">
+      <p class="eyebrow">Project Chimera · Gate 2 · awaiting decision</p>
+      <h1>The Five Schools</h1>
+      <p class="sub">Matchers · Rods · Surveyors · Quicks · Take-off hands</p>
+    </div>
+    <article><h2 id="what-a-school-is"><span class="s-num s-num--none">·</span><span class="s-label">What a school is</span></h2>
+<p>A school is not a spell list. Everybody in this world does the same two things with their hands — parts a hold, ties it back — and any competent person can be taught the follow-through in a season. What cannot be handed over is the thing the strokes are fired at: <strong>library</strong>. Recognition is the whole of the fast tier, library is the whole of recognition, and there are only so many ways a human being can come by one.</p>
+<p>That is the split. A school is a doctrine of acquisition: how its people get materials into their heads, what they do standing in front of something they have never met, and what all the rest of their fighting is shaped like as a consequence. Five answers have hardened into trades.</p>
+<p><strong>Cut it out of the world</strong> and carry the pieces (matchers). <strong>Buy an instrument</strong> and read a few things all the way through (rods). <strong>Walk the ground days early</strong> and leave the lines in it (surveyors). <strong>Learn it off living bodies</strong>, which are the same eight families every time (quicks). <strong>Take it off the record</strong> — who built this, when, and what were they buying that decade (take-off hands).</p>
+<p>Nobody is tested and shut out. People end up in a school the way people end up in any trade: whatever was within walking distance at fourteen, and who would have them. A works town makes matchers. A garrison town makes take-off hands. Rods are made by anyone who can find the seating fee. Quicks are made by wards and slaughter yards and by other quicks, and by nobody's first choice.</p>
+<p><strong>One school was cut this gate.</strong> <em>Breaking</em> — the school that turned its back on a fight to hammer a wall — was the same doctrine as the matchers written twice; the two even shared an alternate name. Its single best idea survives: <strong>the cut is depth.</strong> A notch forty millimetres into a faced wall, an ordinary palm on the bottom of the notch, and an ordinary reader now finishes sixty millimetres in — acuity bought with labour rather than birth. That went to the matchers, along with the destructive prepared survey and the social trouble that comes with a woman who cuts bits off your gate. The turned back and the hammer did not come across; matchers work facing you, with a file.</p>
+<h2 id="what-is-true-of-all-five-said-once-here-so-no-school-has-to-say-it-again"><span class="s-num s-num--none">·</span><span class="s-label">What is true of all five, said once here so no school has to say it again</span></h2>
+<p><strong>Recognition is not a read.</strong> Anything in library resolves under a quarter-second at any acuity. Every school's fast tier is this and only this. Every school's fast tier is therefore <em>memory</em>, which is what makes the next line the tax that never stops being charged.</p>
+<p><strong>Substitution is the universal tax on library.</strong> A veteran in a substituted room is worse off than a novice. Every school pays it. <strong>One school makes a living out of collecting it</strong> — the surveyors' counter-survey wing, who go in the night before with a bag of pins — and that is the difference between a tax and a predator.</p>
+<p><strong>Disguise buys about two seconds.</strong> Whether two seconds matters depends entirely on where you were standing. It is nearly fatal to a quick, nearly total against a rod, an inconvenience to a matcher, a joke to a take-off hand.</p>
+<p><strong>Accelerant is the nearest source in the room, and it is on somebody's hip.</strong> Four schools have doctrine forbidding it on the body. The matchers make the stuff and carry it anyway.</p>
+<p><strong>Overdraw eats the hands, and this is the trade's shared cruelty:</strong> a hardened fingertip reads worse. Every bare-skin school's career is the same curve — the library gets larger every year and the ability to add to it gets smaller. Only the rods are exempt, and only because they gave up their hands at nineteen on purpose.</p>
+<p><strong>Two rulings this gate adopts and later gates should not quietly reverse.</strong> First: <em>state comes free with recognition.</em> On a material already in library, state resolves at recognition speed at any acuity, because she is matching a difference against what she entered rather than measuring what is in front of her. Acuity gates state on <strong>unfamiliar</strong> material only. Second: <em>an instrument buys depth and nothing else.</em> Footed on a rod he has read to full depth, an ordinary man reads to fifty or sixty millimetres — but families and proportion only, never state, and never faster than his own bare-handed read. Depth is purchasable. Speed is not, and speed was never anything but library wearing a coat.</p>
+<hr />
+<h3 id="matchers"><span class="s-num s-num--none">·</span><span class="s-label">Matchers</span></h3>
+<p><strong>The doctrine, in three sentences.</strong> They build library by carrying it: a hinged board of a hundred and eighty known chips worn on the chest, each identified by a count of nicks filed into one edge, read by thumb, in the dark, at a dead run, without looking. Meeting something unfamiliar they file a bright notch into it and read from the fresh face — nothing over it, no facing, and the notch is depth — then cut a curl, nick it, clip it, and own it forever after anywhere in the world. They think the rest of the trade is doing the same work far more slowly and calling it insight.</p>
+<p><strong>Source · topology · stroke.</strong> Carried reagents (working stock on the right hip, reference on the chest, and never the two confused) · flask · <strong>set</strong>.</p>
+<p><strong>THE IMAGE.</strong> A woman staring straight at you with one palm flat on the world and her other fist buried to the wrist in her own chest, and when the stroke fires the dust-line is drawn across her own arms and her own chest board, because she is the boundary. She sounds like a box of teeth when she runs.</p>
+<p><strong>The three speeds, as hands.</strong> <em>FAST, 0.9–1.2 s:</em> left palm flat on the escutcheon, right thumb up into the ready row, four inches of known wire out of its clip and fed into the keyhole — the wire is a tool already read through, so it is contact — chained, and the lock's whole inside comes back as one solid casting of her own wire. Honestly at the slow end of the band: the reach into the case costs a fifth of a second she can never get back. Matchers are never the fastest. They are the most often fast. <em>HEAVY, 4–12 s:</em> down on one knee, chip slid flat under the heel of her left hand so she reads the wall <em>through</em> known stock, right hand walking the powder tubes, thumb to felt, building the proportion out loud — and to solve she must let go of the chip and commit both hands, which is why the heavy tier of this school is two women, one calling and one solving, and why a lone matcher's heavy is a coin flip. <em>PREPARED, an evening:</em> the destructive walk. A file drawn twice across every rail, a notch in each bed, a curl off every bracket, read to full depth by lamplight, nicked, clipped, entered. Afterward the ground is fast tier from wall to wall and the house is a ruin. That was in the price.</p>
+<p><strong>What it is bad at.</strong> Anything that occupies one hand halves her — a rope, a lamp, a shield, a wounded man, a crawlspace, a crowd. Cold and wet finish her outright: the nick-code needs bare fingertips at fine discrimination, so the counter is to make her stand in the rain for an hour. Near-match is worse than no match — the case always answers, and <em>close</em> is a shortfall, and a shortfall warps or reaches. She chains constantly, at a quarter more sap, and gets about twenty per cent fewer workings out of the same flask as anybody else. And the case is 6.5 kg of the most valuable object in most rooms, worn on the front, on cut-able straps, on the same harness as the flask.</p>
+<p><strong>Beaten by.</strong> <strong>Rods, hard.</strong> She fights by arithmetic said out loud and she burns a fifth faster than any other flask school; he has no count at all, concedes her opening burst on purpose, keeps rod's length so she cannot reach the world with a flat palm, and waits. Everyone in the corridor can hear her say "three." <strong>Quicks, soft.</strong> Her stock is identified by feel; a set on the reading hand costs a quick nine-tenths of a second, and a matcher who cannot feel her own nicks cannot name her own case.</p>
+<p><strong>Socially.</strong> The school with a lineage. Libraries are physical here, so they are shareable, divisible and inheritable: an apprentice's case is halves of her teacher's chips, and <em>who is that cut from</em> is the only answer that means anything. There is no written standard — there are four or five old cases in the country, disputed against each other, exactly as the Table is disputed. When a matcher dies her case is divided at the graveside and it is the least sentimental thing you will ever watch. Hired by foundry floors, dock crews, salvage, anyone whose set has to come out true. Not hired by anyone whose ground is private, because a matcher on your property is a woman walking round touching everything you own and quietly cutting bits off it. <em>She took a curl off the gate</em> has started more trouble than any working ever has. <strong>The split inside the trade:</strong> cutters and keepers — the ones who file into strange metal on sight, and the older ones who will only inherit and trade, and who think cutting is how bad entries get born.</p>
+<p><strong>Magnifying.</strong> <strong>They own accelerant.</strong> They make it, grade it by fineness and dryness and purity and age with one thumb, and supply every other school in the country — a file drawn across a known bar makes powder that is all four at once, off material already in library, with nothing cut into it. And they are the one school that carries it: it rides on the right hip because she made it four minutes ago, which means the richest thing in the room and her own bank and her own working stock are all in the same pouch, under the same boundary as her hands. <strong>They cannot run a runner</strong> without unbuckling the case and setting it down twenty feet away first, because inside ten feet the densest thing is a board of sorted metal — and everyone in the trade who sees a matcher put the box down starts walking. Deep extraction is not theirs; below the depth she has been lowered to, every answer she gives is a near-match.</p>
+<p><strong>A lifetime.</strong> The pinch of thumb and forefinger, the flat of the reading palm, and a bar across the breastbone where six and a half kilos have sat for forty years. Slack: a tremor in the pinch, and she starts needing two hands to seat a chip and blames the clip. Thinning: grotesquely one-sided — you can tell which hand a matcher reads with from across a yard. Hardening: the bloom arrives at the exact point of contact, so her acuity does not decline generally, it goes dead in the specific fingers she used most, in order of use. Then the other hand, in a third of the time. Then the lips, which is why old matchers are seen mouthing chips like a woman checking a coin. The other bloom is the grey bar across the breastbone, and they all tap it.</p>
+<p><strong>Scene.</strong></p>
+<blockquote>
+<p>The rail wasn't brass. It was brassed. Her thumb found the seam three seconds late, which was two and a half seconds after she'd chained.
+Something arrived.
+She kept her eyes on the stairs, because that is the trade — you do not watch your hands — and let the right one walk the second row by feel while the half-set slid off the rail and took the sole off her boot. Body-warm. Always body-warm.
+Zinc, four nicks. Tin, five. She had tin. She'd had tin this morning.
+"Nine parts lead," she said out loud, to nobody, because you say it out loud, "and one part whatever's nearest."
+Her chest went cold through the canvas.
+The tin row, then.</p>
+</blockquote>
+<hr />
+<h3 id="rods"><span class="s-num s-num--none">·</span><span class="s-label">Rods</span></h3>
+<p><strong>The doctrine, in three sentences.</strong> They build library by <strong>sounding</strong>: going into a place with a probe before anyone needs anything from it and reading a small number of things all the way through — one wall to its far face, the hinge stiles, the floor plate, the roof ties — rather than a great many things at the surface. Meeting something unfamiliar they do not touch it; they foot a rod on it, pay the ten to fifteen seconds an instrument read costs, accept families and proportion at depth and no state at all, and work it as if it were sound, because the alternative is putting a hand on an unknown thing. They say, out loud, that a read taken on skin is a sensation rather than a measurement — that a thing you can only feel is a thing you do not actually know — and their workface line is <em>nothing on the skin</em>.</p>
+<p><strong>Source · topology · stroke.</strong> Pre-loaded charges bound into their own instruments · <strong>implant</strong> · <strong>solve</strong>.</p>
+<p><strong>THE IMAGE.</strong> A man who touches nothing: sleeves buttoned over the knuckles, both hands wrapped, a steel rod planted like a walking stick with his whole weight leaned through it, and a ring of frost and steam blooming through the cloth of his forearm while the working happens a metre away at the far end of the stick. He comes down a corridor tapping like a blind man, and every tap is a reading.</p>
+<p><strong>The three speeds, as hands.</strong> <em>FAST, 0.8–1.2 s:</em> running the gallery, he rolls the rod in his palm so the filed flat on the shaft — forty millimetres of bright steel he keeps clean for exactly this — comes round onto the balustrade as he passes. Recognition on the stanchion feet, sounded an hour ago; chained; the rail goes, with four men leaning on it. He never broke stride and both hands are still wrapped. <em>HEAVY, 11 s:</em> bronze foot flat against the wall face, both hands stacked on the cap, weight through the shoulders, the posture of a man leaning on a fence. Six seconds of read to a hundred millimetres, then five seconds in which he must not move a millimetre, because if the rod shifts the stroke simply does not happen and the sap is gone. He does not need a friend holding a door. He needs the floor to stay where it is, which is why the correct thing to do to a rod is hit the rod. <em>PREPARED, an evening:</em> loading. Bore the shaft, pack three hundred grams of dry lime and wound copper, seat the oil bulb, screw the ferrule down, then take a graver and re-cut the groove four millimetres behind the tip — a closed run of scored metal, a boundary he carries permanently and never has to draw. Then re-read every instrument he owns, one at a time, because he reads through them and a tool he has not read is a tool he cannot read through.</p>
+<p><strong>What it is bad at.</strong> <strong>State-blind, and it is not a minor axis.</strong> He reads half-set brass as superb brass. He reads a bar thirty per cent void as full. And half-set takes the hold out of any contact surface and <em>conducts</em> — so a rod driven into it comes out short with the tip gone and the end of his instrument open, and his instrument is footed in the port at his wrist. Every rod has practised the drill: cuff, teeth, drop it, step back. About a third have needed it. <strong>The tip is a seam.</strong> The read runs through an instrument he has read, and stops dead at the first interface it does not know — so grease, blacking or lime-wash on the far face does not buy two seconds against a rod, it buys the whole engagement. Disguise is worth more against this school than against any other. Bare-handed he is worse than a novice: eight to ten millimetres in twenty-five seconds and he does not believe a word of it. The seat is a fixed, advertised target on the outside of a limb that steams; a flat blow scatters the draw for four to ten seconds, and a wet strap over the seam makes him a civilian for as long as somebody keeps the rag wet. Children know the trick. And nobody can hand a man a spare arm.</p>
+<p><strong>Beaten by.</strong> <strong>Quicks, hard.</strong> State is exactly what his doctrine costs him and exactly what hers is made of: she banks half-set as ordinary practice, half-set eats instruments and creeps along what it touches, and the delivery route runs up sixty centimetres of his own rod into the port at his wrist. She also knows the four places a seat can go, because her trade cut them. <strong>Take-off hands, soft.</strong> His substance is three hundred and forty grams he packed on a Tuesday; hers is the building. And his fighting stance is a lean — take the bearing out of the floor and there is nothing to lean on.</p>
+<p><strong>Socially.</strong> Respectable, expensive, and bought. An implant does not care what your acuity is: a boy with three millimetres and forty seconds, who would have been shut out of every bare-hand trade in the country, gets seated at nineteen and reads to sixty for the rest of his life. This is the only school where money and nerve stand in for what you were born with, and it is full of people who would otherwise have carried sacks, and that fact sits under every opinion anyone has of them. Hired by works and mines and wall crews and anyone who wants a specific wall gone at a specific hour in front of witnesses. Refused by salvage yards at any price, because a rod in a slump field is a hazard to everyone near him. What the other trades say: <em>sleeves. Tin arms. He bought that inch.</em> What the rods say back: <em>she's proud of a gift she was born with and can't teach to anybody.</em> Two rules everyone knows: a rod won't shake your hand, and never lend a rod your rod. <strong>The split inside the trade:</strong> fighting rods and probe men — half the trade never fights at all, and walks survey lines with a notebook of proportions for better money and no risk, and the fighting half knows it.</p>
+<p><strong>Magnifying.</strong> <strong>They own distance.</strong> Thirty metres of fine bronze wire on a belt spool, all of it read to full depth, thrown so it lands in a closed run at the base of a stair — he keeps the near end in his fist, because a set is carried <em>through</em> the boundary, not across a gap — and sets there, six metres away, with the oil bulb at the ferrule doing the rest. Set delivers heat, always. <strong>They own deep extraction</strong>: a rod couples to a drill string and reads through hundreds of metres of instrument already read through, and half the country's ore is found by a man saying <em>iron at forty feet</em> in good faith. <strong>They will not lay a runner.</strong> It curves toward whatever is densest and there is ninety millimetres of bronze lying on his own ulna; and the thing every soldier learns second, after <em>hit the arm</em>, is that a rod is the wrong man to stand next to when anyone's runner is out. Accelerant never goes on the body — sealed at the ferrule, sixty centimetres from the hand — which makes them precise with it and incapable of scale.</p>
+<p><strong>A lifetime.</strong> Seam, forearm, elbow, and the neck on that side. Slack at fifty, or at thirty-five for the hard ones: the grip that held a locked rod through nine seconds holds it through four. Thinning is why they wear the sleeves — the forearm wastes around a bar that does not, so the bar stands proud, a straight ridge under the skin with the port sitting in a hollow. Hardening: the part sounds wrong when tapped, a dead note instead of a live one, and every rod in the world taps his own forearm with his own rod, listens, and then pretends he was testing the rod. They all do it. They all know what everyone else is doing. Failure takes the fingers over three or four months and then the arm, and there is no pain to speak of, which the trade finds unfair. The ones who quit at slack become seaters, because seating means reading a living forearm through a fine probe to lay a bar between the bones, and the men who stopped early are the ones with steady hands. The trade says it flat: the best seaters are the cowards.</p>
+<p><strong>Scene.</strong></p>
+<blockquote>
+<p>He set his weight on the rod and drove it into the wall to read the far face. It went in like the wall wasn't there. Sixty centimetres of good steel went in and forty came out, the tip gone, the shaft at blood heat.
+Half-set. Somebody had opened this wall yesterday afternoon and gone home.
+His left hand was already at his cuff, thumb under the flap, teeth on the buckle, because the ruined rod was still footed in the seam and it creeps a few feet along whatever it touches. He got the foot out with his teeth and dropped forty centimetres of warm steel on his own boot. Behind him a man stepped in the spill and came away with no sole.
+"Wall's soft," he called. True. Useless. All he had.</p>
+</blockquote>
+<hr />
+<h3 id="surveyors"><span class="s-num s-num--none">·</span><span class="s-label">Surveyors</span></h3>
+<p><strong>The doctrine, in three sentences.</strong> They build library by walking a building — floor by floor, fitting by fitting, three days where they can get them and four hours where they cannot — and by leaving the boundaries in it before anyone arrives, so that when the fight comes every surface is recognition and every line is already down. Meeting something unfamiliar they leave, and if they cannot leave they treat the unknown thing as a wall and work only what is beside it, which is why the trade's one commandment is <em>don't fight in a room you haven't walked</em>. Half the trade walks its own houses; the other half walks yours, and changes three things in it, and this is the only school that has made a trade out of the fact that substitution beats library.</p>
+<p><strong>Source · topology · stroke.</strong> Ripped from the surroundings — a surveyed building is not surroundings, it is stock, counted and graded — with pre-loaded charges second · <strong>pool</strong> · <strong>set</strong>.</p>
+<p><strong>THE IMAGE.</strong> She is planted at the stair-head on a patch of floor gone grey and frost-bitten, both palms flat on a poured line she made on Tuesday, not looking at anybody, on a spot she chose a week ago because it has one approach and a drop behind it. Behind her, one wall of the room is the wrong colour — dull, matte, colourless, no highlights, edges shimmering, warm as a hand — because that wall was a wall yesterday.</p>
+<p><strong>The three speeds, as hands.</strong> <em>FAST, 0.9 s:</em> backing through a doorway, two fingers of the left hand down a groove cut in the architrave and re-pointed on Tuesday, right hand on the jamb; chained; the doorway fills with one continuous casting drawn out of the opened wall, and she has not stopped walking backwards. <em>HEAVY, 8 s:</em> both hands flat on the newel post, no read at all, straight recognition — the stair-string and the first six treads into a single mass, drawn off the tap under her feet and off the bank. She does not need a bodyguard. She needs the approach to be one man wide, and she saw to that on Tuesday. What she pays instead is that the frost-bitten ground says exactly where she is and she will not leave it. <em>PREPARED, forty minutes to three days:</em> chalk under a carpet, wire stapled into a skirting groove, cord run through a ceiling void, a channel poured into floor screed and screeded flat, a line laid in the paint layer and painted over. A sill sunk under the floor of the room she means to hold and the tap where her back will be. And, the night before, <strong>the wall</strong> — an interior partition opened and left half-set, standing there holding its shape, a battery and a trap for the day and a half before it slumps, because half-set re-holds outside-in by mass and a wall's worth takes that long to go grey. A house is forty to seventy entries and three hundred places she must physically touch. <strong>The last walk</strong> is twelve hours out: every line, every fitting, forty minutes. Surveyors who skip it are a category the trade discusses in the past tense.</p>
+<p><strong>What it is bad at.</strong> Everything else. Off prepared ground she is the weakest thing in the game and not by a little: no sill, no pool, just a small flask on a short strap that is not a weapon, it is fare money. She cannot escort, cannot pursue, cannot hold a moving line, cannot be ambushed and survive it as a matter of skill rather than luck; and the counter to all of that is <em>don't go</em>, which is a fine answer for a surveyor and a poor one for whoever hired her. Her library goes stale, because state is in library and buildings change state — damp, frost, a repaint, a plumber, a season of coal smoke, and after a season the house is strange ground again. Her plumbing is findable: a sill under a floor is a large deliberate worked thing and a cellar is a public place. Fire ruins her — burning the third storey buys thirty seconds and costs her the third storey forever, because heat and soot change state and now she is on strange ground inside her own building. And the bank is a battery <strong>anyone</strong> can plug into, including the enemy caster working short in the same room.</p>
+<p><strong>Beaten by.</strong> <strong>Rods, hard.</strong> Pool is denied by moving her or shutting the gate upstream, and a rod does the second without ever entering the room: probe footed on the cellar wall, four metres back, behind cover, families and proportion at depth on the channel and the sill, one solve, and the most dangerous woman in the province is a woman with chalky hands and a plan. <strong>Matchers, soft.</strong> A poured channel under screed is previously-worked matter at the wrong depth, and a matcher slides a foot of known cord under a door and reads what is at the far end as though her hand were there — from a room the surveyor never bothered to score, because nobody scores a scullery.</p>
+<p><strong>Socially.</strong> Hired by whoever owns walls and cannot move what is inside them. Paid for the walking, not the fighting — half before she puts a hand on the first wall, the rest when the survey is done, and the fight, if there is one, is included. This offends everybody; owners want to pay for the shooting and are told, in the same flat sentence by every surveyor alive, that the shooting is the cheap part. Masons and joiners are needed and resented, because a survey asks a mason for structural insults, and because <strong>the man who built the house is the surveyor's worst enemy</strong> — he knows where every line is, and substitution starts with money to a joiner, and there is no fixing it, and it makes them strange about tradesmen. They are called cowards weekly. They are cowards in the specific technical sense that they will not fight where they cannot win, and they will explain the difference at tedious length, and they are right. <strong>The split inside the trade:</strong> chalk crews, who hold houses, and the counter-survey wing, who walk other people's. The second lot are the only people in the country who make a living out of being somewhere the night before with a bag of pins and a tin of grease, and the first lot despise them and hire them.</p>
+<p><strong>Magnifying.</strong> <strong>They own the runner</strong>, because everyone else's is a prayer with a direction and hers is a rail: a run scored forty metres down a corridor days ahead, in the mortar, under the paint. It still cannot be aborted and it is still the most legible act on a battlefield. <strong>They also own the counter to it</strong>, and for the same reason: a runner curves toward whatever is densest, and a woman who has three days can decide in advance where the densest thing in the corridor will be. On day one or two a fresh body is the densest thing in most rooms, and surveyors think about that when they choose where the fighting will happen. Fire is the last card, never the first. <strong>Deep extraction is doctrinally refused</strong> — one controlled downward reach per house, in the cellar, at leisure, to open the sill, and the older ones make somebody else do it. <em>The survey stops at the cellar floor; below that is somebody else's business.</em></p>
+<p><strong>A lifetime.</strong> Not a solver's shoulders — the hands and the feet. Palms and finger-pads pressed flat for hours across days, soles reading floors, knees on boards. Slack is a tremor in the leading hand and a shortened stride; thinning leaves the right palm visibly thinner than the left and permanently a little cupped; hardening comes to the nail beds first and the part sounds wrong when tapped, and the tissue she made her living with is the tissue that stops answering, so acuity falls, so she leans harder on library, so she puts her hands down more. An old surveyor walks a house in six hours that she once walked in three, and directs a crew of young hands who do the touching for her. Failure is a fingertip that has simply stopped, and she does not notice until she puts it on a wall and gets nothing back — and the difference between nothing-there and nothing-read is the exact ambiguity her whole trade cannot tolerate. That is usually the day she stops.</p>
+<p><strong>Scene.</strong></p>
+<blockquote>
+<p>Third landing. The line under the stair carpet is where she left it. The hinge pins are not.
+Somebody swapped brass for steel-cored on Tuesday, and she recognises brass in a fifth of a second, which is precisely the problem. She has already chained — two fingers on the skirting groove, weight going backwards down the treads — and the plug in the doorway was priced short on purpose, against the bank, the way everything is priced short against the bank.
+A servant moved the hall rug at six to sweep under it. The line is open at one end.
+The plug leaves as a runner instead, down the hall, and the drag opens behind it, and the densest thing between here and the front door is whoever came to see what the noise was.
+She keeps going down. Backwards. Counting the pins she still trusts.</p>
+</blockquote>
+<hr />
+<h3 id="quicks"><span class="s-num s-num--none">·</span><span class="s-label">Quicks</span></h3>
+<p><strong>The doctrine, in three sentences.</strong> They build library out of people — wards, the dying, slaughter yards, the first two days of a body on a slab, animals, each other, and above all themselves, since a quick has read her own forearm ten thousand times and can tell you what she drank yesterday. Meeting something unfamiliar and dry they read it once at whatever acuity they were born with and file it against a body — <em>that's a knucklebone with grit in it, that's tallow gone hard, that's about a tooth</em> — which is serviceable on families, unreliable on proportion, and done anyway. What they think of the other schools is short: everyone else picked material that holds still, and mistook a tidy room for a hard problem.</p>
+<p>The insight underneath is that <strong>living tissue is agony to read cold and trivial to recognise warm</strong>. Every person is the same seven or eight families in nearly the same proportion; read three hundred and you are carrying one enormous library entry that walks about on its own legs and stands in front of you in fights. What varies from one man to the next is not families and barely proportion. It is state, and state is the only thing a quick ever has to measure.</p>
+<p><strong>Source · topology · stroke.</strong> <strong>Her own body</strong> — water and lime, staged loss, and she is the only practitioner alive who can read exactly what she has spent and stop at the right stage — with carried reagents as the working discipline · <strong>implant</strong> · <strong>set</strong>.</p>
+<p><strong>THE IMAGE.</strong> A line of dry pale dust running out of an open jar, up her bare forearm, across her wrist and onto another person's skin. She is the only practitioner in the world whose boundary is routinely drawn on a living man, and everybody in the trade knows what a boundary declares.</p>
+<p><strong>The three speeds, as hands.</strong> <em>FAST, 0.9 s:</em> she takes the last two paces inside somebody else's swing and lands her left palm flat on his sword forearm; right thumb flicks the lid off the lime jar on the chest strap. The closed run is her two hands and his arm. Tissue is recognition, the lime is in library from a thousand jars, chained, no abort — a cuff of set lime comes down round his wrist and the hilt and welds hand to weapon, delivering its heat as it seats. He owns a sword forever now. The same nine-tenths of a second, other face of the trade: a hand above the break and a hand below it, the jar named aloud, one hard snap like a heavy door seating, and the man gets up. <em>HEAVY, 8 s:</em> kneel, drop the plate, <strong>bank first</strong>, then the right palm flat on his chest and left there — six to eight seconds of state, not recognition, because tissue was instant: how much water he has left, where the bleed is, what he has been spending. Left hand does two jars, named. Then a plug delivered four inches inside him, heat included, which is both the closing and the burn. She is blind, static, kneeling, one hand committed, inside the fight, and everybody in the room knows the school. <em>PREPARED, twenty minutes at dawn:</em> rounds. Every man on her side read to full depth, one at a time, and what she is entering is <strong>state</strong> — so for that morning she recognises those four rather than measuring them, and a broken arm costs 1.1 seconds instead of nine, mid-fight, without looking. This is the entire reason armies tolerate the school.</p>
+<p><strong>What it is bad at.</strong> She must be inside arm's length, and every soldier alive has already decided not to let her touch them — that is not a surprise she has to be clever about, it is the default posture of the world toward her. Her library on the dry made world is thirty or forty entries, half of them filed as comparisons to bone, so she cannot take a large working on a building at all, ever, at any price: in a siege she is baggage with good hands. Her material dresses itself — a greased jack, a tinned gorget — and two seconds spent going to the heavy tier while standing inside a man's reach is two seconds spent dying. No count, and the frost-and-heat at the seam tells him before it tells her. Working masses in grams; nothing with real mass moving at her has any answer.</p>
+<p><strong>Beaten by.</strong> <strong>Take-off hands, hard.</strong> The counter is the room, not the caster, and she has no library for the room — so a take-off hand does not have to beat her, only to make the fight be about the floor, the door leaf and the bearing pins, at which point she is a bystander with excellent hands. <strong>Surveyors, soft.</strong> A woman who works thirty feet of scored line never grants contact, and contact is the whole of the quick's craft — but it is a positioning contest and not a kill, because if the quick ever does get a palm on the surveyor it is over in nine-tenths of a second.</p>
+<p><strong>Socially.</strong> <strong>This is the disreputable one, and it is earned rather than labelled.</strong> Her library came off people who did not consent and mostly did not survive, and everybody knows where it came from. She has read the inside of every implant duellist in three provinces, because seating is quick work, and she knows the four places a seat can go, because there are only four. And there is the thing nobody can prove: mode four is <strong>aimable</strong>. A reach takes the nearest sufficient source, the selection is dumb, and after the fact a dumb reach and an aimed one look identical — the dust-line jumped in one frame and everything between went untouched, and the only person who could tell you which it was is the one who fired it. Every reach that happens near a quick is deniable. The trade has never hanged one for it and has never once stopped talking about it. So: hired by armies, by galleries after a crush, by anyone with money and something bad to fix quietly. Paid at the door, on the day, in goods, because nobody wants a standing arrangement with a quick — a standing arrangement means she keeps coming back and reading your household. Fed at the table and not offered a bed. Guards are trained to keep her at two paces and to be seen doing it, and she is trained not to be insulted. <em>Best hands in the world. Keep them where you can see them.</em> <strong>The split inside the trade:</strong> surgeons and seaters — the ones who put people back together and the ones who cut ports into forearms for money, and neither wholly approves of the other.</p>
+<p><strong>Magnifying.</strong> She owns nothing at scale and she knows it: her fire is a burn the width of a coin and she can tell you which coin; her working masses are grams; she will never take down a building. She will absolutely cauterise a man's leg through his trousers because she was in a hurry. <strong>What she owns is the call.</strong> A runner curves toward whatever is densest, and in a room with people that is a person, and on day one or two of the settling it is a dead one — and she is the only person on the field who has read everybody present and can shout the curve two seconds before it happens. She is the counter, never the user. She has never done a deep extraction and would not know how to want to; she is who they send afterward, when the reach went forty feet down and found the gallery crew instead of ore, and she is the reason anybody comes back up. Most of the country's opinion of the school is built on that, and it is not enough.</p>
+<p><strong>A lifetime.</strong> The flat hand, the forearm behind it, and the ring of tissue round the seat. Slack — a tremor that does not go with rest — is professionally finishing for a surgeon, which is why old quicks stop cutting five or ten years before they stop working and why the trade has so many one-handed teachers. Hardening comes to the nail beds first, at the quick of the nail, which the trade finds less funny every year. <strong>This is the only trade whose overdraw eats the sense it works with</strong>: hardening at the fingertips is a measurable loss of what one touch gives her, so an old quick reads with the back of a knuckle, the inside of the wrist, her lips. She sits down to work now, with a boy beside her to get the lids off the jars, and she is still without argument the best reader in the room, because her acuity was never remarkable and library has no ceiling and she has been adding for forty years.</p>
+<p><strong>Scene.</strong></p>
+<blockquote>
+<p>Ninety seconds since she banked, and the lump by her knee has gone grey and porous and useless. She learns this from the sound: a stutter of snaps instead of the one clean seating, and then the shortfall goes looking. It takes the lime out of the second joint of her left ring finger. A strange and specific way to be taught arithmetic.
+She says a word.
+Right hand stays flat on his chest — contact is contact. Left hand, three working fingers now, thumbs the tallow jar, tips it onto the plate, chains a solve-set she has done ten thousand times. The fresh bank slumps out warm, dull, ugly against her knee.
+Forty seconds lost.
+She looks at what is left of him and decides he can spare thirty.</p>
+</blockquote>
+<hr />
+<h3 id="take-off-hands"><span class="s-num s-num--none">·</span><span class="s-label">Take-off hands</span></h3>
+<p><strong>The doctrine, in three sentences.</strong> They build library off the record — pattern books, mill marks, date stones, demolition yards, the spoil off other people's wars — entering a material on the strength of where it came from rather than on the strength of a touch, which gets them recognition, and recognition is the whole of the fast tier at any acuity. Meeting something undated they do what a thin reader must: a hand on it for twenty to forty seconds, families only, which in a fight means they do not do it, they walk to something they can date instead. They believe the other schools are spending a lifetime learning to measure what could simply be known, and the other schools answer that this is not reading, it is a guess with a good memory — which is exactly true and is not an argument, because a quarter-second guess that is right eighty-nine times in a hundred beats an eight-second measurement.</p>
+<p><strong>Source · topology · stroke.</strong> Ripped from the surroundings — the record is a claim about what is in the walls, so the walls are the stock · flask · <strong>solve</strong>.</p>
+<p><strong>THE IMAGE.</strong> Upright, face to the fight, one hand flat behind her on the wall, saying the wall out loud — and then the wall isn't there. Every dust-fine mark she leaves is a small closed ring round a pin head, a strike plate, a rail key; the building comes apart at the joints and never at the face.</p>
+<p><strong>The three speeds, as hands.</strong> <em>FAST, 0.8–1.2 s:</em> corridor, running, men behind her, and she knows the vintage — barracks stock, so the door pins are wrought, three to a leaf, and she has eighty of them in a flask. Left palm slaps flat on the jamb and stays, because that is the contact and it has to hold the whole stroke. Right hand closes thumb-to-forefinger round the exposed pin head, and the rim of her own hand is the boundary: <strong>it declares the pin</strong>, so the working takes the pin first and not her fingers. Chained, the set going short into the strike plate on purpose so the plate warps out of its seat. A sixty-fourth of a flask. She says "one" as she goes, because she is counting. <em>HEAVY, 9 s:</em> stairwell. She wants the flight gone, which means the carriage bearing, which she cannot afford — so she takes the four bearing pins and the mortar bed under the wall plate in one working, unchained, because she has the seconds and does not want a thing she cannot abort. Chalk scores a closed line round the bearing first; that line is the difference between the working taking the bearing and the working taking whoever is beside her. Then chalk in the teeth and both palms flat for the full stroke, and <strong>the counting stops</strong> — which is how her crew know she has committed, and it is the worst nine seconds of her day, because standing still is against her whole grammar. She kicks a banked palmful onto the flags at her ankle before she starts. Ninety seconds of protection; she does not intend to need more. <em>PREPARED, ten minutes to hours:</em> walk it early with a nail, score closed lines into mortar joints where they read as pointing repair, ring the pins she wants, and — this is the part that matters — actually put a hand on the four or five places the record is ambiguous, twenty to forty seconds each, because out of a fight her thin acuity costs nothing but time. When she cannot get in early she prepares anyway, off the record alone, and goes in, because the money is in going in.</p>
+<p><strong>What it is bad at.</strong> <strong>She cannot check.</strong> Every other school's answer to doubt is another read; hers costs half a minute and returns families. Making a take-off hand <em>uncertain</em> is nearly as good as beating her and does not require touching the building — a plausible lie about the vintage will do it. She either fires on a claim she now distrusts or she stops, and stopping is losing. Two or three millimetres of depth means cores, fills, plated seams and repairs are invisible to her, and she is not blind to them because they are hidden, she is blind because she is not looking. Her errors always complete: the fast tier is chained and chained cannot be aborted, so she learns she was wrong at the same instant as everyone downstream. Open ground is nothing to her — a take-off hand in a wheat field is a person with a knife and a strong opinion about barracks. She has no doctrine for a person; people have no vintage. <strong>And the record is a bought thing.</strong> Pattern books are property. Rivals own the same books, works burn, pages go missing, and there is a trade in confidently printed lies about which winter a mill changed its stock. Her library is the only one in the roster that somebody else can buy, forge, or set fire to.</p>
+<p><strong>Beaten by.</strong> <strong>Surveyors, hard</strong> — specifically the counter-survey wing, who do not need to know which room she walked or whether she walked at all. They only need to know what the building officially is, and change one thing. Swap the wrought pins for cast; re-fit one floor and write it nowhere. She fires a sixty-fourth of a flask into a material that is not there, the solve fails, mode one, sap gone, door still shut, three men still coming — and she cannot check, which is the whole reason this is a kill and not an inconvenience. <strong>Matchers, soft.</strong> A matcher fights out of her own case, and a hundred and eighty chips of undated metal are the one substance in the world the record has nothing to say about; and a matcher can open a fitting with a file in four seconds and prove the record wrong to her face, which is the fastest way anyone has found to make a take-off hand hesitate.</p>
+<p><strong>And the inverse, which is why she is not a punching bag: disguise does not touch her.</strong> Grease, blacking, lime-wash, tinning, dazzle-plate — the whole apparatus buys about two seconds against a strong reader and buys precisely nothing against a woman who never looked at a surface in her life. A crew that has spent real money on facing walks into a take-off hand and discovers their answer is inert.</p>
+<p><strong>Socially.</strong> Hired by anyone who has to fight in a town, by works that want a chimney down cheap, by mine owners who want the old galleries told to them, by whoever is besieging whatever. Paid by the building, not the day: she prices the job before she sets foot in it, off the vintage, and holds to the price, and is famous for turning work down flat and saying why in front of the man offering it. A take-off hand offered work in a two-year-old building will name a price designed to be refused. What the others say: <em>they don't read, they remember</em> — said with contempt by strong readers who have watched a thin-handed woman with a chalk stub run a building faster than they can resolve a doorframe, and hated it. Masons and foundrymen like them, because a take-off hand is the only caster who wants to hear about the winter the roof was re-laid and will buy the drink. <strong>The split inside the trade:</strong> book hands and yard hands — the ones whose library is paper and the ones who trust nothing they did not personally pull out of a demolition, and who think the book hands are going to get somebody killed, and are right about once a decade.</p>
+<p><strong>Magnifying.</strong> <strong>They own the runner.</strong> She is the only practitioner alive who knows what is densest in a room she is not standing in — the buried main, the rail bed, the old iron under the floor, the wall that was doubled in the decade when they doubled walls — so she lays her run along the line she wants and it tracks, and arrives bigger than it left. And when the record is wrong about density, the most legible act on a battlefield turns, in front of everybody, into a wall she did not choose; there is no version of this where she gets to say it was not her, because the drag is on the ground, pointing. <strong>They never carry accelerant</strong>, and it is the doctrinal signature: she does not need to, because she knows where the building's is — mortar dust in the joint bed, flour in the mill loft, sawdust under the bench, quicklime in the yard store, resin in forty years of pitched roof — and which cellars are wet, because damp is worse than none. She goes to it, uses it there, and walks away from what is left. She holds the record for deep extraction and the rods hold the instrument, which means the two of them together are how the country gets its ore and how a gallery crew occasionally stops existing; each blames the other, and the record is a hundred years old, and the gallery crew is not in the record.</p>
+<p><strong>A lifetime.</strong> One palm, one shoulder, and the voice. Slack takes the contact hand first and takes the voice with it, which is worse than it sounds for a trade that fights by talking. Thinning is starkly one-sided, so old take-off hands famously wear a glove on one side. Hardening blooms at the nail beds of that hand only, and the nails sound wrong when tapped, which they do constantly, to check, which everyone finds unbearable. The pressing shoulder goes one stage behind. An old one stands lopsided, one shoulder rolled forward from a lifetime bracing on masonry, works through a short read-through bar because the hand will not make clean contact any more, and pretends she is not slower. Her counting has gaps in it now where she stops for air, and her crew have learned to count along so the gaps do not matter.</p>
+<p>And the thing the trade does not say out loud: overdraw can take somebody else if they are nearer the working's centre and under load, and a load-bearing member <em>is</em> under load, and she is braced on it. Old take-off works are slack works. Same four words for a man and for a district. You can walk a street and see which decade had a good one working in it, because the walls have that shortened stride to them, and the buildings everyone who lives in them calls tired were done by somebody's grandmother, correctly, on a Tuesday.</p>
+<p><strong>Scene.</strong></p>
+<blockquote>
+<p>The record says this floor is pinned, not bolted. Left palm flat on the plate, right hand ringed round the pin head — her own hand is the line, so it takes the pin and not her fingers — and she counts the price out loud for the boy behind her, because that is how it is taught.
+"Eightieth. One."
+Pin goes. "Two." Pin goes. "Three—"
+Three doesn't go. Cold comes off it anyway. Somebody re-fitted this floor and wrote it nowhere, and the set is already leaving her hands chained, and chained does not stop.
+She banked a palmful on the flags. It is behind him.
+She says his name. It's the only warning the trade allows.</p>
+</blockquote>
+<hr />
+<h2 id="the-counter-graph"><span class="s-num s-num--none">·</span><span class="s-label">THE COUNTER GRAPH</span></h2>
+<p>Ten edges. Every school has one hard predator, one soft predator, one hard kill and one soft one. Nobody is unbeaten and nobody is a designated victim.</p>
+<p><strong>Hard edges — doctrine-killing:</strong></p>
+<ol>
+<li><strong>Take-off hands are beaten by surveyors,</strong> because the counter-survey wing changes three fittings between the record and the fight, and a take-off hand's only means of checking costs twenty to forty seconds and returns families. She fires at a sixty-fourth of a flask into a material that is not there: mode one, sap gone, door still shut.</li>
+<li><strong>Quicks are beaten by take-off hands,</strong> because the counter is the room and the quick has no library for rooms — no library means no chaining means nothing large, ever, at any price. The take-off hand does not have to reach her; she has to make the fight be about the bearing pins.</li>
+<li><strong>Rods are beaten by quicks,</strong> because an instrument read returns families and proportion and never state, and half-set is pure state. It takes the hold out of any contact surface, it conducts, and the rod's instrument is footed metal-to-metal in the port at his own wrist. She also knows the four places a seat can go, because her trade cuts them.</li>
+<li><strong>Matchers are beaten by rods,</strong> because she chains constantly at a quarter more sap, gets a fifth fewer workings out of the same flask, and says the count out loud where he can hear it. He has no count, concedes her opening burst on purpose, and keeps rod's length so she can never get a flat palm on the world near him.</li>
+<li><strong>Surveyors are beaten by rods,</strong> because pool is denied by shutting the gate upstream, and a rod does it without entering the room: probe footed on the cellar wall, families and proportion at depth on the poured channel, one solve, and the tap is dead.</li>
+</ol>
+<p><strong>Soft edges — situational, survivable, and the reason this is a graph:</strong></p>
+<ol>
+<li><strong>Take-off hands are beaten by matchers,</strong> because a matcher's substance is a hundred and eighty chips of undated metal that the record cannot describe, and because she can file a fitting open in four seconds and prove the record wrong in front of the crew. Uncertainty is nearly as good as a win against a school that cannot check.</li>
+<li><strong>Quicks are beaten by surveyors,</strong> because a woman working thirty feet of scored line never grants contact, and contact is the entire craft — though it stays a positioning contest, since a quick who does get a palm on a surveyor ends it in nine-tenths of a second.</li>
+<li><strong>Rods are beaten by take-off hands,</strong> because he packed his substance on a Tuesday and hers is the building; and his fighting posture is a lean through a planted stick, so she takes the bearing out from under it.</li>
+<li><strong>Matchers are beaten by quicks,</strong> because the case is identified by nick-count under a bare fingertip, and a set on the reading hand at contact range costs nine-tenths of a second. A matcher who cannot feel her own nicks cannot name her own stock.</li>
+<li><strong>Surveyors are beaten by matchers,</strong> because a poured channel is previously-worked matter at the wrong depth, and a foot of known cord slid under a door reads what is at the far end as though her hand were there — from the scullery, which nobody bothers to score.</li>
+</ol>
+<p><strong>Two structural notes.</strong> Substitution is not a school's private weapon here; it is the tax every library pays, and the surveyors are simply the only people who have made a trade of collecting it. And disguise now has exactly one immunity in the roster (take-off hands, who never look at a surface) and one school it nearly destroys (rods, because the tip of an instrument is a seam and the read stops there).</p>
+<hr />
+<h2 id="comparison-table"><span class="s-num s-num--none">·</span><span class="s-label">COMPARISON TABLE</span></h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>School</th>
+<th>Doctrine in five words</th>
+<th>Source</th>
+<th>Topology</th>
+<th>Silhouette in five words</th>
+<th>Killer weakness in five words</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Matchers</strong></td>
+<td>Carry the library, cut more</td>
+<td>Carried reagents</td>
+<td>Flask</td>
+<td>Palm out, fist in ribs</td>
+<td>Both hands, or she's halved</td>
+</tr>
+<tr>
+<td><strong>Rods</strong></td>
+<td>Sound it through an instrument</td>
+<td>Pre-loaded charges</td>
+<td>Implant</td>
+<td>Wrapped hands, leaning on stick</td>
+<td>Blind to state, entirely</td>
+</tr>
+<tr>
+<td><strong>Surveyors</strong></td>
+<td>Own the ground days early</td>
+<td>Ripped from surroundings</td>
+<td>Pool</td>
+<td>Planted on grey frosted floor</td>
+<td>Off her ground, she's nothing</td>
+</tr>
+<tr>
+<td><strong>Quicks</strong></td>
+<td>Read the living, endlessly</td>
+<td>Her own body</td>
+<td>Implant</td>
+<td>Dust running onto someone's skin</td>
+<td>Must be inside arm's length</td>
+</tr>
+<tr>
+<td><strong>Take-off hands</strong></td>
+<td>Know the build, not it</td>
+<td>Ripped from surroundings</td>
+<td>Flask</td>
+<td>Talking, hand behind her, moving</td>
+<td>She cannot check anything</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="what-this-leaves-open-for-later-gates"><span class="s-num s-num--none">·</span><span class="s-label">WHAT THIS LEAVES OPEN FOR LATER GATES</span></h2>
+<ul>
+<li><strong>Gate 3, materials:</strong> the four or five disputed old matcher cases are the trade's working standard, and none of them agrees with the Table.</li>
+<li><strong>Gate 3, relics:</strong> nobody has decided what an old-world set object does to an instrument coupled to it, and the rods will be the ones who find out.</li>
+<li><strong>Gate 4, politics:</strong> sap is hydraulic and the surveyors are the only school that does plumbing. Who owns the sills is a map question and this gate did not answer it.</li>
+<li><strong>Gate 4, the quick's leverage:</strong> she has read the inside of every implant duellist in three provinces, and mode four is aimable, and neither fact has been spent yet.</li>
+<li><strong>Gate 4, the record as property:</strong> pattern books are bought, burned and forged. Who prints them is a faction waiting to be named.</li>
+<li><strong>Gate 5, deep extraction:</strong> the rods read the string and the take-off hands read the book, and when a reach finds a gallery crew, the question of which of them is answerable is a legal one this world has not settled.</li>
+<li><strong>Gate 6, lieutenants:</strong> five doctrines, ten written internal splits, plus overdraw stage as an axis — a rod at thinning who fights entirely through the thrown loop is a different fighter from a young rod, not a weaker one.</li>
+<li><strong>Gate 6, crew shape:</strong> a lieutenant can be a crew with a removable centre, which makes the fight about target selection rather than damage.</li>
+<li><strong>Gate 7, the settling:</strong> only the surveyors and the quicks currently use the nine days. The other three should learn.</li>
+</ul>
+<hr />
+<h2 id="1-which-schools-are-playable"><span class="s-num">1</span><span class="s-label">Which schools are playable</span></h2>
+<p><strong>Recommend three at start, one unlocked, one enemy-only.</strong></p>
+<p><strong>Take-off hands — playable.</strong> Moment to moment: you are moving, upright, talking, spending a flask you can count, taking buildings apart at the joints. The fun is homework that pays out instantly — learn to read a hinge and a strange room is already library. The risk you feel constantly is that you cannot check anything you believe.</p>
+<p><strong>Quicks — playable.</strong> Moment to moment: closing distance you are not supposed to have, banking a lump of half-set with your off hand on a ninety-second clock while your working hand is committed, and a jar-lid flicked with a thumb. The best off-hand resource loop in the set.</p>
+<p><strong>Matchers — playable.</strong> Moment to moment: two hands doing different jobs, thumb reading nicks blind, arithmetic said out loud, and a real loadout decision before every fight in the ready row. This is the inventory school and it is the one that rewards hoarding.</p>
+<p><strong>Rods — playable, but bought, not chosen.</strong> Moment to moment: tap, give ground, read, and win the twentieth second. Playing a rod means paying a seating fee and accepting a permanent hole in the body — that is a progression event, not a character-creation checkbox. Make it a mid-game doctrine the player elects into, with a one-in-six failure that is real.</p>
+<p><strong>Surveyors — enemy-only.</strong> Moment to moment it is three days of preparation and then a fight you have already won, which is thrilling to lose to and dull to play. Off prepared ground she is the weakest thing in the game, so a playable surveyor forces every mission into the same shape.</p>
+<h2 id="2-enemy-only-and-what-it-buys"><span class="s-num">2</span><span class="s-label">Enemy-only, and what it buys</span></h2>
+<p><strong>Surveyors</strong> give us the fight that is a building: the player walks into a house that has been drawn on and has to find the lines, break one, and watch the room turn. It teaches the counter-survey — <em>the best thing to find in a house is somebody else's chalk</em> — which is the most teachable clever move in the setting. It also gives us the only pool antagonists, which means fights with a fixed centre, which means objectives rather than health bars.</p>
+<p>If we want a second enemy-only school for budget reasons, it is <strong>rods</strong>, and we lose less than it looks: their silhouette reads instantly from outside and their counterplay (hit the arm, wet the strap) is the most satisfying thing in the roster to be taught by getting it done to you first.</p>
+<h2 id="3-where-the-protagonist-starts"><span class="s-num">3</span><span class="s-label">Where the protagonist starts</span></h2>
+<p><strong>Candidate A — take-off hand.</strong> Opening hours are a town, a chalk stub, and learning what a date stone means. Power arrives as knowledge and is immediately enormous: you walk into a room you have never entered and it is already yours. The arc is authorship. She asserts things about the world and the world pays for her being right; then the record is older than the people in the room, and the drag on the floor points at her, and there is no version where she says it was not her.</p>
+<p><strong>Candidate B — quick.</strong> Opening hours are hands on people: a break set in nine-tenths of a second, a man who gets up. Power arrives as care, and it is the most valuable thing anyone on a field can do. The arc is complicity. She learns that a reach is aimable, that nobody can tell an aimed one from a dumb one afterward, and that the workface line commands her to name a source and does not say what a source may be.</p>
+<p><strong>Recommendation: start as a take-off hand.</strong> Hour one teaches the access gate itself — recognition is earned by looking at a hinge, not granted by a stat — and the turn is delivered by the world rather than by the player's own choice, which lets her be capable and complicit before she has agreed to anything. Bring the quick in as the second doctrine at mid-game, when the player has something to lose by learning what she learns.</p>
+<h2 id="4-decisions-not-on-that-list-that-are-expensive-to-reverse"><span class="s-num">4</span><span class="s-label">Decisions not on that list that are expensive to reverse</span></h2>
+<p><strong>State comes free with recognition.</strong> This gate rules that on a material already in library, state resolves at recognition speed at any acuity. Reverse it and both state-led schools become strong-acuity-only, the disreputable school becomes the most natally gated one in the game, and <em>acuity is not a power stat</em> stops being true.</p>
+<p><strong>An instrument buys depth and nothing else.</strong> If a rod's instrument ever buys speed or state as well, acuity becomes purchasable outright and the rod trade's whole class politics — money and nerve standing in for birth — collapses into a shop.</p>
+<p><strong>Nobody owns substitution as a school; the surveyors own it as a practice.</strong> If a later gate spins the substitution fixer out into his own faction, the surveyors lose both their out-edges, the graph goes back to being a ladder with survey at the bottom, and we will have to rebuild the counters from scratch.</p>
+<p><strong>A wall's worth of half-set stands for a day and a half.</strong> The surveyor's battery, her trap, and her silhouette all rest on that single canon number. Change the mass-to-time curve and the school has no object.</p>
+<p><strong>Bare skin is the access gate.</strong> The moment anything exists that reads through a glove, four of five schools lose their cold-and-wet weakness at once.</p></article>
+  </main>
+</div>
+
+<script>
+(function(){
+  var bar=document.getElementById('bar');
+  var links=[].slice.call(document.querySelectorAll('nav a'));
+  var heads=[].slice.call(document.querySelectorAll('article h2'));
+  function prog(){
+    var h=document.documentElement;
+    var max=h.scrollHeight-h.clientHeight;
+    bar.style.width=(max>0?(h.scrollTop/max)*100:0)+'%';
+  }
+  var ticking=false;
+  window.addEventListener('scroll',function(){
+    if(!ticking){requestAnimationFrame(function(){prog();ticking=false;});ticking=true;}
+  },{passive:true});
+  prog();
+  if('IntersectionObserver' in window){
+    var seen={};
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){seen[e.target.id]=e.isIntersecting;});
+      var cur=null;
+      for(var i=0;i<heads.length;i++){if(seen[heads[i].id]){cur=heads[i].id;break;}}
+      if(cur){links.forEach(function(a){
+        a.classList.toggle('on',a.getAttribute('href')==='#'+cur);
+      });}
+    },{rootMargin:'-64px 0px -72% 0px'});
+    heads.forEach(function(h){io.observe(h);});
+  }
+})();
+</script>
