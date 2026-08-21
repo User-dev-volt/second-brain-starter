@@ -67,8 +67,13 @@ h1{
 .p-head{padding:20px 22px 16px;display:grid;gap:9px}
 .letter{
   font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--accent);
-  text-transform:uppercase
+  text-transform:uppercase;display:flex;align-items:center;gap:10px;flex-wrap:wrap
 }
+.chosen{
+  background:var(--accent);color:var(--ink);padding:2px 8px;letter-spacing:.16em;font-weight:500
+}
+.panel:not(.p-read){opacity:.62}
+.panel:not(.p-read):hover{opacity:1;transition:opacity .25s}
 .p-head h3{
   font-family:var(--display);font-weight:600;text-transform:uppercase;
   font-size:31px;line-height:1;letter-spacing:.01em;margin:0;color:var(--bone)
@@ -138,7 +143,7 @@ figcaption{
 <header>
   <p class="eyebrow">Project Chimera · Gate 1 · the access gate</p>
   <h1>Three ways to cast</h1>
-  <p class="standfirst">Every option below inherits the same grounding and the same two strokes. They differ on one question, and choosing one forecloses the others: <em>is casting a caste, a profession, or a gamble you survive?</em></p>
+  <p class="standfirst">Three answers to one question — <em>is casting a caste, a profession, or a gamble you survive?</em> <b>Decided: the read, amended to a scale.</b> The other two are kept here for the record and for what can still be grafted from them.</p>
 </header>
 
 <section class="grounding">
@@ -152,9 +157,9 @@ figcaption{
   <!-- ============ A · THE READ ============ -->
   <article class="panel p-read">
     <div class="p-head">
-      <p class="letter">Option A</p>
+      <p class="letter">Option A <span class="chosen">Chosen</span></p>
       <h3>The Read</h3>
-      <p class="why">Access is a sense organ. One in a few thousand perceives composition directly — and the gate shuts at twelve.</p>
+      <p class="why">Access is a sense organ — and it is a <em>scale</em>, not a door. Everyone has some. Acuity is largely what you were born with; library is entirely what you earned.</p>
     </div>
 
     <figure>
@@ -209,6 +214,8 @@ figcaption{
 
     <dl class="rows">
       <div class="row"><dt>The tell on the street</dt><dd>Hands on everything — palm to walls, knuckle to rails — and a flat, still, butcher's look.</dd></div>
+      <div class="row"><dt>The two axes</dt><dd><b>Acuity</b> — what one touch gives you. Natal, wide scale, real ceiling. <b>Library</b> — what you have read and kept. Earned, no ceiling. Recognising is faster than reading.</dd></div>
+      <div class="row"><dt>Counterplay splits</dt><dd>Disguise beats acuity. <b>Substitution beats library</b> — swap the fittings and the expert is slower than the novice, because she is confidently recognising something that is no longer there.</dd></div>
       <div class="row"><dt>Half-set matter</dt><dd>Loosened and abandoned: cold, slumping, taking whatever touches it that it is made of.</dd></div>
       <div class="row"><dt>An aimed reach</dt><dd>He doesn't attack you. He draws the line so that it <em>includes</em> you.</dd></div>
       <div class="row"><dt>The dead</dt><dd>A <b>likeness</b> — right face, wrong hands, one blended substance all the way down, and it has never moved.</dd></div>
@@ -248,7 +255,7 @@ figcaption{
 
     <dl class="cost">
       <dt>What it costs</dt>
-      <dd>The ensemble. The gate is genetic and shuts at twelve, nobody ever <em>becomes</em> a caster, and no ally earns a place at the table by working for it.</dd>
+      <dd>Scarcity, traded for mobility. A hereditary gate made casters rare by nature; a scale means the world has to explain why most people don't bother — and that answer must be cost and ceiling, never permission, or the setting quietly fills up with casters.</dd>
     </dl>
   </article>
 
@@ -450,10 +457,10 @@ figcaption{
 </div>
 
 <section class="fork">
-  <h2>The fork</h2>
-  <p><b>A</b> is the only option that honours <em>gifted</em> literally — you said “skilled / trained / gifted,” and under A the gate is genetic. <b>D</b> says anyone with a decade and a strong nerve, which makes casting a profession rather than a caste. <b>B</b> splits the difference and charges the body for it.</p>
-  <p>My recommendation stands at <b>D, with the read grafted on as a trained skill rather than a birth gift</b> — the confidently wrong is exactly the engine Gate 3 asks for, a sincere and correct application of the system that a decent person signs off on with no error in the reasoning to find. And D's stated cost is not a cost: “mastery buys speed and coverage, never size” is a direct satisfaction of your ban on power-scaling escalation.</p>
-  <p class="pin">Still open at this gate — the charge's name (sap / temper / bite) · whether ordinary ground is consumable · what a reach actually takes out of a body (water and lime survives the arithmetic; blood-iron does not) · the astral layer staying out · a families table that is published, disputed and incomplete.</p>
+  <h2>What was decided</h2>
+  <p><b>The read, as a scale.</b> Not hereditary, not tested for and shut at twelve, no bloodline owning it. Everyone sits somewhere on it, the extremes are far apart, and the low end is a slope rather than a wall. Character and drive convert capacity into capability — and memory compounds, because a material you have read before is a material you recognise instead of reading.</p>
+  <p>The amendment dissolves the cost the option shipped with. It also closes the gap with <b>D</b>: acuity is the gift, library is the decade, and the pair of them together is what “skilled / trained / gifted” actually meant. What stays available from the discarded options is grafting material, not foundation — the readable body from <b>B</b>, the spotter and the unreadable relic-literature from <b>D</b>.</p>
+  <p class="pin">Still open at this gate — the charge's name (sap / temper / bite) · the exact wording of the Law · whether ordinary ground is consumable · what a reach actually takes out of a body (water and lime survives the arithmetic; blood-iron does not) · the astral layer staying out · a families table that is published, disputed and incomplete.</p>
 </section>
 
 </div>

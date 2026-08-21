@@ -51,16 +51,64 @@ that for deconstruct/reconstruct, quantumly."*
 - Wisdom and understanding are the progression axis. Comprehension is the power curve, not raw
   output.
 
+**The grounding — matter is grain, the charge is the hold.**
+Matter is grain: fine particles in a limited number of families that never become one another. A
+working is unbinding and rebinding — SOLVE parts the hold, SET re-ties it. The charge *is* the hold.
+It sits in every particle because everything is held; almost none is spendable because nearly all of
+it is doing structural work. Only matter forced out of rest — faulted, shocked, quench-cooled,
+crushed or previously worked — carries surplus above what its arrangement needs. An extractor is a
+mill that fatigues rock until its holds part faster than they re-form, and catches the release
+before it re-holds. Relics were set by better hands: surplus behind a small lock, which is why a
+touch bleeds them and why nobody living can make more.
+
+The worked line a player must be able to reproduce unaided:
+
+> Brass is copper and zinc, seven to three. So: wire, zinc powder, any shape of brass I like. Not
+> steel — there is no iron in brass. Ask anyway and the working goes and finds iron: the nails in
+> that door, the buckle on my belt. Ask short of lime or water, and the nearest source is the man
+> standing behind me.
+
+**The access gate — THE READ, as a scale.**
+To solve a thing you must first perceive what it actually is: composition, family by family, down to
+proportion, read by touch. This is a real perceptual capacity and it is **a scale, not a door**.
+Everyone has some. It is **not hereditary**, it is not tested for and shut at twelve, and no bloodline
+owns it. The extremes are genuinely far apart — some have it abundantly and some have barely any and
+would work a lifetime to reach what another does naturally — but the low end is a slope, not a wall.
+What converts capacity into capability is character and drive.
+
+**The scale has two independent axes. It is never one number.**
+- **Acuity** — what a single touch gives you: resolution, depth past the surface, and how fast it
+  resolves. Largely natal, widely distributed, improves slowly, and has a real personal ceiling.
+- **Library** — what you have already read and retained. Purely earned, no ceiling. **Recognising is
+  faster than reading**, so a material held in library drops a working from HEAVY to FAST.
+
+Consequences that follow and are now load-bearing:
+- Two casters can be equally dangerous by opposite routes, so acuity never becomes a power stat.
+- The low-acuity grinder is genuinely viable. That is what "work forever" buys.
+- **Home ground is known ground, not rich ground.** A caster who walked that corridor yesterday
+  fights differently in it today.
+- Counterplay splits in two. **Disguise beats acuity** — facings, coatings, dazzle-plate.
+  **Substitution beats library** — swap the fittings and the expert is slower than the novice,
+  because she is confidently recognising something that is no longer there.
+- Progression is comprehension, exactly as §4.5 requires. Raw output is never the axis.
+
+*The cost of this amendment, accepted knowingly: it trades scarcity for mobility. A hereditary gate
+made casters rare by nature; a scale means the world must explain why most people don't bother, and
+that answer has to be cost and ceiling, never permission — or the setting fills up with casters.*
+
 ### Open
 
-- **Why access is rare.** The perceptual gift, the survivable passage, the controlled instrument, or
-  the hard-won understanding. Round 3 is building all four.
-- **The name of the charge.** Two rounds have died here. It must sound like what a working
-  professional calls the stuff in their hands.
+- **The name of the charge.** Two rounds have died here. Shortlist: sap, temper, bite.
 - **The exact wording of the Law**, and the loophole that follows from that exact wording.
-- **How deep the technical literacy goes** — does this culture have an atomic theory and talk like
-  chemists, or work empirically by grade, purity and family the way real 18th-century chemistry did?
-- **The astral stance** — in, and how far, or out.
+- **How deep the technical literacy goes.** All candidates propose empirical, not atomic — families,
+  grades and provenance, no atoms. Live question: is the table of families published? Recommendation
+  is published, disputed and incomplete.
+- **The astral stance.** Every candidate independently said out. Recommendation is to ratify out.
+- **Is ordinary ground consumable?** If a caster can stand in a field and draw indefinitely,
+  extractors, supply lines and map control are decoration.
+- **What does a reach take out of a person?** A body holds about one nail's worth of iron, so
+  blood-iron reaching fails arithmetic the first time a player checks. Water and lime survives
+  scrutiny — and is worse, because that is the skeleton.
 
 ### The reconciliation any answer must survive
 
@@ -82,4 +130,9 @@ rule, options that could all be true at once are not options.
 human's steer toward a particulate grounding superseded its framing before it finished.
 
 **Round 3 — four access gates** (the read, the tolerance, the instrument, the understanding).
-Running.
+Accepted, with amendment. The human chose THE READ and rewrote its access rule: not a hereditary
+gate that shuts at twelve, but a scale everyone sits somewhere on, with drive and memory deciding
+where you end up. The amendment removes the option's stated cost — that no ally could ever earn a
+place at the table — and replaces it with the mobility/scarcity trade recorded above.
+
+Visual decision board for round 3: `three-ways-to-cast.html`.
