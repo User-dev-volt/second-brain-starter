@@ -38,6 +38,11 @@ figure svg{display:block;width:100%;height:auto}
 figcaption{font-family:var(--mono);font-size:10.5px;line-height:1.6;color:var(--ash);margin-top:12px;padding-top:10px;border-top:1px solid var(--edge)}
 
 .pull{border-left:2px solid var(--brass);padding:4px 0 4px 15px;margin:2px 0;font-size:15px;color:var(--bone)}
+.tri{display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:760px){.tri{grid-template-columns:repeat(3,1fr)}}
+.t{border-left:2px solid var(--edge-2);padding-left:14px}
+.t p{font-size:14.5px}
+.tk{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--brass);margin:0 0 7px !important}
 .prop{border:1px dashed var(--edge-2);background:var(--stone-2);padding:14px 16px;margin-top:4px}
 .prop p{font-size:14.5px;margin:0}
 .propk{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--heat);margin:0 0 8px !important}
@@ -296,15 +301,57 @@ footer b{color:var(--bone-dim);font-weight:500}
   </div>
 
   <!-- SIX — what she throws -->
-  <div class="card">
+  <div class="card wide">
     <p class="k">06 · What a caster actually throws</p>
-    <h2>Nothing. She rearranges the room</h2>
-    <p>There is no fire family and no lightning family. A working can only produce what the room is already made of — so the spectacle is <b>material</b>. A railing becoming a spike in one motion. A flagstone dropping a hand's depth under someone's foot. Plaster coming off the wall edge-on into a face. Hinges taken out of a door from across the room.</p>
-    <p>It should look less like spellcasting and more like <em>the room turning on you at speed</em> — and getting visibly used up as the fight runs on. By the end of a long fight the space is stripped: no fittings, no rail, a floor a hand lower than it was.</p>
-    <div class="prop">
-      <p class="propk">Open question — proposal, not canon</p>
-      <p><b>Fire is reachable, but as a technique, not a verb.</b> Set a volume of air rich and give it a spark. It follows cleanly from the rules — but air is the thinnest, hardest thing in the world to read, and <em>you are standing inside the boundary when it goes.</em> That would make it an expert move that mostly kills the people who try it, and the handful who can do it safely are famous for it. Say the word and it's in, or say no and the system stays purely material.</p>
+    <h2>Nothing. She rearranges the room — and she can make it travel</h2>
+    <p>There is no fire family and no lightning family. A working only produces what the room is already made of, so the spectacle is <b>material</b>: a railing becoming a spike in one motion, a flagstone dropping a hand's depth under a foot, plaster coming off edge-on into a face. Less like spellcasting, more like <em>the room turning on you at speed</em> — and getting visibly stripped as the fight runs on.</p>
+    <p>Three techniques give it the full breadth, and none of them needed a new rule invented:</p>
+    <div class="tri">
+      <div class="t">
+        <p class="tk">Accelerant</p>
+        <p>Matter held together by very little — powder, spirits, quicklime, oils. It parts for a fraction of what its mass suggests, so <b>it lowers what a stroke costs</b>. Not more sap: a bigger working off the same reserve. <em>And it is exactly what a short working takes first, so carrying it makes you the nearest source in the room.</em></p>
+      </div>
+      <div class="t">
+        <p class="tk">Fire, from two old rules</p>
+        <p>The set already delivers heat — every set, always. So <b>set an accelerant and the stroke ignites what it just made.</b> The working is its own ignition source. Distance is a boundary problem, not a range problem: she doesn't throw the flame, she lays the line where she wants it and sets <em>there</em>.</p>
+      </div>
+      <div class="t">
+        <p class="tk">The runner</p>
+        <p>Lay the line as a <b>run</b> instead of closing it, come up short on purpose, and it reaches the whole way. <b>It arrives bigger than it left</b>, and everything it passed paid toward it. The scoured track is <em>the drag</em>, and it points back at whoever drew it.</p>
+      </div>
     </div>
+    <figure>
+      <svg viewBox="0 0 700 210" role="img" aria-label="A runner travels along a laid line from the caster to its target, reaching at each source it passes — a fence, a water butt, a bystander — and growing at each one, arriving larger than it left. Below, the same runner across bare wet stone finds nothing and arrives as a scuff.">
+        <defs><marker id="r" viewBox="0 0 9 9" refX="8" refY="4.5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#C05A32"/></marker></defs>
+
+        <text x="0" y="12" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8A8173" letter-spacing="1.6">DOWN A STREET — IT EATS ITS WAY THERE</text>
+        <line x1="0" y1="76" x2="700" y2="76" stroke="#3A342B"/>
+        <circle cx="26" cy="62" r="9" fill="#E6E1D4"/>
+        <text x="6" y="94" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8A8173">CASTER</text>
+
+        <path d="M44 62 L640 62" stroke="#C05A32" stroke-width="2" marker-end="url(#r)"/>
+        <rect x="44" y="58" width="150" height="8" fill="#C05A32" opacity=".35"/>
+        <rect x="194" y="55" width="150" height="14" fill="#C05A32" opacity=".45"/>
+        <rect x="344" y="51" width="150" height="22" fill="#C05A32" opacity=".6"/>
+        <rect x="494" y="45" width="146" height="34" fill="#C05A32" opacity=".8"/>
+
+        <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#BDB6A7">
+          <line x1="194" y1="30" x2="194" y2="52" stroke="#8A8173"/><text x="200" y="30">an iron fence</text>
+          <line x1="344" y1="30" x2="344" y2="48" stroke="#8A8173"/><text x="350" y="30">a water butt</text>
+          <line x1="494" y1="30" x2="494" y2="42" stroke="#8A8173"/><text x="500" y="30" fill="#C05A32">a man who was standing there</text>
+        </g>
+        <text x="652" y="66" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#C05A32">ARRIVES</text>
+        <text x="6" y="108" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8A8173">the drag — a scoured track with holes in it, pointing back at whoever drew it</text>
+
+        <line x1="0" y1="124" x2="700" y2="124" stroke="#3A342B"/>
+        <text x="0" y="146" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8A8173" letter-spacing="1.6">ACROSS BARE WET STONE — THE SAME WORKING, THE SAME CASTER</text>
+        <circle cx="26" cy="180" r="9" fill="#E6E1D4"/>
+        <path d="M44 180 L640 180" stroke="#4C443A" stroke-width="2" marker-end="url(#r)"/>
+        <rect x="44" y="177" width="596" height="6" fill="#4C443A" opacity=".5"/>
+        <text x="652" y="184" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#8A8173">A SCUFF</text>
+      </svg>
+      <figcaption>A runner scales with the room, never with the caster. Nobody gets stronger — the ground gets worse. It curves toward whatever is densest, it cannot be aborted, and there is no version of it that isn't witnessed. <em>Which hands Gate 4 its thesis: the antagonist's power is other people being nearby.</em></figcaption>
+    </figure>
   </div>
 
   <!-- SEVEN — the body -->

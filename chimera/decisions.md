@@ -158,9 +158,39 @@ chemistry worked: it knows matter is divisible and behaves by family, without kn
 nobody holds the whole list. This is why comprehension is the progression axis and memorisation is
 not.
 
+**AMENDMENT — accelerant, the runner, and deep extraction.**
+Added after the spec was first written, at the human's direction, because breadth of ability is a
+bedrock requirement: the system must produce as many abilities and environmental changes as FMA does.
+
+- **Accelerant** is matter held together by very little — powder, spirits, quicklime, drying oils,
+  resin dust. It parts for a fraction of what its mass suggests. **It does not give a caster more
+  sap; it lowers what the stroke costs.** Same reserve, larger working. A trade good with grades,
+  which goes damp, gets cut, and is tested the same way sap is.
+  *The teeth:* accelerant is matter maximally out of rest, which is the exact description of what a
+  short working takes first. A caster carrying accelerant is carrying the nearest source in the room
+  on her hip.
+- **Fire needs no new rule.** The set already delivers heat, always. Set an accelerant and the
+  stroke ignites what it just made. The working is its own ignition source. Distance is a boundary
+  problem, not a range problem: she does not throw the flame, she lays the line where she wants it
+  and sets there. That is also how transposition works.
+- **The runner.** A boundary laid as a run rather than closed around a thing, with the working set
+  short on purpose so it reaches the whole way and arrives bigger than it left. The scoured track it
+  leaves is **the drag**. It curves toward whatever is densest, it cannot be aborted, and it is the
+  most legible act on a battlefield. **The counter is the room, not the caster** — a runner across
+  bare wet flagstone is a disappointment; a runner down a market street is what it is.
+- **Deep extraction** is reaching, aimed downward, and it is how the country gets its ore. What it
+  costs is that nobody has read what is down there: sometimes iron, sometimes the water table,
+  sometimes the gallery crew forty feet below.
+
+**The guardrail, and §7's ban on power-scaling depends on it.** Accelerant is *supply, not
+progression* — it never makes anyone a better caster. A runner scales with the room, not the caster.
+Nobody gets stronger; the ground gets worse.
+
+**What this hands Gate 4 for free:** the antagonist's power is *other people being nearby.*
+
 **Coinage spent at Gate 1: zero of ten.**
-Sap, grain, families, the hold, pools, basins, channels, acuity, library, reading, setting and
-solving are all ordinary English doing new work.
+Sap, grain, families, the hold, pools, basins, channels, acuity, library, reading, setting,
+solving, accelerant, a runner and the drag are all ordinary English doing new work.
 
 ### Open — for later gates
 

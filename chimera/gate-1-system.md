@@ -221,7 +221,7 @@ The ground's work is to let that unrest settle slowly enough that the surplus ca
 | Weeks 2–3 | Peak draw |
 | After week 8 | Re-held. The ground is permanently a shade richer and yields nothing ever again |
 
-Contact is the whole of it. A body on flagstone, on a ship's deck, or in a lead-lined coffin gives nothing to any pool anywhere. Burial custom in every country in the world is an argument about this and everyone knows it. (What the body itself does over those nine days is Section 7.)
+Contact is the whole of it. A body on flagstone, on a ship's deck, or in a lead-lined coffin gives nothing to any pool anywhere. Burial custom in every country in the world is an argument about this and everyone knows it. (What the body itself does over those nine days is Section 8.)
 
 **A battlefield is the best ground in the country, and everyone in the trade knows it.** The trade arrives on day two with mattocks and sinking-rods and cuts its channels across a field that has not yielded anything yet, so that the run is ready when it does. Peak is a fortnight out. Nobody involved considers this remarkable; it is when the work is done.
 
@@ -270,7 +270,7 @@ All three are in play at once, and they must fight differently.
 
 **Flask is a magazine.** Exact, portable, finite. She chooses which strokes are worth a flask, and the whole fight is arithmetic she does out loud, because she has to. The fight is about her supply, and it can be won before it starts.
 
-**Implant is a duellist.** No count, no line, no ground: she chains strokes at a rate neither of the others can hold, for as long as her seat holds, and she cannot be cut off from her sap by anything an enemy does at range. The sap is inside the working with her, and the bargain for that is Section 6.
+**Implant is a duellist.** No count, no line, no ground: she chains strokes at a rate neither of the others can hold, for as long as her seat holds, and she cannot be cut off from her sap by anything an enemy does at range. The sap is inside the working with her, and the bargain for that is Section 7.
 
 ### Running low, and running out
 
@@ -281,7 +281,7 @@ Drawing sap chills. The stages are the same in everyone, readable across a room,
 3. A fast fine tremor in the fingers — the flutter.
 4. Slurred consonants and a fixed stare. One stroke left, at most.
 
-Running out has three outcomes and they are not the same event. The rule is stated once, in Section 6, because the third one is overdraw. In brief: too little sap thrown at a stroke and it simply fails to solve; sap exhausted after the solve and the caster stops, and the loosened matter stays loosened; sap exhausted and the caster pushes on anyway, and the working takes the difference out of her.
+Running out has three outcomes and they are not the same event. The rule is stated once, in Section 7, because the third one is overdraw. In brief: too little sap thrown at a stroke and it simply fails to solve; sap exhausted after the solve and the caster stops, and the loosened matter stays loosened; sap exhausted and the caster pushes on anyway, and the working takes the difference out of her.
 
 This is why casters count flasks aloud, and why a good one calls the last one.
 
@@ -338,7 +338,7 @@ This is the big one, and it is not an explosion. It is a persistent state.
 
 **What it is.** Half-set matter is grain that has been unbound and left unbound. The families are all still present and still separate — no family has become another, that never happens — but nothing holds them in arrangement. It is not liquid, not gas, not dust. It behaves like extremely fine wet sand with no weight of its own: it holds a shape until touched, then slumps. **It is body-temperature, always, whatever it was made from.**
 
-**Causes.** The caster is interrupted between strokes — struck, moved, tackled, deafened, dropped. Or the sap runs out after the solve and she stops (Section 6). Or she chose to solve and then had to abandon the working to save her own life, which is the commonest cause and the reason experienced casters throw fewer heavy strokes in melee than novices do.
+**Causes.** The caster is interrupted between strokes — struck, moved, tackled, deafened, dropped. Or the sap runs out after the solve and she stops (Section 7). Or she chose to solve and then had to abandon the working to save her own life, which is the commonest cause and the reason experienced casters throw fewer heavy strokes in melee than novices do.
 
 **Duration.** It re-holds on its own, from the outside in, at a rate set by mass. A palm-sized patch in about ninety seconds. A door's worth in twenty minutes. A collapsed wall's worth can sit for a day and a half. What it becomes is ugly, weak and characteristic — grey, porous, crumbling, useless for anything structural. Every field in the country has patches of it. Builders call the re-held stuff **slump** and will not build on it.
 
@@ -423,7 +423,73 @@ A working short of iron does not find iron in a person in any useful quantity �
 
 ---
 
-## 6. Overdraw
+## 6. Magnifying a Working
+
+Everything above describes a working that takes what is in front of it. This section is how a caster makes one do more than its size suggests — and it is where the trade's ordinary industry and its worst atrocity turn out to be the same three techniques, pointed differently.
+
+### Accelerant
+
+Sap is the hold, and solving costs sap because the hold resists. **Some matter barely resists at all.**
+
+Accelerant is matter already strained past comfort and held together by very little: fine powder, spirits, quicklime, drying oils, resin dust, flour off a mill floor. Its hold is loose, so it parts for a fraction of what its mass suggests, and what it gives up on the way out does part of the stroke's work.
+
+**The rule, stated once: accelerant does not give a caster more sap. It lowers what the stroke costs.** Same reserve, larger working. A hand of good powder inside the line turns a stroke she could not have afforded into one she can.
+
+It is a trade good with grades, and the grading is honest work: how fine, how dry, how pure, how long since it was milled. Damp accelerant is worse than none — sap goes into driving the water off before anything else happens, and the caster has paid for a stroke she did not get. Cut accelerant, bulked with spent carrier or chalk, starts strong and quits partway. The test is the same one used on sap and takes as long: draw a bead in the shop and watch it.
+
+**And here is what it costs, which is not the same as what it is worth.** Accelerant is matter maximally out of rest with its families present and separate. That is the exact description of the thing a short working takes first. **A caster carrying accelerant is carrying the nearest source in the room, on her hip.** Every shortfall thrown anywhere near her feeds on her pouches before it feeds on anybody's water and lime — which sounds like a mercy until you have watched a flask of spirits go into a stranger's working from six feet away.
+
+Crews know this. Accelerant travels in the middle of a column and never on the solver, and a man who sets his powder down beside somebody else's work gets told about it once.
+
+### Fire
+
+Nothing in this system produces fire as an effect. There is no fire family and there never will be. Two rules already stated produce it anyway, and the trade found this out early.
+
+**The set delivers heat.** Every set, always — one hard snap and a breath of heat as the hold re-ties.
+
+So: set an accelerant, and the stroke ignites what it has just made. The working is its own ignition source. A caster who lays her line across a doorway, names the spirits in her flask and the air inside the line, and sets, gets a sheet of flame standing in the doorway — out of two rules an apprentice learns in the first week.
+
+It is not a spell and does not behave like one. She must have the accelerant; nobody sets fire out of a bare stone cell. She must have air, and air is the thinnest, most miserable thing in the world to read. And the set delivers its heat *at the boundary*, which is to say wherever she drew the line, which is to say **she can be standing inside it**. Casters who work fire are recognisable at a distance by their forearms, and by the fact that they draw wide.
+
+**Distance is a boundary problem, not a range problem.** She does not throw the flame. She lays the line where she wants it, names what is inside it, and sets there. That is the whole of casting at range in this world, and it is the same operation as transposition: a working whose source is in one place and whose set is in another.
+
+### The runner
+
+*One breath: lay the line along a path, come up short on purpose, and let it eat its way there.*
+
+A boundary does not have to close around a thing. It can be laid as a run — drawn out across a floor, along a wall, down a street — and the working set to travel it.
+
+Set that working short, deliberately, and it is short the whole way. Every foot of its path it reaches for the nearest source that will serve, takes it, and carries on. **It arrives bigger than it left**, and everything between the caster and the place it stopped has paid something toward it. The trade calls it **a runner**. The mark it leaves — a dust-fine track scoured along its whole path, with holes in it where it found something worth taking — is **the drag**.
+
+Three things keep it from being the answer to everything, and all three follow from rules already stated.
+
+**It goes where the sources are, not where you point it.** A reach takes the nearest sufficient source; a runner is a reach repeated, so it curves toward whatever is densest along its line — the iron gate, the water butt, the crowd. A caster aims the first few feet of it. After that she is steering a thing that is choosing.
+
+**There is no abort.** A runner is chained by definition, and the gap between strokes is exactly what she gave up to get the range. Once the drag opens she is a spectator to it, and so is everyone else.
+
+**It is the most legible act on a battlefield.** The drag is a line on the ground pointing back at the person who drew it and forward through everything that paid. There is no version of this that is not witnessed, and that is not a drawback the trade has found a way around.
+
+**The counter is the room, not the caster.** A runner across bare wet flagstones is a scuff mark and a disappointment. A runner down a market street is what it is. This is why fighting withdraws to open ground when somebody in the field is known for it, why sappers clear a street rather than hold it, and why an experienced officer looks at the ground before she looks at the enemy.
+
+### Deep extraction
+
+Lay the line to include the ground under your feet. Name what you want. Come up short.
+
+The working goes down for it. **This is how the country gets its ore**, and it is done daily by crews who are not casters in any romantic sense — men on a drawing floor who lay a line, name iron, and stand well back while it comes up.
+
+What it costs is that a reach takes the *nearest sufficient source*, and nobody has read what is down there. Sometimes iron. Sometimes the water table, and the district's wells go bad inside a week. Sometimes an old burial that no map showed. Sometimes the gallery crew working forty feet below, who are made largely of water and lime and are a great deal nearer than the seam.
+
+**The technique that hauls ore to the surface and the technique that kills the man behind you are one technique, pointed differently.** The Law is most of what stands between them, and the Law is a sentence a tired person says under their breath.
+
+### The guardrail, stated once
+
+**Accelerant is supply, not progression.** It swings a fight hard. It is bought, carried, stolen, cut and used up. It never makes anyone a better caster, and a campaign in which advancement means better powder has gone wrong.
+
+**A runner scales with the room, not with the caster.** The same working thrown by the same person is nothing on a rock face and a massacre in a market. Nobody gets stronger. The ground gets worse.
+
+---
+
+## 7. Overdraw
 
 Overdraw is what happens when a working needs more hold than the surplus in front of it can supply **and the caster does not stop**. The shortfall is made up out of the nearest matter that is already forced out of rest — and tissue under strain has the loosest hold in the room.
 
@@ -499,7 +565,7 @@ People do not leave thin districts, because the next district downstream belongs
 
 ---
 
-## 7. The Dead
+## 8. The Dead
 
 A body contains almost everything a person is made of. It is missing exactly the thing that mattered, and nothing comes back. Not the person, not by any technique, not once, not ever.
 
@@ -530,7 +596,7 @@ A woman pulls her brother out of a collapse by solving four tons of brick with n
 
 ---
 
-## 8. The Law
+## 9. The Law
 
 > **"Name your source, or it'll name one for you."**
 
@@ -561,7 +627,7 @@ A woman pulls her brother out of a collapse by solving four tons of brick with n
 
 ---
 
-## 9. Vocabulary and the Naming Key
+## 10. Vocabulary and the Naming Key
 
 Every term below is **free** — repurposed plain English or a real trade word. **This document spends zero coinages. All ten remain unspent.**
 
@@ -586,6 +652,9 @@ Every term below is **free** — repurposed plain English or a real trade word. 
 | acuity | What one touch gives you. Largely natal, ceilinged, improves slowly |
 | library | What you have already read and retained. Earned, uncapped |
 | reach | A working taking its shortfall from the nearest sufficient source |
+| accelerant | Matter held together by very little. Parts cheaply, so it lowers what a stroke costs. Not more sap |
+| a runner | A working set travelling along a laid run, short on purpose, reaching the whole way |
+| the drag | The scoured track a runner leaves, with holes where it found something worth taking |
 | overdraw | Pushing a working past the surplus in front of it. Takes what you were using hardest |
 | half-set | Solved and never set. A persistent, dangerous state |
 | slump | What half-set matter becomes when it re-holds. Grey, porous, useless |
@@ -612,7 +681,7 @@ Every term below is **free** — repurposed plain English or a real trade word. 
 
 ---
 
-## 10. Legibility — the Art-Direction Contract
+## 11. Legibility — the Art-Direction Contract
 
 An observer with no tooltip must be able to tell what happened and roughly what it cost. This section owns every visual and audible tell; nothing else in the document describes one.
 
@@ -626,6 +695,9 @@ An observer with no tooltip must be able to tell what happened and roughly what 
 - **HALF-SET MATTER.** A dull, matte, colourless mass with no highlights — light goes into it and does not come back. Haze over it neither rises nor falls. Edges shimmer very slightly, like heat off a road. Slumped, holding a shape it should not hold, body-temperature to the hand of anyone stupid enough. Almost no sound. It doesn't grow. It doesn't stop. It takes fingers off.
 - **REACH.** The dust-line jumps, in one frame, to a new object. Everything between goes untouched. That jump is the whole tell. A hard smell of wet stone, and the source shows it immediately — wood dropping half a finger's depth, ground going chalk-pale in a stripe, a man going grey and sitting down.
 - **AIMED REACH.** The same jump, but the line was already sitting wrong before the stroke — laid slack, laid past the material, laid *behind* the caster — and she was looking at a person, not at her work. Readable in advance by anyone who bothers to look, with a full two seconds to act.
+- **ACCELERANT.** Pouched fine and pale, and the only thing on a battlefield everyone else gives room to. Under draw the pouch frosts before the caster's hands do.
+- **FIRE.** The set's snap arrives as ignition instead of a breath of heat: one hard flat crack, and the boundary standing in flame along its whole run. The line burns — not the hand that drew it.
+- **A RUNNER.** The dust-line does not jump. It travels, at about the speed of a thrown stone, and the drag opens behind it — a scoured track with holes in it where it found something worth taking. A hand's width either side is untouched. It points back at whoever drew it.
 - **RUNNING LOW.** In order, and it clears with rest: hands white to the second knuckle; breath fogging in warm air; a fast fine tremor in the fingers; slurred consonants and a fixed stare.
 - **OVERDRAWN — SLACK.** A tremor that stays after the hands are still. A shortened stride on one side. A voice that runs out at the end of a sentence. It does not brush off and it does not come back.
 - **OVERDRAWN — THINNING.** Visible wasting, asymmetric, confined to what was under load. The limb is plainly smaller than its pair; skin over it is dry and takes a crease.
@@ -638,7 +710,7 @@ An observer with no tooltip must be able to tell what happened and roughly what 
 
 ---
 
-## 11. Progression
+## 12. Progression
 
 **Progression is comprehension. Raw output is never the axis.** A caster at the end of a campaign does not do bigger things. She does *more* things, faster, from worse material, in rooms other people think are empty.
 
@@ -649,13 +721,14 @@ An observer with no tooltip must be able to tell what happened and roughly what 
 | **Sap infrastructure** | **Real, at campaign scale, and political.** A basin cut upstream changes every fight downstream of it. This is the axis that involves other people and gets people killed |
 | **Known ground** | **Real and free, and it resets when you travel.** Yesterday's corridor is today's advantage. Deliberately non-portable |
 | **Implants** | **Real, and a trade, not a gift.** They buy independence from pools and supply, they change what overdraw takes and what it takes it from, and they are a source an enemy can foul, block or cut. Power with a handle on the outside |
+| **Accelerant** | **Not progression — supply.** It lowers what a stroke costs, never what a caster is. Bought, carried, stolen, cut and used up. A campaign where advancement means better powder has gone wrong |
 | **Reagent quality and provenance** | **Not progression — supply.** It swings a fight hard and it can be stolen between fights. Never let a session's advancement be *we bought better stock* |
 | **Training acuity** | **A trap, and the tutorial should say so out loud.** It moves slowly, it has a hard personal ceiling, and a player who grinds it will feel cheated at hour forty. The low-acuity grinder wins on library, and the game must make that obvious early |
 | **Reading speed as its own stat** | **A trap. There is no such stat.** Recognising is faster than reading, so speed is library wearing a different coat |
 
 ---
 
-## 12. Register — the Tone Samples
+## 13. Register — the Tone Samples
 
 Apothecary, chemical, industrial, medical, martial. Purity, dosage, volatility, contamination, residue, solvent, precipitate, saturation, decay. The trades that handle dangerous material for a living: foundry, refinery, dispensary, mine, field hospital. Professionals talk about this the way chemists and armourers talk about their work — precisely, unsentimentally, with dark humour.
 
