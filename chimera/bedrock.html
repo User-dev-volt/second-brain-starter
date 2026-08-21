@@ -38,6 +38,9 @@ figure svg{display:block;width:100%;height:auto}
 figcaption{font-family:var(--mono);font-size:10.5px;line-height:1.6;color:var(--ash);margin-top:12px;padding-top:10px;border-top:1px solid var(--edge)}
 
 .pull{border-left:2px solid var(--brass);padding:4px 0 4px 15px;margin:2px 0;font-size:15px;color:var(--bone)}
+.prop{border:1px dashed var(--edge-2);background:var(--stone-2);padding:14px 16px;margin-top:4px}
+.prop p{font-size:14.5px;margin:0}
+.propk{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--heat);margin:0 0 8px !important}
 .mono-note{font-family:var(--mono);font-size:11.5px;line-height:1.65;color:var(--ash)}
 
 .law{grid-column:1/-1;border:1px solid var(--edge);border-top:3px solid var(--brass);background:var(--stone);padding:34px 28px}
@@ -292,34 +295,16 @@ footer b{color:var(--bone-dim);font-weight:500}
     </figure>
   </div>
 
-  <!-- SIX — thermal -->
+  <!-- SIX — what she throws -->
   <div class="card">
-    <p class="k">06 · What the camera sees</p>
-    <h2>The thermal grammar is locked</h2>
-    <p>Drawing and solving run <b>cold</b>. Setting delivers <b>heat</b>. Half-set matter is <b>body-temperature, always</b>, whatever it was made from — the wrong thing sits at neither end, and that is how you know it's wrong.</p>
-    <figure>
-      <svg viewBox="0 0 480 150" role="img" aria-label="A temperature strip. Solve runs cold and silent. Half-set matter sits at body temperature in the middle, which is the tell that it is wrong. Set delivers heat with one hard snap.">
-        <rect x="0" y="20" width="150" height="52" fill="#6FA0B0" opacity=".82"/>
-        <rect x="165" y="20" width="150" height="52" fill="#9A9184" opacity=".62"/>
-        <rect x="330" y="20" width="150" height="52" fill="#C05A32" opacity=".85"/>
-        <g font-family="IBM Plex Mono, monospace" font-size="11" fill="#14120F" font-weight="500" letter-spacing="1.2">
-          <text x="12" y="42">SOLVE</text><text x="177" y="42">HALF-SET</text><text x="342" y="42">SET</text>
-        </g>
-        <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#14120F">
-          <text x="12" y="60">cold · matte · silent</text>
-          <text x="177" y="60">body-temp · no highlights</text>
-          <text x="342" y="60">heat · one hard snap</text>
-        </g>
-        <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#8A8173" letter-spacing="1">
-          <text x="0" y="94">COLD</text><text x="480" y="94" text-anchor="end">HOT</text>
-          <text x="240" y="94" text-anchor="middle" fill="#E6E1D4">NEITHER — AND THAT IS THE TELL</text>
-        </g>
-        <line x1="0" y1="80" x2="480" y2="80" stroke="#3A342B"/>
-        <text x="0" y="122" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8A8173">THE BOUNDARY shows as a dry dust-fine line the moment the stroke fires —</text>
-        <text x="0" y="136" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8A8173">across skin as readily as stone. Am I inside it?</text>
-      </svg>
-      <figcaption>A reach is one frame: the dust-line <em>jumps</em> to a new object and everything between goes untouched. An aimed reach is the same jump, but the line was already sitting wrong — and she was looking at a person, not at her work.</figcaption>
-    </figure>
+    <p class="k">06 · What a caster actually throws</p>
+    <h2>Nothing. She rearranges the room</h2>
+    <p>There is no fire family and no lightning family. A working can only produce what the room is already made of — so the spectacle is <b>material</b>. A railing becoming a spike in one motion. A flagstone dropping a hand's depth under someone's foot. Plaster coming off the wall edge-on into a face. Hinges taken out of a door from across the room.</p>
+    <p>It should look less like spellcasting and more like <em>the room turning on you at speed</em> — and getting visibly used up as the fight runs on. By the end of a long fight the space is stripped: no fittings, no rail, a floor a hand lower than it was.</p>
+    <div class="prop">
+      <p class="propk">Open question — proposal, not canon</p>
+      <p><b>Fire is reachable, but as a technique, not a verb.</b> Set a volume of air rich and give it a spark. It follows cleanly from the rules — but air is the thinnest, hardest thing in the world to read, and <em>you are standing inside the boundary when it goes.</em> That would make it an expert move that mostly kills the people who try it, and the handful who can do it safely are famous for it. Say the word and it's in, or say no and the system stays purely material.</p>
+    </div>
   </div>
 
   <!-- SEVEN — the body -->
@@ -351,9 +336,67 @@ footer b{color:var(--bone-dim);font-weight:500}
     </figure>
   </div>
 
+  <!-- EIGHT — what you see -->
+  <div class="card wide">
+    <p class="k">08 · What you see, in order</p>
+    <h2>One working, start to finish — and the three places it can go wrong</h2>
+    <p>This is a <b>sequence, not a scale.</b> A stroke runs cold while the hold is coming out, and delivers heat when it snaps shut. Every failure is that sequence stopping somewhere, and each one stops somewhere different, which is why an observer with no tooltip can tell them apart.</p>
+    <figure>
+      <svg viewBox="0 0 700 330" role="img" aria-label="A working in sequence: hand on the material, then the surface goes matte and a dry haze lifts while the air goes cold, then the haze collapses inward with one snap and a breath of heat, and the thing exists. Three failure branches: the haze never rises, which is a fizzle; the haze rises and never falls, which is half-set matter at body temperature; and the haze falls in a stutter of snaps, which delivers a hollow object.">
+        <defs><marker id="c" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#8A8173"/></marker></defs>
+
+        <text x="0" y="14" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8A8173" letter-spacing="1.6">THE WORKING THAT LANDS</text>
+
+        <rect x="0" y="26" width="150" height="46" fill="none" stroke="#8A8173"/>
+        <text x="12" y="46" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#BDB6A7">HAND ON</text>
+        <text x="12" y="62" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8A8173">skin to the material</text>
+
+        <line x1="150" y1="49" x2="186" y2="49" stroke="#8A8173" marker-end="url(#c)"/>
+
+        <rect x="190" y="26" width="180" height="46" fill="#6FA0B0"/>
+        <text x="202" y="46" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#14120F" font-weight="500">SOLVE — RUNS COLD</text>
+        <text x="202" y="62" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#14120F">shine dies, dry haze lifts, silent</text>
+
+        <line x1="370" y1="49" x2="406" y2="49" stroke="#8A8173" marker-end="url(#c)"/>
+
+        <rect x="410" y="26" width="180" height="46" fill="#C05A32"/>
+        <text x="422" y="46" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#14120F" font-weight="500">SET — DELIVERS HEAT</text>
+        <text x="422" y="62" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#14120F">haze collapses in, one hard snap</text>
+
+        <line x1="590" y1="49" x2="626" y2="49" stroke="#8A8173" marker-end="url(#c)"/>
+        <text x="632" y="46" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#E6E1D4">THE</text>
+        <text x="632" y="60" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#E6E1D4">THING</text>
+
+        <line x1="0" y1="96" x2="700" y2="96" stroke="#3A342B"/>
+        <text x="0" y="120" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8A8173" letter-spacing="1.6">AND THE THREE PLACES IT STOPS</text>
+
+        <path d="M280 72 L280 140" stroke="#8A8173" stroke-dasharray="3 3"/>
+        <path d="M500 72 L500 236" stroke="#8A8173" stroke-dasharray="3 3"/>
+
+        <rect x="0" y="140" width="700" height="52" fill="#211E19" stroke="#6FA0B0"/>
+        <text x="14" y="160" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#6FA0B0">1 · THE HAZE NEVER RISES</text>
+        <text x="14" y="177" font-family="IBM Plex Mono, monospace" font-size="10" fill="#BDB6A7">A fizzle. A breath of dust off the surface and nothing else. Sap gone, nothing opened, everyone alive.</text>
+        <text x="686" y="160" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8A8173" text-anchor="end">your &quot;poof of dust&quot;</text>
+
+        <rect x="0" y="198" width="700" height="52" fill="#211E19" stroke="#9A9184"/>
+        <text x="14" y="218" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#E6E1D4">2 · THE HAZE RISES AND NEVER FALLS</text>
+        <text x="14" y="235" font-family="IBM Plex Mono, monospace" font-size="10" fill="#BDB6A7">Half-set. Matte, colourless, no highlights, body-temperature. Still there tomorrow. It takes fingers off.</text>
+        <text x="686" y="218" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8A8173" text-anchor="end">not on your list — and it is ours</text>
+
+        <rect x="0" y="256" width="700" height="52" fill="#211E19" stroke="#D8B25C"/>
+        <text x="14" y="276" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#D8B25C">3 · THE HAZE FALLS IN A STUTTER</text>
+        <text x="14" y="293" font-family="IBM Plex Mono, monospace" font-size="10" fill="#BDB6A7">A dud. You get the thing, full size, hollow through. Rings flat, takes a thumbnail, bends under half the load.</text>
+        <text x="686" y="276" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8A8173" text-anchor="end">your &quot;rock that falls apart&quot;</text>
+
+        <text x="0" y="326" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8A8173">Half-set matter sits at body temperature whatever it was made from — the wrong thing is at neither end, and that is how you know.</text>
+      </svg>
+      <figcaption>The boundary is the other thing on screen: a dry, dust-fine line along its whole run the moment the stroke fires, across skin as readily as stone. It is the most-read thing on a battlefield — <em>where does that line go, and am I inside it.</em> A reach is one frame: the line jumps to a new object and everything between goes untouched.</figcaption>
+    </figure>
+  </div>
+
   <!-- THE LAW -->
   <div class="law">
-    <p class="k">08 · The Law</p>
+    <p class="k">09 · The Law</p>
     <q>Name your source, or it'll name one for you.</q>
     <p>Not an incantation — nothing listens. It's a workface line, what a foreman says at the top of a shift in the same breath as <em>check your footing</em>. <b>And the crack is that following it is the atrocity.</b> The Law commands you to name your source. It does not say what a source may be. A caster who names a person and lays the boundary on them has followed it exactly, and the working proceeds correctly. Correct procedure and atrocity are the same act, performed with the same hands, in the same order.</p>
   </div>
