@@ -5,7 +5,7 @@ Anything not on this list is still open. Source prompt: `chimera-prompt-v3.md`.
 
 ---
 
-## GATE 1 — in progress
+## GATE 1 — CLOSED
 
 ### Decided
 
@@ -96,19 +96,76 @@ Consequences that follow and are now load-bearing:
 made casters rare by nature; a scale means the world must explain why most people don't bother, and
 that answer has to be cost and ceiling, never permission — or the setting fills up with casters.*
 
-### Open
+**The charge is called SAP.**
+You tap it out of things and sappers undermine walls for a living: two trades in one syllable. It
+works as noun, verb and adjective — sap the rail, the ground's sapped out, a sapped district — and
+drawing sap is literally what an extractor does.
 
-- **The name of the charge.** Two rounds have died here. Shortlist: sap, temper, bite.
-- **The exact wording of the Law**, and the loophole that follows from that exact wording.
-- **How deep the technical literacy goes.** All candidates propose empirical, not atomic — families,
-  grades and provenance, no atoms. Live question: is the table of families published? Recommendation
-  is published, disputed and incomplete.
-- **The astral stance.** Every candidate independently said out. Recommendation is to ratify out.
-- **Is ordinary ground consumable?** If a caster can stand in a field and draw indefinitely,
-  extractors, supply lines and map control are decoration.
-- **What does a reach take out of a person?** A body holds about one nail's worth of iron, so
-  blood-iron reaching fails arithmetic the first time a player checks. Water and lime survives
-  scrutiny — and is worse, because that is the skeleton.
+**Where sap comes from.**
+A living body is matter that never settles: constantly forced out of rest, every hour it is alive.
+At death that accumulated unrest goes into the ground. Death is not magic and sap is not a soul — a
+body is simply the richest deposit of not-yet-settled matter there is, which is why a battlefield is
+the best ground in the country and everyone in the trade knows it.
+
+**Sap must pass through the earth to become usable.** The ground is a refinery, not a reservoir. Its
+work is to let the unrest settle slowly enough that the surplus can be tapped before it re-holds.
+Raw unrest straight out of a fresh body is not sap yet.
+
+Sap gathers into **pools**. The trade's real work is hydraulic: carving channels, connecting one pool
+to another, cutting a **basin** of your own to gather and hold what would otherwise have gone
+elsewhere. Land is stolen for it. A basin cut upstream is an act of war. Quietly connecting your
+works to a pool that is not yours is the characteristic crime. Water rights, not mining rights.
+
+*Concern raised and overruled by the human: death-sourced energy pooling underground and tapped by
+industry is adjacent to FFVII's Lifestream, which §7 bans reskinning. The three defences that must be
+actively maintained in the prose, not merely asserted once: the earth is a refinery rather than a
+reservoir; raw unrest is not yet sap; the politics are hydraulic (channels, basins, upstream and
+downstream) rather than extractive.*
+
+**The Law — verbatim.**
+
+> "Name your source, or it'll name one for you."
+
+Register is a foreman's safety line, not an incantation: blunt, procedural, faintly grim, true. The
+first three attempts were rejected for sounding like spells — three-beat incantations in a world
+whose register is foundry and field hospital.
+
+**The crack, exactly.** The Law *commands* you to name where it is coming from. Naming a person as
+your source follows the Law perfectly. The correct procedure and the atrocity are the same act.
+
+**What a reach takes out of a person — water and lime.**
+The two things a body holds in bulk. A working short of anything else does not find it in a person in
+useful quantity: a body holds about one nail's worth of iron, and the arithmetic has to survive a
+player checking it. **The selection is dumb; the consequence is personal.** Same physics every time —
+but take water and lime from a young labourer and he is sick for a month; from an old woman and her
+hip goes and never comes back; from a reader and her acuity drops, because the read runs through
+tissue.
+
+**Overdraw eats what you were using hardest.**
+Tissue under strain is matter forced out of rest, so it gives up its hold first. The runner loses her
+legs, the reader loses her hands and her acuity, the shouter loses his voice. The world is not
+choosing — what you use hardest is what you are. Permanent, staged, readable across a room.
+
+**Astral layer: out.** No far side, no celestial tier, no spirits. The physical layer is the only one.
+The one permitted mystery — what a body is missing — is an observed absence with no mechanism
+attached. Nothing can read it, move it, store it or return it.
+
+**Technical literacy: empirical, not atomic.** Families, grades, proportion, provenance, purity. No
+atoms, no electrons, no molecules, no "quantum". The culture works the way real 18th-century
+chemistry worked: it knows matter is divisible and behaves by family, without knowing into what.
+
+**The table of families: published, disputed and incomplete.** Practitioners argue about it and
+nobody holds the whole list. This is why comprehension is the progression axis and memorisation is
+not.
+
+**Coinage spent at Gate 1: zero of ten.**
+Sap, grain, families, the hold, pools, basins, channels, acuity, library, reading, setting and
+solving are all ordinary English doing new work.
+
+### Open — for later gates
+
+Nothing at Gate 1. Gate 2 decides the schools: which are playable, which are enemy-only, and which
+one the protagonist starts in.
 
 ### The reconciliation any answer must survive
 
