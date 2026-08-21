@@ -1,0 +1,338 @@
+<title>The Five Schools at a Glance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;600;800&family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,300;0,400;0,600;1,300&display=swap">
+<style>
+:root{
+  --ink:#14120F;--stone:#211E19;--stone-2:#2A2620;--edge:#3A342B;--edge-2:#4C443A;
+  --ash:#8A8173;--bone:#E6E1D4;--bone-dim:#BDB6A7;
+  --brass:#D8B25C;--slate:#6FA0B0;--rust:#C05A32;
+  --display:"Big Shoulders Display","Arial Narrow",sans-serif;
+  --body:"Spectral",Georgia,serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--bone-dim);font-family:var(--body);
+  font-weight:300;font-size:16.5px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:clamp(26px,4vw,54px) clamp(16px,3.5vw,38px) 90px}
+header{border-bottom:1px solid var(--edge);padding-bottom:26px;margin-bottom:32px}
+.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ash);margin:0 0 12px}
+h1{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(40px,8.5vw,88px);
+  line-height:.88;margin:0 0 16px;color:var(--bone);text-wrap:balance}
+.thesis{max-width:62ch;margin:0;font-size:clamp(17px,2vw,20px)}
+.thesis b{color:var(--bone);font-weight:600}
+
+section{margin-top:44px}
+h2{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(26px,4.5vw,44px);
+  line-height:.95;margin:0 0 6px;color:var(--bone)}
+.lede{max-width:66ch;margin:0 0 22px}
+.lede b{color:var(--bone);font-weight:600}
+
+figure{margin:0;background:var(--stone-2);border:1px solid var(--edge);padding:16px 14px 10px}
+figure svg{display:block;width:100%;height:auto}
+figcaption{font-family:var(--mono);font-size:10.5px;line-height:1.6;color:var(--ash);
+  margin-top:12px;padding-top:10px;border-top:1px solid var(--edge)}
+
+.sch{border:1px solid var(--edge);background:var(--stone);display:grid;grid-template-columns:1fr;
+  border-top:3px solid var(--a);margin-bottom:18px}
+@media(min-width:760px){.sch{grid-template-columns:216px minmax(0,1fr)}}
+.sil{border:0;border-right:1px solid var(--edge);background:var(--stone-2);padding:14px 8px 6px}
+.sbody{padding:20px 24px 22px;display:grid;gap:11px;align-content:start}
+.sbody h3{font-family:var(--display);font-weight:600;text-transform:uppercase;font-size:30px;
+  line-height:1;margin:0;color:var(--a)}
+.sbody p{margin:0;font-size:15px}
+.doc{color:var(--bone-dim)}
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chips span{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ash);border:1px solid var(--edge-2);padding:3px 8px}
+.gd b,.bd b{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+  display:block;margin-bottom:3px;font-weight:500}
+.gd b{color:var(--brass)}
+.bd b{color:var(--rust)}
+
+.gwrap{display:grid;gap:20px;grid-template-columns:1fr}
+@media(min-width:900px){.gwrap{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.edges{display:grid;gap:9px;align-content:start}
+.ed{display:grid;grid-template-columns:auto 1fr;gap:11px;font-size:14.5px}
+.ed .t{font-family:var(--mono);font-size:9px;letter-spacing:.12em;padding:3px 6px;height:fit-content;white-space:nowrap}
+.ed.h .t{background:var(--brass);color:var(--ink)}
+.ed.s .t{border:1px dashed var(--edge-2);color:var(--ash)}
+.ed b{color:var(--bone);font-weight:600}
+
+.dec{border:1px solid var(--edge);background:var(--stone);padding:22px 24px;display:grid;gap:14px;margin-bottom:16px}
+.dec h3{font-family:var(--display);font-weight:600;text-transform:uppercase;font-size:26px;line-height:1;margin:0;color:var(--bone)}
+.dec .q{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--brass);margin:0}
+.opts{display:grid;gap:10px}
+@media(min-width:820px){.opts{grid-template-columns:1fr 1fr}}
+.o{border-left:2px solid var(--edge-2);padding-left:14px}
+.o.rec{border-left-color:var(--brass)}
+.o p{margin:0;font-size:14.5px}
+.o .on{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--bone);margin-bottom:5px}
+.o.rec .on{color:var(--brass)}
+.note{font-family:var(--mono);font-size:11.5px;line-height:1.7;color:var(--ash);
+  border-left:2px solid var(--edge);padding-left:14px}
+footer{margin-top:44px;border-top:1px solid var(--edge);padding-top:22px;
+  font-family:var(--mono);font-size:11.5px;line-height:1.75;color:var(--ash)}
+footer b{color:var(--bone-dim);font-weight:500}
+</style>
+
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Project Chimera · Gate 2 · awaiting your decision</p>
+  <h1>The Five Schools</h1>
+  <p class="thesis">A school is not a spell list. Everyone does the same two things with their hands, and any competent person can be taught the follow-through in a season. What cannot be handed over is <b>library</b> — and there are only so many ways a human being can come by one. <b>A school is a doctrine of acquisition.</b></p>
+</header>
+
+<section>
+  <h2>Why library is the whole argument</h2>
+  <p class="lede">Recognition is not a read. Anything already in library resolves <b>under a quarter-second at any acuity</b>, because she is matching rather than measuring. So every school's fast tier is memory — which means how you get memory is the only thing worth splitting a trade over.</p>
+  <figure>
+    <svg viewBox="0 0 700 250" role="img" aria-label="Five doctrines all feed one destination. Cutting a chip, sounding through an instrument, walking the ground early, reading the living, and reading the record all build library; library produces recognition in under a quarter second; recognition is the entire fast tier.">
+      <defs><marker id="fa" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#8A8173"/></marker></defs>
+      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#BDB6A7">
+        <rect x="0" y="14" width="180" height="30" fill="none" stroke="#8A8173"/><text x="12" y="33">CUT A CHIP OFF IT</text>
+        <rect x="0" y="58" width="180" height="30" fill="none" stroke="#8A8173"/><text x="12" y="77">SOUND IT THROUGH A ROD</text>
+        <rect x="0" y="102" width="180" height="30" fill="none" stroke="#8A8173"/><text x="12" y="121">WALK THE GROUND EARLY</text>
+        <rect x="0" y="146" width="180" height="30" fill="none" stroke="#8A8173"/><text x="12" y="165">READ THE LIVING</text>
+        <rect x="0" y="190" width="180" height="30" fill="none" stroke="#8A8173"/><text x="12" y="209">READ THE RECORD</text>
+      </g>
+      <g stroke="#8A8173" marker-end="url(#fa)">
+        <path d="M180 29 L262 105" fill="none"/><path d="M180 73 L262 110" fill="none"/>
+        <path d="M180 117 L262 117" fill="none"/><path d="M180 161 L262 124" fill="none"/>
+        <path d="M180 205 L262 129" fill="none"/>
+      </g>
+      <rect x="270" y="96" width="126" height="42" fill="#D8B25C"/>
+      <text x="333" y="122" font-family="IBM Plex Mono, monospace" font-size="13" fill="#14120F" text-anchor="middle" letter-spacing="2">LIBRARY</text>
+      <line x1="396" y1="117" x2="438" y2="117" stroke="#8A8173" marker-end="url(#fa)"/>
+      <rect x="446" y="96" width="150" height="42" fill="none" stroke="#D8B25C"/>
+      <text x="521" y="113" font-family="IBM Plex Mono, monospace" font-size="10" fill="#D8B25C" text-anchor="middle">RECOGNITION</text>
+      <text x="521" y="128" font-family="IBM Plex Mono, monospace" font-size="9" fill="#8A8173" text-anchor="middle">under 0.25 s, any acuity</text>
+      <line x1="596" y1="117" x2="632" y2="117" stroke="#8A8173" marker-end="url(#fa)"/>
+      <text x="640" y="113" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#E6E1D4">THE</text>
+      <text x="640" y="127" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#E6E1D4">FAST TIER</text>
+      <text x="270" y="168" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8A8173">and substitution is the tax every one of them pays —</text>
+      <text x="270" y="182" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8A8173">swap the fittings and the veteran is slower than the novice</text>
+    </svg>
+    <figcaption>Six doctrines were built. Two turned out to be the same school written twice — a carried case is a storage format, not a doctrine, and both built library by cutting a chip off a fitting. Merged. The survivor kept the cut idea: <em>the cut is depth</em>, so notching a wall lets an ordinary reader finish deeper than her acuity allows. Acuity bought with labour instead of birth.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <h2>The five, and what kills each</h2>
+  <p class="lede">The audit that mattered: <b>do any two look the same on screen?</b> If they do, one is redundant. Here they are side by side — judge the silhouettes, not the prose.</p>
+  <article class="sch" style="--a:var(--brass)">
+    <figure class="sil">
+      <svg viewBox="0 0 200 230" role="img" aria-label="Silhouette of a Matcher."> <circle cx="100" cy="46" r="15" fill="#E6E1D4"/>
+     <polygon points="80,66 120,66 126,150 74,150" fill="#E6E1D4"/>
+     <rect x="80" y="76" width="40" height="42" fill="#211E19" stroke="#D8B25C" stroke-width="1.5"/>
+     <g stroke="#D8B25C" stroke-width="1.4">
+       <path d="M84 82 v30 M90 82 v30 M96 82 v30 M102 82 v30 M108 82 v30 M114 82 v30"/></g>
+     <path d="M118 82 L168 96" stroke="#E6E1D4" stroke-width="8" stroke-linecap="round"/>
+     <path d="M168 88 v16" stroke="#D8B25C" stroke-width="2"/>
+     <path d="M82 84 L96 100" stroke="#E6E1D4" stroke-width="8" stroke-linecap="round"/>
+     <g stroke="#E6E1D4" stroke-width="7" stroke-linecap="round"><path d="M88 150 v46 M112 150 v46"/></g>
+     <text x="100" y="218" font-family="IBM Plex Mono, monospace" font-size="9" fill="#D8B25C" text-anchor="middle" letter-spacing="1">FIST IN HER OWN CHEST</text>
+      </svg>
+    </figure>
+    <div class="sbody">
+      <h3>Matchers</h3>
+      <p class="doc">Carry the library on your chest. 180 known chips, each identified by a count of nicks filed into one edge, read by thumb, in the dark, at a run.</p>
+      <p class="chips"><span>Carried reagents</span><span>Flask</span><span>Set-led</span></p>
+      <p class="gd"><b>Great at</b> Turns unfamiliar material into FAST material better than anyone — matching is recognition, and recognition is under a quarter-second.</p>
+      <p class="bd"><b>Dies to</b> Anything that occupies one hand halves her. Cold and wet finish her outright: the nick-code needs bare fingertips.</p>
+    </div>
+  </article>
+  <article class="sch" style="--a:var(--slate)">
+    <figure class="sil">
+      <svg viewBox="0 0 200 230" role="img" aria-label="Silhouette of a Rod."> <circle cx="92" cy="46" r="15" fill="#E6E1D4"/>
+     <polygon points="72,66 112,66 118,150 66,150" fill="#E6E1D4"/>
+     <rect x="70" y="78" width="22" height="12" rx="5" fill="#6FA0B0"/>
+     <circle cx="81" cy="84" r="13" fill="none" stroke="#6FA0B0" stroke-width="1.2" opacity=".7"/>
+     <circle cx="81" cy="84" r="19" fill="none" stroke="#6FA0B0" stroke-width="1" opacity=".4"/>
+     <path d="M110 84 L142 118" stroke="#E6E1D4" stroke-width="8" stroke-linecap="round"/>
+     <path d="M144 112 L162 196" stroke="#8A8173" stroke-width="5" stroke-linecap="round"/>
+     <circle cx="162" cy="196" r="5" fill="#6FA0B0"/>
+     <g stroke="#E6E1D4" stroke-width="7" stroke-linecap="round"><path d="M80 150 v46 M104 150 v46"/></g>
+     <text x="100" y="218" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6FA0B0" text-anchor="middle" letter-spacing="1">WORKS A METRE AWAY</text>
+      </svg>
+    </figure>
+    <div class="sbody">
+      <h3>Rods</h3>
+      <p class="doc">Touch nothing. Read through an instrument you have already read through — and above all through seated metal in the forearm. Their line is <em>nothing on the skin</em>.</p>
+      <p class="chips"><span>Pre-loaded charges</span><span>Implant</span><span>Solve-led</span></p>
+      <p class="gd"><b>Great at</b> They own distance and deep extraction. Half the country’s ore is found by a man saying <em>iron at forty feet</em> in good faith.</p>
+      <p class="bd"><b>Dies to</b> State-blind, and it is not a minor axis. He reads half-set brass as superb brass — and half-set eats instruments, up sixty centimetres of rod, into the port at his wrist.</p>
+    </div>
+  </article>
+  <article class="sch" style="--a:var(--brass)">
+    <figure class="sil">
+      <svg viewBox="0 0 200 230" role="img" aria-label="Silhouette of a Surveyor."> <rect x="10" y="30" width="54" height="120" fill="#9A9184" opacity=".45"/>
+     <text x="14" y="26" font-family="IBM Plex Mono, monospace" font-size="8" fill="#9A9184" letter-spacing=".5">HALF-SET</text>
+     <ellipse cx="112" cy="176" rx="72" ry="16" fill="#6FA0B0" opacity=".28"/>
+     <circle cx="112" cy="54" r="15" fill="#E6E1D4"/>
+     <polygon points="92,74 132,74 136,140 88,140" fill="#E6E1D4"/>
+     <path d="M92 92 L74 158" stroke="#E6E1D4" stroke-width="8" stroke-linecap="round"/>
+     <path d="M132 92 L150 158" stroke="#E6E1D4" stroke-width="8" stroke-linecap="round"/>
+     <g stroke="#E6E1D4" stroke-width="7" stroke-linecap="round"><path d="M102 140 v34 M124 140 v34"/></g>
+     <path d="M40 166 H196" stroke="#D8B25C" stroke-width="2" stroke-dasharray="8 5"/>
+     <text x="100" y="218" font-family="IBM Plex Mono, monospace" font-size="9" fill="#D8B25C" text-anchor="middle" letter-spacing="1">PLANTED ON HER OWN LINE</text>
+      </svg>
+    </figure>
+    <div class="sbody">
+      <h3>Surveyors</h3>
+      <p class="doc">Walk the building days early and leave the lines in it. Then fight in a room where every surface is recognition and every boundary is already down.</p>
+      <p class="chips"><span>The surveyed building</span><span>Pool</span><span>Set-led</span></p>
+      <p class="gd"><b>Great at</b> On owned ground, the most dangerous thing alive — and they own the runner, because everyone else’s is a prayer with a direction and hers is a rail.</p>
+      <p class="bd"><b>Dies to</b> Everything else. Off prepared ground she is the weakest thing in the game, and her library goes stale — damp, frost, a repaint, and the house is strange again.</p>
+    </div>
+  </article>
+  <article class="sch" style="--a:var(--rust)">
+    <figure class="sil">
+      <svg viewBox="0 0 200 230" role="img" aria-label="Silhouette of a Quick."> <circle cx="70" cy="52" r="14" fill="#E6E1D4"/>
+     <polygon points="52,70 88,70 92,146 48,146" fill="#E6E1D4"/>
+     <rect x="56" y="80" width="14" height="18" rx="3" fill="#C05A32"/>
+     <path d="M86 88 L146 104" stroke="#E6E1D4" stroke-width="8" stroke-linecap="round"/>
+     <g stroke="#E6E1D4" stroke-width="6" stroke-linecap="round"><path d="M60 146 v42 M80 146 v42"/></g>
+     <circle cx="172" cy="60" r="13" fill="#8A8173"/>
+     <polygon points="156,76 188,76 190,146 154,146" fill="#8A8173"/>
+     <path d="M156 92 L128 106" stroke="#8A8173" stroke-width="8" stroke-linecap="round"/>
+     <g stroke="#8A8173" stroke-width="6" stroke-linecap="round"><path d="M164 146 v42 M182 146 v42"/></g>
+     <path d="M64 96 Q100 84 134 104" stroke="#C05A32" stroke-width="2.5" stroke-dasharray="3 3" fill="none"/>
+     <text x="100" y="218" font-family="IBM Plex Mono, monospace" font-size="9" fill="#C05A32" text-anchor="middle" letter-spacing="1">HER LINE, ON HIS SKIN</text>
+      </svg>
+    </figure>
+    <div class="sbody">
+      <h3>Quicks</h3>
+      <p class="doc">Read the living. Tissue is agony to read cold and trivial to recognise warm — every person is the same seven or eight families, so what varies is <em>state</em>, and state is all she ever measures.</p>
+      <p class="chips"><span>Her own body</span><span>Implant</span><span>Set-led</span></p>
+      <p class="gd"><b>Great at</b> The best hands on any field: a break set in nine-tenths of a second and the man gets up. She is who they send when the reach found the gallery crew instead of ore.</p>
+      <p class="bd"><b>Dies to</b> She must be inside arm’s length, and every soldier alive has already decided not to let her touch them. In a siege she is baggage with good hands.</p>
+    </div>
+  </article>
+  <article class="sch" style="--a:var(--brass)">
+    <figure class="sil">
+      <svg viewBox="0 0 200 230" role="img" aria-label="Silhouette of a Take-off hand."> <rect x="150" y="20" width="46" height="180" fill="#2A2620"/>
+     <g stroke="#D8B25C" stroke-width="1.4" fill="none">
+       <circle cx="160" cy="70" r="7"/><circle cx="160" cy="118" r="7"/><circle cx="160" cy="166" r="7"/></g>
+     <circle cx="86" cy="46" r="15" fill="#E6E1D4"/>
+     <polygon points="66,66 106,66 110,146 62,146" fill="#E6E1D4"/>
+     <path d="M106 86 L150 108" stroke="#E6E1D4" stroke-width="8" stroke-linecap="round"/>
+     <path d="M66 88 L38 116" stroke="#E6E1D4" stroke-width="8" stroke-linecap="round"/>
+     <g stroke="#E6E1D4" stroke-width="7" stroke-linecap="round"><path d="M74 146 v50 M98 146 v50"/></g>
+     <path d="M96 34 q22 -6 30 4" stroke="#D8B25C" stroke-width="1.6" fill="none"/>
+     <text x="132" y="30" font-family="IBM Plex Mono, monospace" font-size="9" fill="#D8B25C">"one"</text>
+     <text x="100" y="218" font-family="IBM Plex Mono, monospace" font-size="9" fill="#D8B25C" text-anchor="middle" letter-spacing="1">MOVING, TALKING, HAND BEHIND</text>
+      </svg>
+    </figure>
+    <div class="sbody">
+      <h3>Take-off hands</h3>
+      <p class="doc">Read from the record. <em>This is a barracks of that vintage, so the door pins are wrought, three to a leaf.</em> Recognition without ever having touched the thing.</p>
+      <p class="chips"><span>The building itself</span><span>Flask</span><span>Solve-led</span></p>
+      <p class="gd"><b>Great at</b> Disguise does not touch her — grease, blacking, dazzle-plate buy nothing against a woman who never looked at a surface in her life. The low-acuity grinder’s school.</p>
+      <p class="bd"><b>Dies to</b> She cannot check. A plausible lie about the vintage is nearly as good as beating her, and her errors always complete, because chained cannot be aborted.</p>
+    </div>
+  </article>
+</section>
+
+<section>
+  <h2>The counter graph</h2>
+  <p class="lede">Ten edges. <b>Every school has exactly two predators and two prey</b> — so nobody is unbeaten and nobody is a designated victim. Solid arrows are doctrine-killing; dashed are situational and survivable. The arrow points at the loser.</p>
+  <div class="gwrap">
+    <figure>
+      <svg viewBox="0 0 500 470" role="img" aria-label="A five-node graph. Hard edges: surveyors beat take-off hands, take-off hands beat quicks, quicks beat rods, rods beat matchers, rods beat surveyors. Soft edges: matchers beat surveyors and take-off hands, surveyors beat quicks, take-off hands beat rods, quicks beat matchers.">
+        <defs>
+          <marker id="hard" viewBox="0 0 9 9" refX="8" refY="4.5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#D8B25C"/></marker>
+          <marker id="soft" viewBox="0 0 9 9" refX="8" refY="4.5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#6E6558"/></marker>
+        </defs>
+        <line x1="147.8" y1="156.3" x2="209.5" y2="111.4" stroke="#6E6558" stroke-width="1.2" stroke-dasharray="5 5" marker-end="url(#soft)"/>
+        <line x1="157.3" y1="185.6" x2="342.7" y2="185.6" stroke="#6E6558" stroke-width="1.2" stroke-dasharray="5 5" marker-end="url(#soft)"/>
+        <line x1="265.5" y1="129.6" x2="322.7" y2="305.8" stroke="#6E6558" stroke-width="1.2" stroke-dasharray="5 5" marker-end="url(#soft)"/>
+        <line x1="352.2" y1="215.0" x2="202.3" y2="324.0" stroke="#6E6558" stroke-width="1.2" stroke-dasharray="5 5" marker-end="url(#soft)"/>
+        <line x1="297.7" y1="324.0" x2="147.8" y2="215.0" stroke="#6E6558" stroke-width="1.2" stroke-dasharray="5 5" marker-end="url(#soft)"/>
+        <line x1="290.5" y1="111.4" x2="352.2" y2="156.3" stroke="#D8B25C" stroke-width="2.4" marker-end="url(#hard)"/>
+        <line x1="377.2" y1="233.2" x2="353.6" y2="305.8" stroke="#D8B25C" stroke-width="2.4" marker-end="url(#hard)"/>
+        <line x1="288.2" y1="353.4" x2="211.8" y2="353.4" stroke="#D8B25C" stroke-width="2.4" marker-end="url(#hard)"/>
+        <line x1="146.4" y1="305.8" x2="122.8" y2="233.2" stroke="#D8B25C" stroke-width="2.4" marker-end="url(#hard)"/>
+        <line x1="177.3" y1="305.8" x2="234.5" y2="129.6" stroke="#D8B25C" stroke-width="2.4" marker-end="url(#hard)"/>
+        <circle cx="250.0" cy="82.0" r="44" fill="#211E19" stroke="#8A8173" stroke-width="1.2"/>
+        <text x="250.0" y="85.5" font-family="IBM Plex Mono, monospace" font-size="10" fill="#E6E1D4" text-anchor="middle" letter-spacing=".5">SURVEYORS</text>
+        <circle cx="392.7" cy="185.6" r="44" fill="#211E19" stroke="#8A8173" stroke-width="1.2"/>
+        <text x="392.7" y="189.1" font-family="IBM Plex Mono, monospace" font-size="10" fill="#E6E1D4" text-anchor="middle" letter-spacing=".5">TAKE-OFF</text>
+        <circle cx="338.2" cy="353.4" r="44" fill="#211E19" stroke="#8A8173" stroke-width="1.2"/>
+        <text x="338.2" y="356.9" font-family="IBM Plex Mono, monospace" font-size="10" fill="#E6E1D4" text-anchor="middle" letter-spacing=".5">QUICKS</text>
+        <circle cx="161.8" cy="353.4" r="44" fill="#211E19" stroke="#8A8173" stroke-width="1.2"/>
+        <text x="161.8" y="356.9" font-family="IBM Plex Mono, monospace" font-size="10" fill="#E6E1D4" text-anchor="middle" letter-spacing=".5">RODS</text>
+        <circle cx="107.3" cy="185.6" r="44" fill="#211E19" stroke="#8A8173" stroke-width="1.2"/>
+        <text x="107.3" y="189.1" font-family="IBM Plex Mono, monospace" font-size="10" fill="#E6E1D4" text-anchor="middle" letter-spacing=".5">MATCHERS</text>
+        <g font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="1">
+          <line x1="20" y1="428" x2="56" y2="428" stroke="#D8B25C" stroke-width="2.4"/>
+          <text x="64" y="432" fill="#D8B25C">HARD — DOCTRINE-KILLING</text>
+          <line x1="20" y1="452" x2="56" y2="452" stroke="#6E6558" stroke-width="1.2" stroke-dasharray="5 5"/>
+          <text x="64" y="456" fill="#8A8173">SOFT — SITUATIONAL</text>
+        </g>
+      </svg>
+    </figure>
+    <div class="edges">
+      <div class="ed h"><span class="t">HARD</span><span><b>Surveyors kill take-off hands.</b> The counter-survey wing swaps three fittings between the record and the fight. She fires into a material that is not there — and she cannot check.</span></div>
+      <div class="ed h"><span class="t">HARD</span><span><b>Take-off hands kill quicks.</b> The counter is the room, and a quick has no library for rooms. He only has to make the fight be about the bearing pins.</span></div>
+      <div class="ed h"><span class="t">HARD</span><span><b>Quicks kill rods.</b> An instrument never returns state, and half-set is pure state. It eats his rod and travels up it into the port at his wrist. She also knows the four places a seat can go — her trade cuts them.</span></div>
+      <div class="ed h"><span class="t">HARD</span><span><b>Rods kill matchers.</b> She chains constantly at a quarter more sap and says her count out loud. He has none, concedes her opening burst, and keeps rod's length so she never gets a flat palm on the world.</span></div>
+      <div class="ed h"><span class="t">HARD</span><span><b>Rods kill surveyors.</b> Pool dies when the gate shuts upstream — and he does it from the cellar without entering the room.</span></div>
+      <div class="ed s"><span class="t">SOFT</span><span><b>Matchers over take-off hands.</b> 180 chips of undated metal the record cannot describe — and she can file a fitting open in four seconds and prove the record wrong in front of the crew.</span></div>
+      <div class="ed s"><span class="t">SOFT</span><span><b>Matchers over surveyors.</b> A foot of known cord slid under a door reads the far end as though her hand were there. Nobody scores a scullery.</span></div>
+      <div class="ed s"><span class="t">SOFT</span><span><b>Surveyors over quicks.</b> Thirty feet of scored line never grants contact — though if a quick <em>does</em> get a palm on her it ends in nine-tenths of a second.</span></div>
+      <div class="ed s"><span class="t">SOFT</span><span><b>Take-off hands over rods.</b> He packed his substance on a Tuesday; hers is the building. And his stance is a lean, so she takes the bearing out from under it.</span></div>
+      <div class="ed s"><span class="t">SOFT</span><span><b>Quicks over matchers.</b> The case is read by nick-count under a bare fingertip. A set on the reading hand costs nine-tenths of a second.</span></div>
+    </div>
+  </div>
+  <p class="note">One correction to my own document: it claims every school has one hard kill and one soft one. Not quite — matchers' two kills are both soft, rods' are both hard. The balance still holds at two-and-two for everyone, and I'd keep it: rods as the school with decisive matchups and matchers as the one that grinds out advantages is characterful. But the sentence is wrong and I'd rather you heard it from me.</p>
+</section>
+
+<section>
+  <h2>Your call</h2>
+  <p class="lede">Four decisions. Recommendations marked, but all four are yours.</p>
+
+  <div class="dec">
+    <p class="q">Decision 1</p>
+    <h3>Which schools are playable</h3>
+    <div class="opts">
+      <div class="o rec"><p class="on">Recommended — three, plus one bought</p><p>Take-off hands, quicks and matchers playable from the start. <b>Rods playable but purchased</b>: a mid-game doctrine you elect into by paying a seating fee and accepting a permanent hole in your body, with a real one-in-six failure. That is a progression event, not a character-creation checkbox.</p></div>
+      <div class="o"><p class="on">Alternative — all four playable at start</p><p>Simpler, and it lets a player commit to rods early. Costs the single best piece of characterisation in the roster: that rods are the school where money and nerve stand in for what you were born with.</p></div>
+    </div>
+  </div>
+
+  <div class="dec">
+    <p class="q">Decision 2</p>
+    <h3>Surveyors enemy-only?</h3>
+    <div class="opts">
+      <div class="o rec"><p class="on">Recommended — enemy-only</p><p>Three days of prep then a fight you have already won is thrilling to lose to and dull to play, and a playable surveyor forces every mission into the same shape. As an enemy she gives you <b>the fight that is a building</b> — and teaches the best clever move in the setting: <em>the best thing to find in a house is somebody else's chalk.</em></p></div>
+      <div class="o"><p class="on">Alternative — playable in a prep-heavy mode</p><p>Real appeal for a certain player, and it makes the pool topology playable. But it needs its own mission structure to exist at all, which is a large bill for one school.</p></div>
+    </div>
+  </div>
+
+  <div class="dec">
+    <p class="q">Decision 3</p>
+    <h3>Where the protagonist starts</h3>
+    <div class="opts">
+      <div class="o rec"><p class="on">Recommended — take-off hand</p><p>A town, a chalk stub, and learning what a date stone means. Power arrives as <b>knowledge</b>: you walk into a room you have never entered and it is already yours. <b>The arc is authorship</b> — she asserts things about the world and the world pays for her being right, until the record is older than the people in the room and the drag on the floor is pointing back at her.</p></div>
+      <div class="o"><p class="on">Alternative — quick</p><p>Hands on people. A break set in nine-tenths of a second and the man gets up. Power arrives as <b>care</b>. <b>The arc is complicity</b> — she learns a reach is aimable, that nobody can tell an aimed one from a dumb one afterward, and that the Law commands her to name a source and never says what a source may be.</p></div>
+    </div>
+    <p class="note">Why take-off hand first: hour one teaches the access gate itself — recognition is earned by looking at a hinge, not granted by a stat — and the turn is delivered by the world rather than by her own choice, so she is capable and complicit before she has agreed to anything. Bring the quick in at mid-game, when the player has something to lose by learning what she learns.</p>
+  </div>
+
+  <div class="dec">
+    <p class="q">Decision 4 — not on the gate list, and expensive</p>
+    <h3>Two rulings this gate made for you</h3>
+    <div class="opts">
+      <div class="o"><p class="on">State comes free with recognition</p><p>On material already in library, state resolves at recognition speed at any acuity. Reverse it and both state-led schools become strong-acuity-only, the disreputable school becomes the most natally gated in the game, and <em>acuity is not a power stat</em> stops being true.</p></div>
+      <div class="o"><p class="on">An instrument buys depth and nothing else</p><p>Never speed, never state. If a rod's instrument ever buys either, acuity becomes purchasable outright and the rod trade's whole class politics collapses into a shop.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <b>Full Gate 2 document:</b> 9,900 words — five schools with three speeds, social standing, magnifying techniques, what a lifetime does to the body, and a scene each. <b>Coinages spent: zero of ten.</b> Matcher, rod, surveyor, quick and take-off hand are all plain English named after the job.<br>
+  <b>Still unbuilt:</b> the loophole and the small atrocity (Gate 3) · the antagonist (Gate 4) · the nation and its apparatus (Gate 5) · the seven lieutenants and the endgame (Gate 6).
+</footer>
+
+</div>
