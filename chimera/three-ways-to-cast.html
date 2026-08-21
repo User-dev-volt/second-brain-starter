@@ -1,0 +1,459 @@
+<title>Three Ways to Cast</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;600;800&family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,300;0,400;1,300&display=swap">
+
+<style>
+:root{
+  --ink:#14120F; --stone:#211E19; --stone-2:#2C2822; --edge:#3A342B;
+  --ash:#7A7266; --bone:#E6E1D4; --bone-dim:#B9B2A4;
+  --read:#6FA0B0; --passage:#C05A32; --spec:#D8B25C;
+  --display:"Big Shoulders Display","Arial Narrow",sans-serif;
+  --body:"Spectral",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ink); color:var(--bone);
+  font-family:var(--body); font-weight:300; font-size:16px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1240px;margin:0 auto;padding:clamp(28px,5vw,64px) clamp(18px,4vw,40px) 80px}
+
+/* ---- header ---- */
+header{border-bottom:1px solid var(--edge);padding-bottom:28px;margin-bottom:28px}
+.eyebrow{
+  font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--ash);margin:0 0 14px
+}
+h1{
+  font-family:var(--display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(38px,7.5vw,80px);line-height:.92;letter-spacing:.005em;
+  margin:0 0 18px;text-wrap:balance;color:var(--bone)
+}
+.standfirst{max-width:62ch;margin:0;color:var(--bone-dim);font-size:clamp(16px,1.6vw,19px)}
+.standfirst em{color:var(--bone);font-style:italic}
+
+/* ---- shared grounding strip ---- */
+.grounding{
+  border:1px solid var(--edge);background:var(--stone);
+  padding:20px 22px;margin:28px 0 40px;display:grid;gap:14px
+}
+.grounding h2{
+  font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ash);margin:0;font-weight:500
+}
+.grounding p{margin:0;max-width:76ch;color:var(--bone-dim)}
+.grounding b{color:var(--bone);font-weight:400}
+.worked{
+  font-family:var(--mono);font-size:12.5px;line-height:1.75;color:var(--bone-dim);
+  border-left:2px solid var(--edge);padding:2px 0 2px 16px;margin:0
+}
+.worked span{color:var(--bone)}
+
+/* ---- panels ---- */
+.panels{display:grid;gap:26px;grid-template-columns:1fr}
+@media(min-width:1080px){.panels{grid-template-columns:repeat(3,1fr)}}
+
+.panel{
+  border:1px solid var(--edge);background:var(--stone);
+  display:flex;flex-direction:column;overflow:hidden
+}
+.panel::before{content:"";display:block;height:3px;background:var(--accent)}
+.p-read{--accent:var(--read)}
+.p-passage{--accent:var(--passage)}
+.p-spec{--accent:var(--spec)}
+
+.p-head{padding:20px 22px 16px;display:grid;gap:9px}
+.letter{
+  font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--accent);
+  text-transform:uppercase
+}
+.p-head h3{
+  font-family:var(--display);font-weight:600;text-transform:uppercase;
+  font-size:31px;line-height:1;letter-spacing:.01em;margin:0;color:var(--bone)
+}
+.why{margin:0;color:var(--bone-dim);font-size:15px}
+
+figure{margin:0;background:var(--stone-2);border-top:1px solid var(--edge);border-bottom:1px solid var(--edge)}
+figure svg{display:block;width:100%;height:auto}
+figcaption{
+  font-family:var(--mono);font-size:11px;line-height:1.6;color:var(--ash);
+  padding:11px 22px 13px;border-top:1px solid var(--edge)
+}
+
+.rows{padding:18px 22px;display:grid;gap:14px;flex:1}
+.row{display:grid;gap:4px}
+.row dt{
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ash)
+}
+.row dd{margin:0;font-size:14.5px;color:var(--bone-dim)}
+
+.law{
+  margin:0;padding:16px 22px;border-top:1px solid var(--edge);
+  background:color-mix(in srgb,var(--accent) 7%,transparent)
+}
+.law q{
+  display:block;font-family:var(--display);font-weight:400;font-size:22px;line-height:1.2;
+  color:var(--bone);quotes:none;text-wrap:balance
+}
+.law q::before{content:"“"}
+.law q::after{content:"”"}
+.law figcaption{padding:0;border:0;margin-top:8px}
+
+.mech{padding:16px 22px 20px;border-top:1px solid var(--edge)}
+.mech h4{
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ash);margin:0 0 10px;font-weight:500
+}
+.mech svg{display:block;width:100%;height:auto}
+.mech p{margin:8px 0 0;font-size:13.5px;color:var(--bone-dim)}
+
+.cost{padding:16px 22px 22px;border-top:1px solid var(--edge)}
+.cost dt{
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:5px
+}
+.cost dd{margin:0;font-size:14.5px;color:var(--bone-dim)}
+
+/* ---- footer ---- */
+.fork{
+  margin-top:44px;border-top:1px solid var(--edge);padding-top:26px;
+  display:grid;gap:16px;max-width:78ch
+}
+.fork h2{
+  font-family:var(--display);font-weight:600;text-transform:uppercase;font-size:26px;
+  letter-spacing:.01em;margin:0;color:var(--bone)
+}
+.fork p{margin:0;color:var(--bone-dim)}
+.fork b{color:var(--bone);font-weight:400}
+.pin{
+  font-family:var(--mono);font-size:12px;color:var(--ash);
+  border-left:2px solid var(--edge);padding-left:14px;line-height:1.75
+}
+</style>
+
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Project Chimera · Gate 1 · the access gate</p>
+  <h1>Three ways to cast</h1>
+  <p class="standfirst">Every option below inherits the same grounding and the same two strokes. They differ on one question, and choosing one forecloses the others: <em>is casting a caste, a profession, or a gamble you survive?</em></p>
+</header>
+
+<section class="grounding">
+  <h2>Shared — already decided</h2>
+  <p>Matter is <b>grain</b>: fine particles in a limited number of families that never become one another. A working is unbinding and rebinding — SOLVE parts the hold, SET re-ties it. <b>The charge is the hold.</b> It sits in every particle because everything is held; almost none is spendable because nearly all of it is doing structural work. Only matter forced out of rest — faulted, shocked, quench-cooled, crushed or previously worked — carries surplus above what its arrangement needs.</p>
+  <p class="worked">Brass is copper and zinc, seven to three.<br>So: <span>wire, zinc powder, any shape of brass I like.</span><br>Not steel — there is no iron in brass.<br>Ask anyway and the working goes and finds iron: <span>the nails in that door, the buckle on my belt.</span><br>Ask short of lime or water, and the nearest source is <span>the man standing behind me.</span></p>
+</section>
+
+<div class="panels">
+
+  <!-- ============ A · THE READ ============ -->
+  <article class="panel p-read">
+    <div class="p-head">
+      <p class="letter">Option A</p>
+      <h3>The Read</h3>
+      <p class="why">Access is a sense organ. One in a few thousand perceives composition directly — and the gate shuts at twelve.</p>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 400 300" role="img" aria-label="A caster with a palm flat on a wall; the wall's composition blooms into visible bands of lime, sand and iron where she touches it, while the rest of the room stays blank. A soldier's dazzle-plate stands behind her.">
+        <defs>
+          <pattern id="a-rings" width="14" height="14" patternUnits="userSpaceOnUse">
+            <circle cx="7" cy="7" r="3.4" fill="none" stroke="#6FA0B0" stroke-width="1"/>
+          </pattern>
+          <pattern id="a-dots" width="10" height="10" patternUnits="userSpaceOnUse">
+            <circle cx="5" cy="5" r="1.5" fill="#6FA0B0"/>
+          </pattern>
+          <pattern id="a-cross" width="13" height="13" patternUnits="userSpaceOnUse">
+            <path d="M6.5 3 v7 M3 6.5 h7" stroke="#6FA0B0" stroke-width="1"/>
+          </pattern>
+          <clipPath id="a-see"><polygon points="90,140 0,44 0,240"/></clipPath>
+        </defs>
+
+        <rect width="400" height="300" fill="#2C2822"/>
+        <rect x="0" y="30" width="90" height="220" fill="#211E19"/>
+        <line x1="0" y1="250" x2="400" y2="250" stroke="#3A342B" stroke-width="1.5"/>
+
+        <g clip-path="url(#a-see)">
+          <rect x="0" y="30"  width="90" height="75" fill="url(#a-rings)" opacity=".95"/>
+          <rect x="0" y="105" width="90" height="75" fill="url(#a-dots)"  opacity=".95"/>
+          <rect x="0" y="180" width="90" height="70" fill="url(#a-cross)" opacity=".95"/>
+        </g>
+        <polygon points="90,140 0,44 0,240" fill="none" stroke="#6FA0B0" stroke-width="1" opacity=".5"/>
+
+        <g font-family="IBM Plex Mono, monospace" font-size="9" fill="#6FA0B0" letter-spacing="1">
+          <rect x="4" y="60"  width="34" height="12" fill="#211E19"/><text x="6" y="69">LIME</text>
+          <rect x="4" y="136" width="34" height="12" fill="#211E19"/><text x="6" y="145">SAND</text>
+          <rect x="4" y="208" width="34" height="12" fill="#211E19"/><text x="6" y="217">IRON</text>
+        </g>
+
+        <g stroke="#E6E1D4" stroke-width="7" stroke-linecap="round" fill="none">
+          <path d="M152 122 L96 140"/>
+          <path d="M154 186 L150 250"/><path d="M166 186 L172 250"/>
+        </g>
+        <circle cx="159" cy="96" r="13" fill="#E6E1D4"/>
+        <polygon points="147,110 172,110 174,187 145,187" fill="#E6E1D4"/>
+
+        <g transform="translate(296,150)">
+          <path d="M0 0 h56 v62 l-28 22 -28 -22 z" fill="#211E19" stroke="#7A7266" stroke-width="1.5"/>
+          <g stroke="#7A7266" stroke-width="3" opacity=".85">
+            <path d="M0 12 l56 16 M0 30 l56 16 M0 48 l56 16"/>
+          </g>
+          <text x="28" y="100" font-family="IBM Plex Mono, monospace" font-size="9" fill="#7A7266" text-anchor="middle" letter-spacing="1">DAZZLE-PLATE</text>
+        </g>
+      </svg>
+      <figcaption>She touches the wall and the wall becomes legible — family by family, down to proportion. Everything she has not touched is blank. The soldier's counter is not a weapon; it is a lie told to a sense organ.</figcaption>
+    </figure>
+
+    <dl class="rows">
+      <div class="row"><dt>The tell on the street</dt><dd>Hands on everything — palm to walls, knuckle to rails — and a flat, still, butcher's look.</dd></div>
+      <div class="row"><dt>Half-set matter</dt><dd>Loosened and abandoned: cold, slumping, taking whatever touches it that it is made of.</dd></div>
+      <div class="row"><dt>An aimed reach</dt><dd>He doesn't attack you. He draws the line so that it <em>includes</em> you.</dd></div>
+      <div class="row"><dt>The dead</dt><dd>A <b>likeness</b> — right face, wrong hands, one blended substance all the way down, and it has never moved.</dd></div>
+    </dl>
+
+    <figure class="law">
+      <q>Name it, bound it, take nothing from outside the line.</q>
+      <figcaption>The crack: the line is drawn by the person who benefits from where it falls.</figcaption>
+    </figure>
+
+    <div class="mech">
+      <h4>Where the constraint sits</h4>
+      <svg viewBox="0 0 300 104" role="img" aria-label="Ground feeds a caster who produces a working. The constraint is a narrow slit on the ground-to-caster edge, labelled read. Below, a ghosted second figure has a solid bar instead of a slit: no door at all.">
+        <defs><marker id="a-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#7A7266"/></marker></defs>
+        <g font-family="IBM Plex Mono, monospace" font-size="9" letter-spacing="1" fill="#B9B2A4" text-anchor="middle">
+          <rect x="6" y="18" width="66" height="26" fill="none" stroke="#7A7266"/><text x="39" y="35">GROUND</text>
+          <rect x="132" y="18" width="66" height="26" fill="none" stroke="#7A7266"/><text x="165" y="35">CASTER</text>
+          <rect x="232" y="18" width="62" height="26" fill="none" stroke="#7A7266"/><text x="263" y="35">WORKING</text>
+        </g>
+        <line x1="74" y1="31" x2="98" y2="31" stroke="#7A7266" marker-end="url(#a-ar)"/>
+        <line x1="118" y1="31" x2="130" y2="31" stroke="#7A7266" marker-end="url(#a-ar)"/>
+        <line x1="200" y1="31" x2="230" y2="31" stroke="#7A7266" marker-end="url(#a-ar)"/>
+        <g stroke="#6FA0B0" stroke-width="3"><path d="M108 12 v12 M108 38 v12"/></g>
+        <text x="108" y="9" font-family="IBM Plex Mono, monospace" font-size="9" fill="#6FA0B0" text-anchor="middle" letter-spacing="1">READ</text>
+        <g opacity=".42">
+          <g font-family="IBM Plex Mono, monospace" font-size="9" letter-spacing="1" fill="#B9B2A4" text-anchor="middle">
+            <rect x="6" y="70" width="66" height="24" fill="none" stroke="#7A7266"/><text x="39" y="86">GROUND</text>
+            <rect x="132" y="70" width="66" height="24" fill="none" stroke="#7A7266"/><text x="165" y="86">ANYONE</text>
+          </g>
+          <line x1="74" y1="82" x2="100" y2="82" stroke="#7A7266"/>
+          <path d="M108 68 v28" stroke="#6FA0B0" stroke-width="3"/>
+          <text x="150" y="66" font-family="IBM Plex Mono, monospace" font-size="9" fill="#7A7266" letter-spacing="1">no door at all</text>
+        </g>
+      </svg>
+      <p>The charge and the strokes are fine. What is scarce is knowing what is there.</p>
+    </div>
+
+    <dl class="cost">
+      <dt>What it costs</dt>
+      <dd>The ensemble. The gate is genetic and shuts at twelve, nobody ever <em>becomes</em> a caster, and no ally earns a place at the table by working for it.</dd>
+    </dl>
+  </article>
+
+  <!-- ============ B · THE PASSAGE ============ -->
+  <article class="panel p-passage">
+    <div class="p-head">
+      <p class="letter">Option B</p>
+      <h3>The Passage</h3>
+      <p class="why">Anyone can. Almost nobody survives it. One in a hundred walks away clean, and the rest buy their way in.</p>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 400 300" role="img" aria-label="A practitioner front-on. Charge runs up from rich ground through her body and out a replaced metal arm. Her remaining flesh forearm is grained like unglazed pottery. A pool of half-set slack runs downhill into a drain behind her.">
+        <defs>
+          <pattern id="b-grain" width="7" height="7" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1.15" fill="#C05A32"/><circle cx="5.5" cy="5" r=".85" fill="#C05A32"/>
+          </pattern>
+          <pattern id="b-rich" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+            <line x1="0" y1="0" x2="0" y2="12" stroke="#C05A32" stroke-width="1.4" opacity=".55"/>
+          </pattern>
+          <pattern id="b-slack" width="9" height="9" patternUnits="userSpaceOnUse">
+            <circle cx="4.5" cy="4.5" r="2.6" fill="none" stroke="#7A7266" stroke-width="1"/>
+          </pattern>
+        </defs>
+
+        <rect width="400" height="300" fill="#2C2822"/>
+        <rect x="0" y="252" width="400" height="48" fill="url(#b-rich)"/>
+        <line x1="0" y1="252" x2="400" y2="252" stroke="#3A342B" stroke-width="1.5"/>
+        <text x="8" y="288" font-family="IBM Plex Mono, monospace" font-size="9" fill="#C05A32" letter-spacing="1">RICH GROUND</text>
+
+        <path d="M200 256 L200 120 L146 176" fill="none" stroke="#C05A32" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" opacity=".38"/>
+
+        <g stroke="#E6E1D4" stroke-width="8" stroke-linecap="round">
+          <path d="M191 182 L187 252"/><path d="M209 182 L213 252"/>
+        </g>
+        <circle cx="200" cy="72" r="15" fill="#E6E1D4"/>
+        <polygon points="181,92 219,92 225,183 175,183" fill="#E6E1D4"/>
+
+        <polygon points="177,99 191,96 150,180 136,173" fill="#7A7266"/>
+        <g stroke="#2C2822" stroke-width="2">
+          <path d="M170 116 l14 -4 M160 137 l14 -4 M150 158 l14 -4"/>
+        </g>
+        <circle cx="143" cy="176" r="7" fill="#7A7266" stroke="#2C2822" stroke-width="2"/>
+
+        <polygon points="223,99 209,96 250,180 264,173" fill="#E6E1D4"/>
+        <polygon points="223,99 209,96 250,180 264,173" fill="url(#b-grain)" opacity=".9"/>
+
+        <g font-family="IBM Plex Mono, monospace" font-size="9" fill="#7A7266" letter-spacing="1">
+          <text x="96" y="196">CONDUIT</text>
+          <line x1="130" y1="192" x2="146" y2="180" stroke="#7A7266"/>
+          <text x="276" y="196" fill="#C05A32">GRAIN</text>
+          <line x1="272" y1="192" x2="256" y2="180" stroke="#C05A32"/>
+        </g>
+
+        <path d="M300 226 q34 -12 62 -2 q22 8 26 18 q-40 10 -92 4 q-14 -12 4 -20 z" fill="#211E19" stroke="#7A7266" stroke-width="1.2"/>
+        <path d="M300 226 q34 -12 62 -2 q22 8 26 18 q-40 10 -92 4 q-14 -12 4 -20 z" fill="url(#b-slack)" opacity=".8"/>
+        <g stroke="#3A342B" stroke-width="2"><path d="M352 262 h34 M356 268 h30 M360 274 h26"/></g>
+        <text x="298" y="216" font-family="IBM Plex Mono, monospace" font-size="9" fill="#7A7266" letter-spacing="1">SLACK</text>
+      </svg>
+      <figcaption>The charge runs from the ground through her on its way to the work, and living tissue is the loosest thing it can settle into. The metal arm is not an ornament — it is already-spent matter with nothing left in it to drop, which makes it the better conduit.</figcaption>
+    </figure>
+
+    <dl class="rows">
+      <div class="row"><dt>The tell on the street</dt><dd>Bared forearms: skin grained like unglazed pottery, and how much of the arm is metal.</dd></div>
+      <div class="row"><dt>Half-set matter</dt><dd><b>Slack</b> — cold grey matter still letting go, running downhill into cellars and wells.</dd></div>
+      <div class="row"><dt>An aimed reach</dt><dd>He scores the ring heavy on three sides and thin toward the conscripts.</dd></div>
+      <div class="row"><dt>The dead</dt><dd>A <b>figure</b> — a dry mineral casting, a third of their weight, standing in a spreading pool of slack.</dd></div>
+    </dl>
+
+    <figure class="law">
+      <q>Name it, ring it, pay it — or it pays itself.</q>
+      <figcaption>The crack: it never says the payer has to be you.</figcaption>
+    </figure>
+
+    <div class="mech">
+      <h4>Where the constraint sits</h4>
+      <svg viewBox="0 0 300 104" role="img" aria-label="Ground feeds a caster who produces a working. The constraint is the caster herself, drawn as a pipe that narrows and erodes as charge passes through it.">
+        <defs><marker id="b-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#7A7266"/></marker></defs>
+        <g font-family="IBM Plex Mono, monospace" font-size="9" letter-spacing="1" fill="#B9B2A4" text-anchor="middle">
+          <rect x="6" y="26" width="66" height="26" fill="none" stroke="#7A7266"/><text x="39" y="43">GROUND</text>
+          <rect x="232" y="26" width="62" height="26" fill="none" stroke="#7A7266"/><text x="263" y="43">WORKING</text>
+        </g>
+        <path d="M112 24 L196 30" stroke="#C05A32" stroke-width="2.5" fill="none"/>
+        <path d="M112 54 L196 48" stroke="#C05A32" stroke-width="2.5" fill="none"/>
+        <text x="154" y="45" font-family="IBM Plex Mono, monospace" font-size="9" fill="#B9B2A4" text-anchor="middle" letter-spacing="1">CASTER</text>
+        <g stroke="#C05A32" stroke-width="1.2" opacity=".75">
+          <path d="M126 24 l-6 -9 M146 26 l-6 -9 M166 27 l-6 -9 M186 29 l-6 -9"/>
+          <path d="M126 54 l-6 9 M146 52 l-6 9 M166 51 l-6 9 M186 49 l-6 9"/>
+        </g>
+        <line x1="74" y1="39" x2="108" y2="39" stroke="#7A7266" marker-end="url(#b-ar)"/>
+        <line x1="200" y1="39" x2="230" y2="39" stroke="#7A7266" marker-end="url(#b-ar)"/>
+        <text x="154" y="82" font-family="IBM Plex Mono, monospace" font-size="9" fill="#C05A32" text-anchor="middle" letter-spacing="1">THE PIPE WEARS</text>
+        <text x="154" y="95" font-family="IBM Plex Mono, monospace" font-size="9" fill="#7A7266" text-anchor="middle" letter-spacing="1">every meter runs one way</text>
+      </svg>
+      <p>Nothing is scarce but survivable throughput — and throughput is purchasable.</p>
+    </div>
+
+    <dl class="cost">
+      <dt>What it costs</dt>
+      <dd>Direction. Every meter runs one way: the profession is staffed by its own casualties, nothing is ever restored, and every arc bends downhill toward less.</dd>
+    </dl>
+  </article>
+
+  <!-- ============ D · THE SPECIFICATION ============ -->
+  <article class="panel p-spec">
+    <div class="p-head">
+      <p class="letter">Option D</p>
+      <h3>The Specification</h3>
+      <p class="why">No gift and no organ. The gate is holding a fully specified thing fully specified while someone is trying to kill you.</p>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 400 300" role="img" aria-label="A caster with his palm on a wall, everything around him tagged with its composition. One crate is tagged wrong; from it a working blooms too wide, running along a chalk line on the floor and out under a bystander's feet.">
+        <defs>
+          <marker id="d-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#D8B25C"/></marker>
+        </defs>
+
+        <rect width="400" height="300" fill="#2C2822"/>
+        <rect x="0" y="34" width="400" height="222" fill="#211E19"/>
+        <line x1="0" y1="256" x2="400" y2="256" stroke="#3A342B" stroke-width="1.5"/>
+
+        <polygon points="318,214 396,178 396,266 318,240" fill="#D8B25C" opacity=".17"/>
+        <polygon points="318,214 396,178 396,266 318,240" fill="none" stroke="#D8B25C" stroke-width="1" stroke-dasharray="4 4" opacity=".7"/>
+
+        <g stroke="#E6E1D4" stroke-width="7" stroke-linecap="round" fill="none">
+          <path d="M89 128 L54 148"/>
+          <path d="M90 192 L86 256"/><path d="M102 192 L108 256"/>
+        </g>
+        <circle cx="96" cy="102" r="13" fill="#E6E1D4"/>
+        <polygon points="84,116 108,116 110,193 82,193" fill="#E6E1D4"/>
+        <circle cx="52" cy="149" r="6" fill="#7A7266"/>
+
+        <g font-family="IBM Plex Mono, monospace" font-size="9" fill="#D8B25C" letter-spacing=".5">
+          <text x="8" y="176">LIME · SAND · HAIR</text>
+          <line x1="46" y1="166" x2="50" y2="156" stroke="#D8B25C" stroke-width="1"/>
+        </g>
+
+        <g stroke="#7A7266" stroke-width="3">
+          <path d="M162 208 h84 M170 208 v30 M240 208 v30"/>
+        </g>
+        <text x="162" y="200" font-family="IBM Plex Mono, monospace" font-size="9" fill="#D8B25C" letter-spacing=".5">IRON · C</text>
+
+        <rect x="268" y="206" width="54" height="50" fill="#2C2822" stroke="#7A7266" stroke-width="1.5"/>
+        <g font-family="IBM Plex Mono, monospace" font-size="9" letter-spacing=".5">
+          <text x="268" y="199" fill="#7A7266">OAK</text>
+          <line x1="266" y1="196" x2="292" y2="196" stroke="#C05A32" stroke-width="1.5"/>
+          <text x="298" y="199" fill="#C05A32">?</text>
+        </g>
+
+        <path d="M114 259 H392" stroke="#D8B25C" stroke-width="2" stroke-dasharray="9 6" marker-end="url(#d-ar)"/>
+        <text x="120" y="276" font-family="IBM Plex Mono, monospace" font-size="9" fill="#D8B25C" letter-spacing="1">CHALK</text>
+
+        <g stroke="#7A7266" stroke-width="5" stroke-linecap="round" fill="none">
+          <path d="M352 226 v30"/><path d="M362 226 v30"/>
+        </g>
+        <circle cx="357" cy="200" r="9" fill="#7A7266"/>
+        <polygon points="349,211 365,211 366,228 348,228" fill="#7A7266"/>
+        <text x="330" y="188" font-family="IBM Plex Mono, monospace" font-size="9" fill="#7A7266" letter-spacing="1">BYSTANDER</text>
+      </svg>
+      <figcaption>He has named every surface in the room but one, and that one he has named wrong — sincerely, out loud, with confidence. Blur does not weaken the working. It widens it, along the line he chalked himself, until it finds what he asked for.</figcaption>
+    </figure>
+
+    <dl class="rows">
+      <div class="row"><dt>The tell on the street</dt><dd>They name things aloud under their breath all day, and are grey to the knuckles.</dd></div>
+      <div class="row"><dt>Half-set matter</dt><dd>Parted matter that eats only what it matches: half-set iron takes your buckles, not your hand.</dd></div>
+      <div class="row"><dt>An aimed reach</dt><dd>He runs the chalk past his work and under your feet, then asks for more than he brought.</dd></div>
+      <div class="row"><dt>The dead</dt><dd>A <b>likeness</b> — averaged inside, worst at the hands and face, broken up with hammers by the hazard crew.</dd></div>
+    </dl>
+
+    <figure class="law">
+      <q>Know the thing. Hold the line. Take only what you brought.</q>
+      <figcaption>The crack: what you brought is whatever you can argue you brought.</figcaption>
+    </figure>
+
+    <div class="mech">
+      <h4>Where the constraint sits</h4>
+      <svg viewBox="0 0 300 104" role="img" aria-label="Ground feeds a caster who produces a working. The constraint sits on the caster-to-working edge: precision decides the width of the cone that leaves. A sharp specification leaves a narrow beam; a blurred one leaves a wide cone that takes in bystanders.">
+        <defs><marker id="d-ar2" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#7A7266"/></marker></defs>
+        <g font-family="IBM Plex Mono, monospace" font-size="9" letter-spacing="1" fill="#B9B2A4" text-anchor="middle">
+          <rect x="6" y="26" width="60" height="26" fill="none" stroke="#7A7266"/><text x="36" y="43">GROUND</text>
+          <rect x="104" y="26" width="62" height="26" fill="none" stroke="#7A7266"/><text x="135" y="43">CASTER</text>
+        </g>
+        <line x1="68" y1="39" x2="102" y2="39" stroke="#7A7266" marker-end="url(#d-ar2)"/>
+        <path d="M168 39 L292 20 L292 30 z" fill="#D8B25C" opacity=".85"/>
+        <text x="228" y="14" font-family="IBM Plex Mono, monospace" font-size="9" fill="#D8B25C" text-anchor="middle" letter-spacing="1">EXACT → NARROW</text>
+        <path d="M168 45 L292 52 L292 92 z" fill="#D8B25C" opacity=".22"/>
+        <path d="M168 45 L292 52 M168 45 L292 92" stroke="#D8B25C" stroke-width="1" stroke-dasharray="4 4" opacity=".8"/>
+        <text x="236" y="102" font-family="IBM Plex Mono, monospace" font-size="9" fill="#D8B25C" text-anchor="middle" letter-spacing="1">BLURRED → WIDE</text>
+      </svg>
+      <p>Blur is not weakness. It is width — and width is what takes in the person standing behind you.</p>
+    </div>
+
+    <dl class="cost">
+      <dt>What it costs</dt>
+      <dd>Spectacle. Mastery buys speed and coverage, never size, so hour forty looks like hour two in a more interesting room — and at the top everyone knows everything, so elite characters homogenise.</dd>
+    </dl>
+  </article>
+
+</div>
+
+<section class="fork">
+  <h2>The fork</h2>
+  <p><b>A</b> is the only option that honours <em>gifted</em> literally — you said “skilled / trained / gifted,” and under A the gate is genetic. <b>D</b> says anyone with a decade and a strong nerve, which makes casting a profession rather than a caste. <b>B</b> splits the difference and charges the body for it.</p>
+  <p>My recommendation stands at <b>D, with the read grafted on as a trained skill rather than a birth gift</b> — the confidently wrong is exactly the engine Gate 3 asks for, a sincere and correct application of the system that a decent person signs off on with no error in the reasoning to find. And D's stated cost is not a cost: “mastery buys speed and coverage, never size” is a direct satisfaction of your ban on power-scaling escalation.</p>
+  <p class="pin">Still open at this gate — the charge's name (sap / temper / bite) · whether ordinary ground is consumable · what a reach actually takes out of a body (water and lime survives the arithmetic; blood-iron does not) · the astral layer staying out · a families table that is published, disputed and incomplete.</p>
+</section>
+
+</div>
