@@ -1,4 +1,4 @@
-<title>The Five Schools at a Glance</title>
+<title>The Five Schools</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;600;800&family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,300;0,400;0,600;1,300&display=swap">
@@ -32,16 +32,15 @@ figcaption{font-family:var(--mono);font-size:10.5px;line-height:1.6;color:var(--
 
 /* ---- the five school cards ---- */
 .schools{display:grid;gap:18px;grid-template-columns:1fr}
-@media(min-width:880px){.schools{grid-template-columns:1fr 1fr}}
 .school{border:1px solid var(--edge);background:var(--stone);padding:22px 24px 24px;display:flex;flex-direction:column;gap:13px}
 .school.odd{grid-column:1/-1}
 .castk{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--brass);margin:0}
-.school h2{font-family:var(--display);font-weight:600;text-transform:uppercase;font-size:34px;line-height:1;margin:0;color:var(--bone)}
-.look{margin:0;font-size:15.5px}
+.school h2{font-family:var(--display);font-weight:600;text-transform:uppercase;font-size:38px;line-height:1;margin:0;color:var(--bone)}
+.look{margin:0;font-size:16px;max-width:78ch}
 .look b{color:var(--bone);font-weight:600}
 .look em{font-style:italic;color:var(--bone)}
 .beats{display:grid;gap:14px;grid-template-columns:1fr;margin-top:2px}
-@media(min-width:600px){.beats{grid-template-columns:1fr 1fr;gap:20px}}
+@media(min-width:780px){.beats{grid-template-columns:repeat(3,1fr);gap:24px}}
 .beat{border-top:1px solid var(--edge);padding-top:11px}
 .beat p{margin:0;font-size:14.5px;line-height:1.6}
 .beat b{color:var(--bone);font-weight:600}
@@ -84,86 +83,119 @@ footer b{color:var(--bone-dim);font-weight:500}
 <div class="wrap">
 
 <header>
-  <p class="eyebrow">Project Chimera · Gate 2 · attempt four · the five schools in five minutes</p>
-  <h1>The Five Schools</h1>
-  <p class="thesis">A school is <b>what you cast with</b>. Not a faction, not a culture, not a nation — those are Gate 5. This is the class system: what's in your hands, what it looks like across a room, and what beats you. <b>None of the five is a tier.</b></p>
+  <p class="eyebrow">Project Chimera · Gate 2 · the schools, doctrines and traditions of casting</p>
+  <h1>Taught, or Found</h1>
+  <p class="thesis">Nobody in this world picked a school. They were <b>taught by whoever was standing there</b> — or there was nobody standing there, and they worked it out. Five traditions, doing different things with <b>the same two strokes</b>, because of who was in the room when they learned.</p>
 </header>
 
 <section>
-  <p class="seck">The whole gate in one picture</p>
-  <figure><svg viewBox="0 0 660 244" role="img" aria-label="The five schools in one row. Two group headers bracket them: you can take it off her covers the bag and the instrument; nothing to take off her covers the body, the scholar and the attuned. Each school shows what it casts with and what kills it. The bag casts with carried reagents and dies when you run her dry. The instrument casts with an object he has read through and dies when you swap what's loaded. The body casts with her own skin and dies as the mark climbs. The scholar casts with what she remembers and dies when you swap the fittings. The attuned casts with whatever is under her palm and dies with no library, no chaining.">
+  <p class="seck">First, the part that is not a tradition</p>
+  <figure><svg viewBox="0 0 660 226" role="img" aria-label="Every school performs the same two strokes. A source feeds a solve, which parts the hold and runs cold, and then a set, which re-ties it and delivers heat, producing the thing she wanted. The only place the five traditions differ is where the source comes from: a pouch on her hip for the bag, packed into the rod for the instrument, her own water and lime for the body, whatever the room turns out to be for the scholar, and whatever is under her palm for the attuned.">
+  <text x="0" y="12" font-family="IBM Plex Mono, monospace" font-size="9.5" letter-spacing="1.4" fill="#8A8173">THE PART NOBODY DOES DIFFERENTLY</text>
 
-  <g font-family="IBM Plex Mono, monospace" font-size="10.5" letter-spacing="1.4" fill="#BDB6A7" text-anchor="middle">
-    <text x="188" y="14">YOU CAN TAKE IT OFF HER</text>
-    <text x="486" y="14">NOTHING TO TAKE OFF HER</text>
-  </g>
-  <path d="M76 35 L76 25 L300 25 L300 35" fill="none" stroke="#3A342B"/>
-  <path d="M316 35 L316 25 L656 25 L656 35" fill="none" stroke="#3A342B"/>
+  <rect x="36" y="28" width="104" height="40" fill="#2A2620" stroke="#4C443A"/>
+  <text x="88" y="53" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="#BDB6A7" text-anchor="middle">THE SOURCE</text>
 
-  <line x1="0" y1="46" x2="660" y2="46" stroke="#3A342B"/>
-  <line x1="0" y1="134" x2="660" y2="134" stroke="#3A342B"/>
-  <line x1="0" y1="186" x2="660" y2="186" stroke="#3A342B"/>
-  <g stroke="#3A342B">
-    <line x1="72.5" y1="46" x2="72.5" y2="236"/>
-    <line x1="190.5" y1="46" x2="190.5" y2="236"/>
-    <line x1="307.5" y1="46" x2="307.5" y2="236"/>
-    <line x1="424.5" y1="46" x2="424.5" y2="236"/>
-    <line x1="541.5" y1="46" x2="541.5" y2="236"/>
-  </g>
+  <line x1="140" y1="48" x2="186" y2="48" stroke="#8A8173"/>
+  <polygon points="186,48 178,44 178,52" fill="#8A8173"/>
 
-  <polygon points="78,94 84,72 96,72 102,94" fill="#D8B25C"/>
-  <rect x="84" y="65" width="12" height="7" fill="#D8B25C"/>
-  <line x1="82" y1="69" x2="98" y2="69" stroke="#2A2620" stroke-width="2"/>
+  <rect x="192" y="28" width="122" height="40" fill="#211E19" stroke="#6FA0B0"/>
+  <text x="253" y="53" font-family="IBM Plex Mono, monospace" font-size="14" fill="#6FA0B0" text-anchor="middle">SOLVE</text>
 
-  <polygon points="194.2,89.6 226.2,65.6 229.8,70.4 197.8,94.4" fill="#D8B25C"/>
-  <line x1="215.4" y1="71.2" x2="221.4" y2="79.2" stroke="#2A2620" stroke-width="2.5"/>
+  <line x1="314" y1="48" x2="360" y2="48" stroke="#8A8173"/>
+  <polygon points="360,48 352,44 352,52" fill="#8A8173"/>
 
-  <rect x="318" y="62" width="13" height="26" fill="#D8B25C"/>
-  <rect x="319.5" y="88" width="10" height="3" fill="#D8B25C"/>
-  <path d="M315 91 L334 91 L334 99 L318 99 Z" fill="#D8B25C"/>
-  <path d="M315 92 L311 95 L313 99 L318 99 Z" fill="#D8B25C"/>
-  <rect x="318" y="69" width="13" height="3.5" fill="#C05A32"/>
-  <rect x="318" y="76" width="13" height="2.5" fill="#C05A32" opacity="0.5"/>
+  <rect x="366" y="28" width="122" height="40" fill="#211E19" stroke="#C05A32"/>
+  <text x="427" y="53" font-family="IBM Plex Mono, monospace" font-size="14" fill="#C05A32" text-anchor="middle">SET</text>
 
-  <rect x="429" y="68" width="34" height="24" fill="none" stroke="#D8B25C" stroke-width="2"/>
-  <rect x="429" y="68" width="7" height="24" fill="#D8B25C"/>
-  <line x1="442" y1="76" x2="458" y2="76" stroke="#D8B25C"/>
-  <line x1="442" y1="84" x2="458" y2="84" stroke="#D8B25C"/>
+  <line x1="488" y1="48" x2="534" y2="48" stroke="#8A8173"/>
+  <polygon points="534,48 526,44 526,52" fill="#8A8173"/>
+  <text x="542" y="52" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#E6E1D4">the thing</text>
+  <text x="542" y="64" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#E6E1D4">she wanted</text>
 
-  <polygon points="548,74 554,70 562,84 556,88" fill="#D8B25C"/>
-  <rect x="554" y="86" width="28" height="6" fill="#D8B25C"/>
-  <line x1="546" y1="93.5" x2="590" y2="93.5" stroke="#8A8173" stroke-width="1.5"/>
-
-  <g font-family="IBM Plex Mono, monospace" font-size="11.5" fill="#E6E1D4">
-    <text x="76" y="120">the bag</text>
-    <text x="193" y="120">the instrument</text>
-    <text x="310" y="120">the body</text>
-    <text x="427" y="120">the scholar</text>
-    <text x="544" y="120">the attuned</text>
+  <g font-family="IBM Plex Mono, monospace" font-size="9" fill="#8A8173">
+    <text x="253" y="84" text-anchor="middle">parts the hold — runs cold</text>
+    <text x="427" y="84" text-anchor="middle">re-ties it — delivers heat</text>
   </g>
 
-  <text x="0" y="157" font-family="IBM Plex Mono, monospace" font-size="9.5" letter-spacing="1.4" fill="#8A8173">CASTS WITH</text>
-  <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#BDB6A7">
-    <text x="76" y="157">carried reagents</text>
-    <text x="193" y="157">an object he has</text>
-    <text x="193" y="171">read through</text>
-    <text x="310" y="157">her own skin</text>
-    <text x="427" y="157">what she remembers</text>
-    <text x="544" y="157">whatever is under</text>
-    <text x="544" y="171">her palm</text>
-  </g>
+  <path d="M88 68 L88 118" stroke="#D8B25C" stroke-dasharray="2 3"/>
+  <line x1="0" y1="120" x2="660" y2="120" stroke="#3A342B"/>
+  <text x="104" y="112" font-family="IBM Plex Mono, monospace" font-size="9.5" letter-spacing="1.4" fill="#D8B25C">AND THIS IS THE ONLY PLACE THE FIVE DIFFER</text>
 
-  <text x="0" y="209" font-family="IBM Plex Mono, monospace" font-size="9.5" letter-spacing="1.4" fill="#C05A32">KILLS IT</text>
-  <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#C05A32">
-    <text x="76" y="209">run her dry</text>
-    <text x="193" y="209">swap what's loaded</text>
-    <text x="310" y="209">the mark climbs</text>
-    <text x="427" y="209">swap the fittings</text>
-    <text x="544" y="209">no library,</text>
-    <text x="544" y="223">no chaining</text>
+  <g font-family="IBM Plex Mono, monospace" font-size="10.5">
+    <text x="0" y="142" fill="#E6E1D4">the bag</text>
+    <text x="150" y="142" fill="#BDB6A7">a pouch on her hip</text>
+    <text x="0" y="160" fill="#E6E1D4">the instrument</text>
+    <text x="150" y="160" fill="#BDB6A7">packed into the rod, in his own time</text>
+    <text x="0" y="178" fill="#E6E1D4">the body</text>
+    <text x="150" y="178" fill="#BDB6A7">her own water and lime</text>
+    <text x="0" y="196" fill="#E6E1D4">the scholar</text>
+    <text x="150" y="196" fill="#BDB6A7">whatever the room turns out to be made of</text>
+    <text x="0" y="214" fill="#E6E1D4">the attuned</text>
+    <text x="150" y="214" fill="#BDB6A7">whatever is under her palm</text>
   </g>
 </svg>
-    <figcaption>One question: what does she cast with? Five answers, all dangerous.<br>This is the substance half. Every school still has to pay sap, and how she carries it — pool, flask or implant — is a second question with its own three ways of being cut. Nobody is undeniable.</figcaption>
+    <figcaption>There is one practice, not five magics. Every caster solves and sets, in that order, by the same rules, at the same three speeds.<br>A tradition is not a different power. It is a different answer to <em>where does the substance come from</em> — and that answer is usually just whatever was available to the person who taught you.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <p class="seck">Why there are five</p>
+  <figure><svg viewBox="0 0 660 250" role="img" aria-label="The five traditions arranged on one line from taught to found on her own. The attuned is taught before she can remember, by everyone around her. The bag is apprenticed and made to say the line out loud. The instrument is bought and fitted, and taught by whoever sold it. The scholar learns out of other people's records and then by her own hands. The body was taught by nobody, because there was nothing else to use. Nobody picked a tradition off a list; people move along this line, and a school is only where someone ended up standing.">
+  <g font-family="IBM Plex Mono, monospace" font-size="9.5" letter-spacing="1.4">
+    <text x="0" y="14" fill="#D8B25C">TAUGHT</text>
+    <text x="660" y="14" fill="#C05A32" text-anchor="end">FOUND IT ON HER OWN</text>
+  </g>
+
+  <line x1="0" y1="30" x2="660" y2="30" stroke="#3A342B"/>
+  <line x1="0" y1="30" x2="330" y2="30" stroke="#D8B25C" stroke-width="2"/>
+  <line x1="330" y1="30" x2="660" y2="30" stroke="#C05A32" stroke-width="2" opacity="0.55"/>
+
+  <g fill="#E6E1D4">
+    <circle cx="8" cy="30" r="4"/><circle cx="167" cy="30" r="4"/><circle cx="330" cy="30" r="4"/>
+    <circle cx="492" cy="30" r="4"/><circle cx="652" cy="30" r="4"/>
+  </g>
+
+  <g font-family="IBM Plex Mono, monospace" font-size="11.5" fill="#E6E1D4">
+    <text x="0" y="54">the attuned</text>
+    <text x="140" y="54">the bag</text>
+    <text x="278" y="54">the instrument</text>
+    <text x="440" y="54">the scholar</text>
+    <text x="660" y="54" text-anchor="end">the body</text>
+  </g>
+
+  <g font-family="IBM Plex Mono, monospace" font-size="9" fill="#BDB6A7">
+    <text x="0" y="76">before she can</text>
+    <text x="0" y="88">remember, by</text>
+    <text x="0" y="100">everyone around her</text>
+
+    <text x="140" y="76">apprenticed, and</text>
+    <text x="140" y="88">made to say the</text>
+    <text x="140" y="100">line out loud</text>
+
+    <text x="278" y="76">bought and fitted,</text>
+    <text x="278" y="88">taught by whoever</text>
+    <text x="278" y="100">sold it to her</text>
+
+    <text x="440" y="76">out of records</text>
+    <text x="440" y="88">first, then by</text>
+    <text x="440" y="100">her own hands</text>
+
+    <text x="660" y="76" text-anchor="end">nobody taught her.</text>
+    <text x="660" y="88" text-anchor="end">there was nothing</text>
+    <text x="660" y="100" text-anchor="end">else to use</text>
+  </g>
+
+  <line x1="0" y1="130" x2="660" y2="130" stroke="#3A342B"/>
+  <text x="0" y="152" font-family="IBM Plex Mono, monospace" font-size="9.5" letter-spacing="1.4" fill="#8A8173">WHAT PUTS A PERSON WHERE SHE STANDS</text>
+  <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#BDB6A7">
+    <text x="0" y="176">Who was there · what her family could pay for · whether the trade would take her ·</text>
+    <text x="0" y="192">whether there was a rod to inherit · whether anyone in that district still knows how ·</text>
+    <text x="0" y="208">and, more often than the trade likes to admit, what she needed to do once, in a hurry.</text>
+  </g>
+  <text x="0" y="238" font-family="IBM Plex Mono, monospace" font-size="10" fill="#D8B25C">Nobody picked off a list. A school is only where somebody ended up standing.</text>
+</svg>
+    <figcaption>These are tendencies, not walls. A woman apprenticed to a bag caster in a district where the supply dried up twenty years ago drifts toward her own skin, because that is what is left.<br>A scholar who inherits her mother's rod is both. The line is where the interesting people live.</figcaption>
   </figure>
 </section>
 
@@ -174,50 +206,55 @@ footer b{color:var(--bone-dim);font-weight:500}
     <div class="school">
       <p class="castk">Casts with · carried reagents</p>
       <h2>The bag</h2>
-      <p class="look">Flint, carbon, salts, filings — a grab bag she put together herself and grinds fresh out of whatever she can scavenge. <em>Pouches, a working apron, and a scale: she weighs before she names.</em> On a march she walks where nobody wants to walk near her.</p>
+      <p class="look">Flint, carbon, salts, filings, and accelerant — graded, weighed, and paid for. <em>She weighs before she names, because the proportion is the only thing she owns that the room does not.</em></p>
       <div class="beats">
-        <div class="beat good"><p><span class="beatk">Great at</span>Everything in her pouches is stock she has <b>already read</b>, so it comes up FAST — and she bought the proportion, so she is never short <em>by accident</em>.</p></div>
-        <div class="beat bad"><p><span class="beatk">What kills it</span>Somebody else's hand in her stores. Run her dry and she's a <b>novice in her own room</b> — she knows her pouches by heart and has never had to learn a wall. And the accelerant on her hip is the nearest source in the room: four metres on a fast stroke, twelve on a heavy one.</p></div>
+        <div class="beat good"><p><span class="beatk">How you come to it</span><b>Apprenticed.</b> Somebody stood over her and made her say the line out loud until it was a habit she could not drop — and made her say <em>which</em> lime, and <em>how much</em>, until "enough" stopped being an answer.</p></div>
+        <div class="beat good"><p><span class="beatk">How you live</span><b>Inside a supply chain.</b> Somebody mills it, somebody grades it, somebody cuts it. She has a supplier she trusts and one she doesn't, and she draws a bead in the shop like everyone else. On a march she walks where nobody wants to walk near her.</p></div>
+        <div class="beat bad"><p><span class="beatk">What it costs you</span>She has spent a life learning her pouches instead of learning rooms. The day the supply stops she is a <b>novice in her own room</b> — and the accelerant that made her fast is the nearest source in that room, on her own hip.</p></div>
       </div>
     </div>
 
     <div class="school">
-      <p class="castk">Casts with · objects</p>
+      <p class="castk">Casts with · an object he has read through</p>
       <h2>The instrument</h2>
-      <p class="look">A rod, a gauntlet, armour — and at the far end, metal that replaced a limb. Only ever a thing <b>he has already read through</b>. <em>Gloved hands, and the habit of working at arm's length:</em> the tool touches the material so he doesn't have to.</p>
+      <p class="look">A rod, a gauntlet, armour — and at the far end, metal set into him. <em>Never a device. Only ever a material he already knows by touch, doing the touching for him.</em></p>
       <div class="beats">
-        <div class="beat good"><p><span class="beatk">Great at</span>A line that <b>cannot be scuffed out</b> — scored into the metal, so nobody smudges it from six feet. And he packs the rod in his own time, so he opens a fight already holding the stuff for it.</p></div>
-        <div class="beat bad"><p><span class="beatk">What kills it</span>A <b>swapped capsule</b>. He sets what he thinks he packed. He can buy a line that never smudges; he can never buy acuity.</p></div>
+        <div class="beat good"><p><span class="beatk">How you come to it</span><b>Bought, or inherited.</b> Somebody bored the rod, somebody sold it, and somebody read it for him before he paid. At the far end somebody cut him open to seat it — augmentation is a respectable branch of the trade, with surgeons and a price list.</p></div>
+        <div class="beat good"><p><span class="beatk">How you live</span><b>With a maker's name on the thing in his hand.</b> A rod is inherited, argued over in wills, and read before it is trusted. An implant buys independence from pools and supply, which is exactly why the companies like him — and why he wears sleeves.</p></div>
+        <div class="beat bad"><p><span class="beatk">What it costs you</span>The money first, and it is a real gate. Then the seat: grey skin two fingers around the join, once it has taken an overdraw. And everything he casts with can be <b>swapped, fouled, or pulled off him.</b></p></div>
       </div>
     </div>
 
     <div class="school">
-      <p class="castk">Casts with · herself</p>
+      <p class="castk">Casts with · her own skin</p>
       <h2>The body</h2>
-      <p class="look">The line is cut into her own skin, so she is <b>always inside her own boundary</b> — and anything inside the line is a source. <em>Every caster's line shows dust-fine when the stroke fires; hers is the only one you can read with no stroke thrown.</em> Scored, healed, and sitting on her arm.</p>
+      <p class="look">The line is cut into her, so she is always inside her own boundary — and anything inside the line is a source. <em>Hers is the only account in the trade written where strangers can read it.</em></p>
       <div class="beats">
-        <div class="beat good"><p><span class="beatk">Great at</span>Nothing to drop and nothing to take off her — she walks into a room <b>already armed</b>. What she's armed with is two things: water and lime, and they are always there.</p></div>
-        <div class="beat bad"><p><span class="beatk">What kills it</span>She is inside every line she draws, so every working she throws short takes <b>her own water and lime</b> first — cramps, then teeth, then bone, and it never comes back. And a scored line is permanent: a new one crossing an old one breaks the run before it closes, so she can never write on the same skin twice. Her map only shrinks — forearm, other forearm, thigh, back. <b>Nobody lets it past the collarbone.</b></p></div>
+        <div class="beat good"><p><span class="beatk">How you come to it</span><b>Usually nobody taught her.</b> There was no rod to buy, no master who would take her, and nobody to say the line over her — so she used the one thing she had, and found out what it cost afterwards, in stages.</p></div>
+        <div class="beat good"><p><span class="beatk">How you live</span><b>Cheap to employ and impossible to hold.</b> She needs no supplier, no maker, no academy, and no ground she knows. Nobody upstream can shut her off. Everyone can see exactly how much she has already spent.</p></div>
+        <div class="beat bad"><p><span class="beatk">What it costs you</span>Everything she throws short takes <b>her own water and lime</b> — cramps, then teeth, then bone, and it never comes back. A scored line is permanent, so her map only shrinks: forearm, other forearm, thigh, back. <b>Nobody lets it past the collarbone.</b></p></div>
       </div>
     </div>
 
     <div class="school">
-      <p class="castk">Casts with · memory</p>
+      <p class="castk">Casts with · what she remembers</p>
       <h2>The scholar</h2>
-      <p class="look">What she has already read and retained. <b>Paper is only an index</b> — it tells her which of the things she has touched this is. <em>Empty hands and a sample case,</em> and she has already touched the wall on her way in.</p>
+      <p class="look">Every material she has already read and retained. <em>Paper is only an index — it tells her which of the things she has touched this is. Nothing enters library except through her own fingers.</em></p>
       <div class="beats">
-        <div class="beat good"><p><span class="beatk">Great at</span>Recognising. Library drops a working from HEAVY to FAST, and <b>nobody's list is longer</b> — so more of any room is FAST for her than for anyone else standing in it.</p></div>
-        <div class="beat bad"><p><span class="beatk">What kills it</span><b>Substitution.</b> Swap the fittings and she works at full speed, confidently, on a material that isn't there. Then she finds out — and now she has to read the thing <em>and disprove herself</em>, which is slower than a novice.</p></div>
+        <div class="beat good"><p><span class="beatk">How you come to it</span><b>Out of other people's records first, then by hand.</b> She reads what someone else wrote down, then goes and touches the thing, because a record is not a read and every practitioner knows it.</p></div>
+        <div class="beat good"><p><span class="beatk">How you live</span><b>Near an institution, or arguing with one.</b> The Table is published, disputed and incomplete — so there are rival lists, careers spent on one family, and real fights about what belongs on it. Her library cannot be stolen, so she travels well and is welcome most places.</p></div>
+        <div class="beat bad"><p><span class="beatk">What it costs you</span>It takes a life, and the list is never finished. And her whole speed is <em>recognising</em> — so swap the fittings and she works at full speed, confidently, on a material that isn't there. <b>Then she finds out.</b></p></div>
       </div>
     </div>
 
-    <div class="school odd">
-      <p class="castk">Casts with · instinct</p>
+    <div class="school">
+      <p class="castk">Casts with · whatever is under her palm</p>
       <h2>The attuned</h2>
-      <p class="look">Not a trade; <b>a people</b>. She has been reading by touch since she could walk. No pouch, no rod, nothing anyone taught her. <em>Hands on the ground, and she stays down longer than anyone thinks she needs to.</em></p>
+      <p class="look">Not a bloodline — nobody's blood owns the read. <em>A people who put children's hands on things from the moment they can walk, and correct them, every day, for years.</em></p>
       <div class="beats">
-        <div class="beat good"><p><span class="beatk">Great at</span><b>State.</b> A palm tells her whether a thing is at rest, forced out of rest, or already worked. On ground she has knelt on for twenty years she feels the surplus coming up slower than it did — which is how a stolen basin upstream gets noticed a season before anyone's well drops.</p></div>
-        <div class="beat bad"><p><span class="beatk">What kills it</span><b>No library.</b> Recognising is the whole of the FAST tier, and large means chained, and chained means from memory — so everything she takes has to fit inside one working.</p></div>
+        <div class="beat good"><p><span class="beatk">How you come to it</span><b>Before she can remember.</b> It is not taught as a trade with an indenture and a term. It is taught the way a language is taught — by everyone around her, constantly, badly, and completely.</p></div>
+        <div class="beat good"><p><span class="beatk">How you live</span><b>On ground she knows.</b> She is the one who feels the surplus coming up slower than it did — a season before a drawing floor can prove anything, and a year before the wells go hard. <b>Nobody has ever taken her word for it.</b></p></div>
+        <div class="beat bad"><p><span class="beatk">What it costs you</span>No library worth the name; she was taught to feel and never taught to file. And her whole advantage is the ground underneath her, which means <b>it ends the day she is moved off it</b> — and moving people off ground is what this world's industry does.</p></div>
       </div>
     </div>
 
@@ -225,56 +262,57 @@ footer b{color:var(--bone-dim);font-weight:500}
 </section>
 
 <section>
-  <p class="seck">Why the scholar and the attuned are the same argument twice</p>
-  <figure><svg viewBox="0 0 660 400" role="img" aria-label="The five schools plotted on two axes. Library, earned with no ceiling, runs left to right; acuity, largely natal with a real ceiling, runs bottom to top. The attuned sits top left, feeling without knowing. The scholar sits bottom right, knowing without needing to feel again. The bag sits low left with a short library bought instead of walked. The body sits in the middle, ordinary on both. The instrument sits low middle: he can buy a line, he can never buy acuity. Disguise beats acuity, worth about two seconds. Substitution beats library, and a veteran in a substituted room is worse off than a novice.">
-  <line x1="100" y1="296" x2="614" y2="296" stroke="#3A342B"/>
-  <line x1="100" y1="296" x2="100" y2="38" stroke="#3A342B"/>
-  <path d="M94 46 l6 -8 6 8" fill="none" stroke="#3A342B"/>
-  <path d="M606 290 l8 6 -8 6" fill="none" stroke="#3A342B"/>
+  <p class="seck">Whose hand is on your throat</p>
+  <figure><svg viewBox="0 0 660 258" role="img" aria-label="What each tradition depends on, and who can shut it off. The bag depends on milled and graded stock, which the mills control and anyone can salt. The instrument depends on makers and surgeons, which money controls. The scholar depends on the Table, which the academies arguing over it control. The attuned depends on ground she knows, which whoever cuts a basin upstream controls. The body depends on nobody, and nobody can shut her off, which is why she pays with her own body instead.">
+  <g font-family="IBM Plex Mono, monospace" font-size="9.5" letter-spacing="1.4" fill="#8A8173">
+    <text x="0" y="12">TRADITION</text>
+    <text x="176" y="12">WHAT IT RESTS ON</text>
+    <text x="392" y="12">WHOSE HAND IS ON IT</text>
+  </g>
+  <line x1="0" y1="22" x2="660" y2="22" stroke="#3A342B"/>
+  <line x1="168" y1="22" x2="168" y2="196" stroke="#3A342B"/>
+  <line x1="384" y1="22" x2="384" y2="196" stroke="#3A342B"/>
 
-  <circle cx="152" cy="100" r="4.5" fill="#D8B25C"/>
-  <circle cx="520" cy="262" r="4.5" fill="#D8B25C"/>
-  <circle cx="140" cy="242" r="3.5" fill="#BDB6A7"/>
-  <circle cx="322" cy="166" r="3.5" fill="#BDB6A7"/>
-  <circle cx="300" cy="222" r="3.5" fill="#BDB6A7"/>
-
-  <g font-family="IBM Plex Mono, monospace" font-size="11.5" letter-spacing=".5">
-    <text x="166" y="96" fill="#D8B25C">the attuned</text>
-    <text x="506" y="258" fill="#D8B25C" text-anchor="end">the scholar</text>
-    <text x="154" y="238" fill="#BDB6A7">the bag</text>
-    <text x="336" y="162" fill="#BDB6A7">the body</text>
-    <text x="314" y="218" fill="#BDB6A7">the instrument</text>
+  <g font-family="IBM Plex Mono, monospace" font-size="11" fill="#E6E1D4">
+    <text x="0" y="46">the bag</text>
+    <text x="0" y="80">the instrument</text>
+    <text x="0" y="114">the scholar</text>
+    <text x="0" y="148">the attuned</text>
+  </g>
+  <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#BDB6A7">
+    <text x="176" y="46">milled and graded stock</text>
+    <text x="392" y="46">the mills — and anyone who can salt it</text>
+    <text x="176" y="80">makers and surgeons</text>
+    <text x="392" y="80">money, and the man who bored it</text>
+    <text x="176" y="114">the Table</text>
+    <text x="392" y="114">the academies still arguing over it</text>
+    <text x="176" y="148">ground she knows</text>
+    <text x="392" y="148">whoever cuts a basin upstream</text>
+  </g>
+  <g stroke="#3A342B">
+    <line x1="0" y1="58" x2="660" y2="58"/><line x1="0" y1="92" x2="660" y2="92"/>
+    <line x1="0" y1="126" x2="660" y2="126"/><line x1="0" y1="160" x2="660" y2="160"/>
   </g>
 
-  <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#8A8173">
-    <text x="166" y="111">feels without knowing</text>
-    <text x="506" y="273" text-anchor="end">knows without needing to feel again</text>
-    <text x="154" y="253">a short library, bought instead of walked</text>
-    <text x="336" y="177">ordinary on both — her edge is not</text>
-    <text x="336" y="191">the read</text>
-    <text x="314" y="233">he can buy a line; he can never buy acuity</text>
-  </g>
+  <rect x="0" y="160" width="660" height="36" fill="#2A2620"/>
+  <line x1="0" y1="160" x2="660" y2="160" stroke="#C05A32" stroke-width="2"/>
+  <text x="0" y="182" font-family="IBM Plex Mono, monospace" font-size="11" fill="#C05A32">the body</text>
+  <text x="176" y="182" font-family="IBM Plex Mono, monospace" font-size="10" fill="#C05A32">nobody</text>
+  <text x="392" y="182" font-family="IBM Plex Mono, monospace" font-size="10" fill="#C05A32">nobody — and that is the whole problem</text>
+  <line x1="0" y1="196" x2="660" y2="196" stroke="#3A342B"/>
 
-  <path d="M176 66 L104 66 M112 60 l-8 6 8 6" fill="none" stroke="#C05A32" stroke-width="1.5"/>
-  <text x="184" y="70" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#C05A32" letter-spacing=".5">DISGUISE BEATS ACUITY — ABOUT TWO SECONDS</text>
-
-  <text x="100" y="318" font-family="IBM Plex Mono, monospace" font-size="11" fill="#E6E1D4" letter-spacing="1.4">LIBRARY — EARNED, NO CEILING</text>
-  <g transform="translate(22,300) rotate(-90)">
-    <text x="0" y="0" font-family="IBM Plex Mono, monospace" font-size="11" fill="#E6E1D4" letter-spacing="1.4">ACUITY — LARGELY NATAL, REAL CEILING</text>
-  </g>
-
-  <path d="M362 338 L362 302 M356 310 l6 -8 6 8" fill="none" stroke="#C05A32" stroke-width="1.5"/>
-  <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#C05A32" letter-spacing=".5">
-    <text x="356" y="350">SUBSTITUTION BEATS LIBRARY — A VETERAN IN A</text>
-    <text x="356" y="363">SUBSTITUTED ROOM IS WORSE OFF THAN A NOVICE</text>
+  <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#BDB6A7">
+    <text x="0" y="222">Four of the five can be shut off by someone who never enters the room: a merchant, a surgeon,</text>
+    <text x="0" y="238">an academy, a gang cutting a channel forty miles upstream. The fifth cannot be shut off at all,</text>
+    <text x="0" y="254">and pays for it out of her own water and lime.</text>
   </g>
 </svg>
-    <figcaption>Gate 1's two locked axes. Acuity is largely natal and has a real ceiling; library is purely earned and has none.<br>Two casters can be equally dangerous by opposite routes — which is why acuity never becomes a power stat.</figcaption>
+    <figcaption>This is the political map of the trade, and it falls straight out of Gate 1's own economics.<br>Every tradition rests on something, and someone owns that thing. Which is the fastest way to see who in this world is free and what freedom costs them.</figcaption>
   </figure>
 </section>
 
 <section>
-  <p class="seck">The body pays twice, and Gate 1 already wrote both bills</p>
+  <p class="seck">What a life on the body actually looks like</p>
   <figure><svg viewBox="0 0 660 300" role="img" aria-label="The body school runs two clocks. Clock one is the map: a scored line is permanent, so she can never write on the same skin twice, and her working skin only shrinks — forearm, other forearm, thigh, back — up to a hard line at the collarbone marked past here is the throat. Clock two is what she spends: every shortfall takes her own water and lime before it takes the room, staged as cramps, then teeth, then bone, and this one does not harden.">
   <line x1="330" y1="8" x2="330" y2="292" stroke="#3A342B"/>
 
@@ -334,109 +372,52 @@ footer b{color:var(--bone-dim);font-weight:500}
   <line x1="350" y1="268" x2="660" y2="268" stroke="#3A342B"/>
   <text x="350" y="286" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8A8173">this one does not harden</text>
 </svg>
-    <figcaption>Two clocks, and neither of them is overdraw. The map is geometry — a line she has already used is a line she can't close across.<br>What she spends is substance: her own water and lime, staged and cumulative. It does not harden, and it does not come back.</figcaption>
+    <figcaption>Two separate bills, and neither of them is overdraw. The map is geometry — a line she has already used is a line she cannot close across again.<br>What she spends is substance: her own water and lime, staged and cumulative. It does not harden and it does not come back. The trade reads a body caster at a glance, by her teeth.</figcaption>
   </figure>
-</section>
-
-<section>
-  <p class="seck">Who beats whom</p>
-  <figure><svg viewBox="0 0 660 440" role="img" aria-label="The counter graph for the five schools. The bag and the body eat each other, and so do the scholar and the attuned. The bag beats the scholar by changing the room first. The instrument beats the attuned because everything on him is tinned, painted and greased. The instrument beats the bag because his supply is in his hand. The body beats the instrument because everything he has can be taken. Four pairs have no edge at all.">
-  <defs>
-    <marker id="cgB" viewBox="0 0 9 9" refX="8" refY="4.5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#D8B25C"/></marker>
-    <marker id="cgHe" viewBox="0 0 9 9" refX="8" refY="4.5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#C05A32"/></marker>
-    <marker id="cgHs" viewBox="0 0 9 9" refX="1" refY="4.5" markerWidth="7" markerHeight="7" orient="auto"><path d="M9 0 L0 4.5 L9 9 z" fill="#C05A32"/></marker>
-  </defs>
-
-  <path d="M400 62 L540 156" stroke="#D8B25C" stroke-width="1.5" fill="none" marker-end="url(#cgB)"/>
-  <path d="M490 175 L170 175" stroke="#D8B25C" stroke-width="1.5" fill="none" marker-end="url(#cgB)"/>
-  <path d="M100 194 L100 319" stroke="#D8B25C" stroke-width="1.5" fill="none" marker-end="url(#cgB)"/>
-  <path d="M560 194 L560 319" stroke="#D8B25C" stroke-width="1.5" fill="none" marker-end="url(#cgB)"/>
-
-  <path d="M150 156 L280 66" stroke="#C05A32" stroke-width="1.5" fill="none" marker-end="url(#cgHe)" marker-start="url(#cgHs)"/>
-  <path d="M172 340 L488 340" stroke="#C05A32" stroke-width="1.5" fill="none" marker-end="url(#cgHe)" marker-start="url(#cgHs)"/>
-
-  <rect x="264" y="30"  width="132" height="34" fill="#2A2620" stroke="#3A342B"/>
-  <rect x="34"  y="158" width="132" height="34" fill="#2A2620" stroke="#3A342B"/>
-  <rect x="494" y="158" width="132" height="34" fill="#2A2620" stroke="#3A342B"/>
-  <rect x="34"  y="323" width="132" height="34" fill="#2A2620" stroke="#3A342B"/>
-  <rect x="494" y="323" width="132" height="34" fill="#2A2620" stroke="#3A342B"/>
-
-  <g font-family="IBM Plex Mono, monospace" font-size="11.5" fill="#E6E1D4" text-anchor="middle">
-    <text x="330" y="51">the body</text>
-    <text x="100" y="179">the bag</text>
-    <text x="560" y="179">the instrument</text>
-    <text x="100" y="344">the scholar</text>
-    <text x="560" y="344">the attuned</text>
-  </g>
-
-  <g font-family="IBM Plex Mono, monospace" font-size="9.5" letter-spacing="1" fill="#8A8173">
-    <text x="650" y="76" text-anchor="end">EVERYTHING HE HAS CAN BE TAKEN</text>
-    <text x="330" y="166" text-anchor="middle">HIS IS IN HIS HAND</text>
-    <text x="118" y="262">CHANGE THE ROOM FIRST</text>
-    <text x="542" y="262" text-anchor="end">TINNED, PAINTED, GREASED</text>
-  </g>
-
-  <g font-family="IBM Plex Mono, monospace" font-size="9.5" letter-spacing="1" fill="#C05A32">
-    <text x="20" y="100">THESE TWO EAT EACH OTHER</text>
-    <text x="330" y="332" text-anchor="middle">THESE TWO EAT EACH OTHER</text>
-  </g>
-
-  <line x1="0" y1="395" x2="660" y2="395" stroke="#3A342B"/>
-  <text x="0" y="418" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8A8173">Four pairs have no edge. Nobody padded this.</text>
-</svg>
-    <figcaption>Each arrow points at the loser. Two pairs eat each other and are drawn double-headed.<br>This is not a five-way ring. The instrument takes two and loses one; the body and the bag are each other&rsquo;s whole problem.</figcaption>
-  </figure>
-  <div class="edges">
-    <div class="edge"><p class="matchup">The bag <i>⇄</i> the body</p><p class="why">The bag can start a working and walk off it, and a floor of half-set matter is the safest room the body will ever stand in — every shortfall she throws feeds on the mass instead of on her. Right up to the moment she has to put a palm down. And the body works short on purpose standing next to the pouch, so the working takes the powder off the nearest hip.</p></div>
-    <div class="edge"><p class="matchup">The scholar <i>⇄</i> the attuned</p><p class="why">A door is only takeable by someone who has already touched what it's made of — and off her own parish the attuned has touched almost nothing, while the scholar's list runs to every fitting in the county. But the attuned picks the fight on her own ground, where twenty years of kneeling is her whole library and the scholar's list is no longer than anyone else's.</p></div>
-    <div class="edge"><p class="matchup">The bag <i>→</i> the scholar</p><p class="why">The bag has the stock to change a room before anyone fights in it — a thin plate glued over the door fittings, a tenth part of something else mixed through the stores. A long list is worse than no list once it's wrong.</p></div>
-    <div class="edge"><p class="matchup">The instrument <i>→</i> the attuned</p><p class="why">Everything on him is tinned, painted and greased, so her read stops at the first seam and she has to take a second look. That's two seconds — and two seconds is her standing still in front of a man with a loaded rod.</p></div>
-    <div class="edge"><p class="matchup">The instrument <i>→</i> the bag</p><p class="why">His supply is already inside the thing in his hand; hers is in pouches on a strap. Cut the strap and she's grinding scavenge while he's still firing what he packed.</p></div>
-    <div class="edge"><p class="matchup">The body <i>→</i> the instrument</p><p class="why">Everything he casts with can be swapped, fouled or pulled off him. She has nothing on her to take.</p></div>
-  </div>
 </section>
 
 <section class="ask">
   <h2>Your call</h2>
-  <p class="lede">Five open questions. The names, the axis and the four-slot card are settled — these are the ones I'd rather you decided than have me quietly decide by writing the long document a particular way.</p>
+  <p class="lede">Five questions about the world, not about a game. Each one decides how this place feels to live in, and each is cheap now and expensive after the long document is written.</p>
   <div class="qs">
 
     <div class="q">
-      <p class="qq"><span class="lbl">The question</span>Which are playable, and which are enemy-only?</p>
-      <p class="rec"><span class="lbl">What I'd do</span>All five playable. None of them is a tier, and the counter graph works because every school is somebody's answer</p>
-      <p class="cost"><span class="lbl">What it costs</span>The attuned is the hardest to build a kit for, because she has no fast tier and no chaining. If she's playable, she needs a reason to be picked</p>
+      <p class="qq"><span class="lbl">The question</span>Is casting licensed?</p>
+      <p class="rec"><span class="lbl">What I'd do</span>Licensed at industrial scale only — taps, extractors, drawing floors, anything that touches a pool. Unlicensed everywhere else, because a field surgeon setting a fracture cannot wait on paperwork</p>
+      <p class="cost"><span class="lbl">What it buys</span>An enormous informal economy, and a state that can seize your <em>ground</em> but not your hands. It also means the body school is the only one that is functionally unregulatable, which is a fact somebody in power will eventually mind</p>
     </div>
 
     <div class="q">
-      <p class="qq"><span class="lbl">The question</span>Where does the protagonist start?</p>
-      <p class="rec"><span class="lbl">What I'd do</span>The bag. It's the school that teaches the system — inventory, proportion, a resource that visibly deletes, and a restock loop between fights</p>
-      <p class="cost"><span class="lbl">What it costs</span>It's also the school carrying the nearest source in the room on her hip, so the first time the Law bites, it bites her. That may be exactly right, or it may be too early</p>
+      <p class="qq"><span class="lbl">The question</span>Which tradition does this world look down on?</p>
+      <p class="rec"><span class="lbl">What I'd do</span>The body. Not feared — <em>pitied</em>, which is worse. It reads as what you do when nobody would teach you and you could not buy a rod, and you can see her whole account on her arm</p>
+      <p class="cost"><span class="lbl">What it buys</span>Class, written on skin. A respectable family whose daughter turns up marked has a problem, and everybody in the room already knows what kind. It also makes the most self-reliant caster in the world the lowest-status one, which is the sort of contradiction a story eats</p>
     </div>
 
     <div class="q">
-      <p class="qq"><span class="lbl">The question</span>Is the attuned currently the weakest design?</p>
-      <p class="rec"><span class="lbl">What I'd do</span>She takes the two hardest caps in the system — no fast tier, no large working ever — for a sense Gate 1 says is just the top of the ordinary acuity scale. The proposed fix: stop paying her in perception, pay her in <em>the reach</em>. She's the only caster who can work short on purpose and be certain what the working will take; everyone else's reach is a gamble</p>
-      <p class="cost"><span class="lbl">What it costs</span>That's a new mechanic, which is why it isn't in the cards above. It needs no bloodline, no second sense and no extra sap — but it is still a Gate 2 addition and it's yours to approve, not mine to slip in</p>
+      <p class="qq"><span class="lbl">The question</span>Who owns the Table?</p>
+      <p class="rec"><span class="lbl">What I'd do</span>Nobody, and that is the fight. Rival lists, competing academies, a family that has held one disputed entry for three generations, and practitioners in the field who use a version the academies say is wrong and who are, sometimes, right</p>
+      <p class="cost"><span class="lbl">What it buys</span>Comprehension is the progression axis, so an argument about the Table is an argument about power. It also hands Gate 5 an institution to corrupt without inventing one</p>
     </div>
 
     <div class="q">
-      <p class="qq"><span class="lbl">The question</span>How much of the attuned belongs to Gate 5?</p>
-      <p class="rec"><span class="lbl">What I'd do</span>Her mechanics stay here; her <em>people</em> goes to Gate 5. The card says "a people" and then stops</p>
-      <p class="cost"><span class="lbl">What it costs</span>It leaves the most interesting thing about her unwritten for now. The alternative — explaining her here — is exactly how attempt three turned into ethnography</p>
+      <p class="qq"><span class="lbl">The question</span>Has the attuned's ground already been taken?</p>
+      <p class="rec"><span class="lbl">What I'd do</span>Yes — a generation ago, legally, by people who filed the correct paperwork. The story arrives afterwards, among people who can still feel what was done and have never been able to prove it to anyone who mattered</p>
+      <p class="cost"><span class="lbl">What it buys</span>The one grievance in the setting that needs no villain. It is also the strongest thread you have into Gate 5, and it means the attuned are not a mystery to be discovered but a people already living with the outcome</p>
     </div>
 
     <div class="q">
-      <p class="qq"><span class="lbl">The question</span>Does the counter graph hold?</p>
-      <p class="rec"><span class="lbl">What I'd do</span>Ship it. It's asymmetric on purpose: two mutual pairs, four pairs with no edge, and the instrument sitting off to one side with two wins and one loss</p>
-      <p class="cost"><span class="lbl">What it costs</span>Push on <b>the bag against the body</b> if you push anywhere. It's the closest thing to a designed matchup rather than a derived one, and if you don't buy it, the honest fix is to give the body her loss somewhere else rather than pretend she has one</p>
+      <p class="qq"><span class="lbl">The question</span>Are five enough?</p>
+      <p class="rec"><span class="lbl">What I'd do</span>Five is right for the <em>trade</em>. But Gate 1 leaves two things casting-adjacent and unclaimed: the <b>layers-out</b>, who handle the dead through the nine days, and the <b>extractor men and channel gangs</b>, who move sap at industrial scale. Neither is a school. Both are lives built entirely around this system</p>
+      <p class="cost"><span class="lbl">What it buys</span>If you want them, they are not a sixth and seventh school — they are the world <em>around</em> the schools, and they probably belong in the long document rather than on this sheet. Say the word and they go in</p>
     </div>
 
   </div>
 </section>
 
 <footer>
-  <b>Gate 1 is closed and nothing above amends it.</b> Every mechanic here traces to the approved spec — the four sources of substance, the two-axis read, disguise against acuity and substitution against library, and the body's own substance ladder.<br>
-  <b>Coinages spent: zero of ten.</b> Every term is ordinary English doing new work.<br>
+  <b>This is what Gate 1 asked Gate 2 for, in its own words:</b> <em>"schools, doctrines and traditions of casting — how the trade organises its teaching, and what different traditions do differently with the same two strokes."</em> Teaching and tradition. Nothing here is a class list.<br>
+  <b>Gate 1 is closed and nothing above amends it.</b> Every claim traces to the approved spec — the four sources of substance, the read as acuity and library, the three sap topologies, known ground, and the body's own substance ladder.<br>
+  <b>Coinages spent: zero of ten.</b><br>
   <b>Still unbuilt:</b> the loophole and the small atrocity (Gate 3) · the antagonist (Gate 4) · the nation and its apparatus (Gate 5) · the lieutenants and the endgame (Gate 6).
 </footer>
 

@@ -12,7 +12,7 @@ in `User-dev-volt/second-brain-starter`, under `chimera/`.
 | Gate | Status |
 |---|---|
 | **Gate 1 — the system** | **CLOSED AND APPROVED.** Do not reopen. |
-| **Gate 2 — the schools** | **OPEN. Attempt 4 built and awaiting your decision.** See `gate-2-glance.html`. Three earlier attempts rejected. |
+| **Gate 2 — the schools** | **AXIS DECIDED — a tradition, not a class.** Sheet rebuilt: `gate-2-glance.html`. Five world questions open. |
 | Gates 3–6 | Untouched. |
 
 ---
@@ -137,7 +137,7 @@ procedure and atrocity are the same act.
 
 ---
 
-## ATTEMPT 4 — BUILT, AWAITING DECISION
+## ATTEMPT 4 — SUPERSEDED BY THE REFRAME. ATTEMPT 5 IS LIVE.
 
 The glance sheet is rebuilt: `gate-2-glance.html`, also published at
 https://claude.ai/code/artifact/df238764-9ff1-460a-92a6-f8055331ea17
@@ -190,3 +190,35 @@ proposed the counter graph, drew the SVGs from label text supplied verbatim, and
 audited the draft adversarially, one agent per rejection reason. That audit caught eleven fatal
 contradictions across two rounds, six of which were in copy that already read perfectly well.
 **Write the copy yourself; use the agents to check it against the bedrock and to draw.**
+
+
+---
+
+## THE REFRAME — READ THIS BEFORE TOUCHING GATE 2 AGAIN
+
+Attempt 4 was built as a **class system** — playable schools, protagonist start, a who-beats-whom
+counter graph. The human stopped it, and was right, and the record backs them:
+
+> Gate 1, *What Gate 1 Deliberately Leaves Open*: "**Schools, doctrines and traditions of casting** —
+> how the trade organises its **teaching**, and what different **traditions** do differently with the
+> same two strokes. **Gate 2.**"
+
+Teaching and tradition. Gate 1 never asked for a class list. The "class system" line in the old
+decisions log was drift from a later session and has been struck.
+
+**The human's framing, verbatim, and it is the thesis of the whole gate:**
+*"these people in this world are just utilizing sap in the way they are taught or how they've found it
+in their own way."*
+
+**And the standing instruction that produced the correction:**
+*"While this story is for a game, the important part is that it is a story ultimately. The game can be
+built around the story later... So the world is of utmost importance, how it works, how individuals
+have lived in this world, traditions passed on in the world and what it has culminated to."*
+
+So: **world first, campaign later.** Anything that reads as balance, kits, playability or matchups is
+the wrong altitude and will be rejected. The right questions are about how people live — who taught
+them, who employs them, who looks down on them, and what it costs them over a life.
+
+The four beats of a school are now: **casts with · how you come to it · how you live · what it costs
+you.** Everything mechanical from attempt 4 survives underneath as substrate — it was audited hard
+against Gate 1 and it holds — but it is no longer the point.

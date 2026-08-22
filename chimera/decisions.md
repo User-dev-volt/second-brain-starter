@@ -198,7 +198,60 @@ Nothing at Gate 1.
 
 ---
 
-## GATE 2 — OPEN. THREE ATTEMPTS REJECTED.
+## GATE 2 — REFRAMED. THE AXIS IS NOW DECIDED.
+
+### DECIDED — a school is a TRADITION, not a class
+
+**Struck: "a school is the class system — playstyle, silhouette, what beats you."** That framing was
+drift introduced by a later session and it is not what Gate 1 asked for. Gate 1's own leave-open list
+scopes this gate exactly: *"schools, doctrines and traditions of casting — how the trade organises
+its **teaching**, and what different **traditions** do differently with the same two strokes."*
+
+**A school is still WHAT YOU CAST WITH. It is also HOW YOU CAME TO IT.**
+Human's words: *"these people in this world are just utilizing sap in the way they are taught or how
+they've found it in their own way."* Nobody picked a school off a list. You were taught by whoever was
+standing there, or there was nobody standing there and you worked it out.
+
+Consequences, now load-bearing:
+- The five are **tendencies, not walls**. They arrange on one line from *taught* to *found on her own*:
+  the attuned (taught before memory) · the bag (apprenticed) · the instrument (bought and fitted) ·
+  the scholar (records, then her own hands) · the body (nobody taught her).
+- What decides where a person stands is circumstance: who was there, what the family could pay for,
+  whether the trade would take her, whether a rod was inherited, whether anyone in that district still
+  knows how — and what she once had to do in a hurry.
+- The four beats of a school are now **casts with / how you come to it / how you live / what it costs
+  you over a life.** Not great-at and what-beats-you. Combat framing is out.
+- **This is a story first.** The game is built from the world afterwards, the way a campaign could be
+  built from FMA. Questions about playability, protagonist class and counter-matchups are premature
+  and were withdrawn.
+
+### DECIDED — the Gate 2 / Gate 5 boundary
+
+- **Gate 2 gets the culture that is inseparable from the casting**: trade, apprenticeship, supply,
+  the body, the family, status, and what a tradition costs over a life.
+- **Gate 5 keeps the nation and its apparatus**: the state, the law, the companies, the war.
+- **The attuned straddle it.** How they live, teach and read is Gate 2. Their land, and what was done
+  to it, is Gate 5.
+- This supersedes the earlier ruling that a school is *"not a culture — that's Gate 5."*
+
+### The political spine that fell out of it
+
+Each tradition rests on something, and someone owns that thing: the bag on milled and graded stock
+(the mills, and anyone who can salt it) · the instrument on makers and surgeons (money) · the scholar
+on the Table (the academies still arguing over it) · the attuned on ground she knows (whoever cuts a
+basin upstream). **The body rests on nobody, and nobody can shut her off — which is why she pays out
+of her own water and lime instead.** Four of the five can be stopped by someone who never enters the
+room.
+
+### Still open at Gate 2 — put to the human on the sheet
+
+Whether casting is licensed · which tradition the world looks down on · who owns the Table · whether
+the attuned's ground has already been taken · and whether the layers-out and the extractor men belong
+in the long document.
+
+---
+
+## GATE 2 — THE THREE REJECTED ATTEMPTS (historical)
 
 **The axis is decided and correct: a school is WHAT YOU CAST WITH.** This is the locked bedrock's
 own answer — §2.2 lists the four substance sources and ends *"they are different answers with
