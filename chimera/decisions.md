@@ -194,8 +194,45 @@ solving, accelerant, a runner and the drag are all ordinary English doing new wo
 
 ### Open — for later gates
 
-Nothing at Gate 1. Gate 2 decides the schools: which are playable, which are enemy-only, and which
-one the protagonist starts in.
+Nothing at Gate 1.
+
+---
+
+## GATE 2 — OPEN. THREE ATTEMPTS REJECTED.
+
+**The axis is decided and correct: a school is WHAT YOU CAST WITH.** This is the locked bedrock's
+own answer — §2.2 lists the four substance sources and ends *"they are different answers with
+different risks, and they are how casters differ from each other."* A school is the class system:
+playstyle, silhouette, what beats you. Not a faction, not a culture, not a nation — those are
+Gate 5. How a caster reads is personal style inside a school, never what defines it.
+
+**The five schools, and THESE ARE THE NAMES:**
+
+| Name | Casts with |
+|---|---|
+| **The bag** | Carried reagents she assembled herself. Spends down and deletes; restocked by crafting |
+| **The instrument** | A rod, a gauntlet, armour — and at the far end a replaced limb |
+| **The body** | Herself. The boundary is scribed into her skin, and the mark creeps |
+| **The scholar** | Memory. Vast, disciplined, and never complete, because the possibilities are infinite |
+| **The attuned** | Instinct. A people rather than a trade. Feels sap itself; high acuity, no library |
+
+**Attempt 1 — schools pinned to reading doctrine.** Rejected: too abstract to feel. *"Nobody picks
+a class because of their filing method."*
+
+**Attempt 2 — same axis, second pass.** Rejected with the same objection.
+
+**Attempt 3 — re-pinned to what you cast with, which is right — but the execution was rejected.**
+Human's words: *"the names are terrible and so are the explanations of each... they are too granular
+and abstract. No one will understand the hafter."* Sub-agents replaced the agreed plain names with
+invented trade jargon (pinch hand, hafter, bookhand, ground-walker, carrier) and buried each school
+in thousands of words of ethnography.
+
+**The lesson, recorded so it is not repeated:** plain names, short descriptions, and a visual
+summary built and approved BEFORE any long document is written. See `HANDOFF.md`.
+
+**Still to decide with the human:** which schools are playable, which enemy-only, which one the
+protagonist starts in; how much of the attuned belongs to Gate 5; and the counter graph in plain
+mechanical terms.
 
 ### The reconciliation any answer must survive
 
