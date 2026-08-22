@@ -12,7 +12,7 @@ in `User-dev-volt/second-brain-starter`, under `chimera/`.
 | Gate | Status |
 |---|---|
 | **Gate 1 — the system** | **CLOSED AND APPROVED.** Do not reopen. |
-| **Gate 2 — the schools** | **OPEN. Three attempts, all rejected.** Start from the names below. |
+| **Gate 2 — the schools** | **OPEN. Attempt 4 built and awaiting your decision.** See `gate-2-glance.html`. Three earlier attempts rejected. |
 | Gates 3–6 | Untouched. |
 
 ---
@@ -133,3 +133,60 @@ The Law commands you to name where it is coming from. It never says what a sourc
 procedure and atrocity are the same act.
 
 **Coinages spent: zero of ten.** Every term above is ordinary English doing new work. Keep it that way.
+
+
+---
+
+## ATTEMPT 4 — BUILT, AWAITING DECISION
+
+The glance sheet is rebuilt: `gate-2-glance.html`, also published at
+https://claude.ai/code/artifact/df238764-9ff1-460a-92a6-f8055331ea17
+
+**Nothing here is decided.** The long document has NOT been written, and must not be until the
+human approves the sheet. That ordering is rule 3 above and it is the whole reason attempt 4 exists.
+
+What changed from attempt 3: the five locked names are used as written, each school is four beats
+(casts with / looks like / great at / what kills it), and the sheet carries four SVGs — the five at a
+glance, the acuity/library plot, the body's two clocks, and the counter graph.
+
+**Five questions are open on the sheet** and are the human's to answer: which schools are playable;
+where the protagonist starts; whether the attuned is the weakest design (and whether to pay her in
+*the reach* instead of in perception, which would be a new mechanic); how much of the attuned belongs
+to Gate 5; and whether the counter graph holds.
+
+### GATE 1 READINGS THAT KILLED SIX DRAFT SENTENCES — do not re-make these
+
+These are not new decisions. They are what `gate-1-system.md` already says, found by auditing a draft
+against it. Every one of them was written wrong first.
+
+- **There is no sap-through-flesh conduit.** Sap lives in a pool, a flask or an implant, and nowhere
+  else. The body caster is not a channel. She is simply always *inside her own boundary*, and §2's
+  rule is that anything inside the line is a source.
+- **The body's cost is NOT overdraw.** §3's own row for spending her own body is a substance ladder —
+  cramps, then teeth, then bone — and it says outright *"This is not overdraw — overdraw is a sap
+  failure and it hardens; this does not."* A creeping mark that advances on every ordinary stroke also
+  deletes §7's central line: *"The third is a decision. It is always a decision."*
+- **Her map shrinks for a geometric reason.** A scored line is permanent, and a new line crossing an
+  old one breaks the run before it closes (§2 — a boundary must be a closed run). Not because
+  "hardened tissue won't carry", which is conduit thinking and has no Gate 1 basis.
+- **An instrument never buys sap.** It buys a line that cannot be smudged (§2 PREPARED) and a
+  pre-loaded charge of *substance* (§3). The flask is the sap magazine and anyone may carry one.
+  Welding a sap topology to a school is §1's named "classic apprentice error".
+- **Frost and heat at the seam is the IMPLANT's tell**, not the instrument school's — the implant is a
+  sap topology (§4), so that silhouette belongs to how a caster carries charge, not to what she casts with.
+- **The bag is FAST because carried stock is pre-read stock** — it is already in library. Having the
+  right family buys *certainty*, not seconds. And run dry she is *"a novice in her own room"* (§3's
+  exact words), never a civilian: her library cannot be taken from her.
+- **The attuned can name what she is holding.** That is what high acuity does — it is her strength,
+  never her weakness. Her cap is no library, therefore no chaining, therefore no large working.
+- **Nobody senses a pool or a basin at range.** The read is contact-only; *"a read run into open air
+  returns nothing at all."* Pools are found with sinking-rods. And §11 publishes the rich/thin ground
+  tells for anyone with eyes, so "nobody else sees it" is false.
+
+### The method that worked, for whoever picks this up next
+
+Sub-agents wrote none of the prose and none of the names. They mined `gate-1-system.md` for facts,
+proposed the counter graph, drew the SVGs from label text supplied verbatim, and — most valuable —
+audited the draft adversarially, one agent per rejection reason. That audit caught eleven fatal
+contradictions across two rounds, six of which were in copy that already read perfectly well.
+**Write the copy yourself; use the agents to check it against the bedrock and to draw.**

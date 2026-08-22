@@ -3,276 +3,441 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;600;800&family=IBM+Plex+Mono:wght@400;500&family=Spectral:ital,wght@0,300;0,400;0,600;1,300&display=swap">
 <style>
-:root{--ink:#14120F;--stone:#211E19;--stone-2:#2A2620;--edge:#3A342B;--edge-2:#4C443A;
- --ash:#8A8173;--bone:#E6E1D4;--bone-dim:#BDB6A7;--brass:#D8B25C;--slate:#6FA0B0;--rust:#C05A32;
- --display:"Big Shoulders Display","Arial Narrow",sans-serif;--body:"Spectral",Georgia,serif;
- --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+:root{
+  --ink:#14120F; --stone:#211E19; --stone-2:#2A2620; --edge:#3A342B; --edge-2:#4C443A;
+  --ash:#8A8173; --bone:#E6E1D4; --bone-dim:#BDB6A7;
+  --brass:#D8B25C; --cold:#6FA0B0; --heat:#C05A32; --wrong:#9A9184;
+  --display:"Big Shoulders Display","Arial Narrow",sans-serif;
+  --body:"Spectral",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--ink);color:var(--bone-dim);font-family:var(--body);font-weight:300;
- font-size:16.5px;line-height:1.65;-webkit-font-smoothing:antialiased}
-.wrap{max-width:1120px;margin:0 auto;padding:clamp(26px,4vw,54px) clamp(16px,3.5vw,38px) 90px}
-header{border-bottom:1px solid var(--edge);padding-bottom:26px;margin-bottom:32px}
+body{margin:0;background:var(--ink);color:var(--bone-dim);
+  font-family:var(--body);font-weight:300;font-size:16.5px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:clamp(26px,4vw,54px) clamp(16px,3.5vw,38px) 90px}
+
+header{border-bottom:1px solid var(--edge);padding-bottom:26px;margin-bottom:34px}
 .eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ash);margin:0 0 12px}
-h1{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(40px,8.5vw,88px);
- line-height:.88;margin:0 0 16px;color:var(--bone);text-wrap:balance}
-.thesis{max-width:62ch;margin:0;font-size:clamp(17px,2vw,20px)}
+h1{font-family:var(--display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(42px,9vw,96px);line-height:.88;margin:0 0 16px;color:var(--bone)}
+.thesis{max-width:62ch;margin:0;font-size:clamp(17px,2vw,21px);color:var(--bone-dim);text-wrap:pretty}
 .thesis b{color:var(--bone);font-weight:600}
-section{margin-top:46px}
-h2{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(26px,4.5vw,44px);
- line-height:.95;margin:0 0 6px;color:var(--bone)}
-.lede{max-width:66ch;margin:0 0 22px}
-.lede b{color:var(--bone);font-weight:600}
-figure{margin:0}
-figcaption{font-family:var(--mono);font-size:10.5px;line-height:1.6;color:var(--ash);margin-top:12px;
- padding-top:10px;border-top:1px solid var(--edge)}
-.sch{border:1px solid var(--edge);background:var(--stone);display:grid;grid-template-columns:1fr;
- border-top:3px solid var(--a);margin-bottom:16px}
-@media(min-width:720px){.sch{grid-template-columns:206px minmax(0,1fr)}}
-.sil{border-right:1px solid var(--edge);background:var(--stone-2);padding:12px 6px 4px}
-.sil svg{display:block;width:100%;height:auto}
-.sbody{padding:20px 24px 22px;display:grid;gap:10px;align-content:start}
-.sbody h3{font-family:var(--display);font-weight:600;text-transform:uppercase;font-size:30px;line-height:1;margin:0;color:var(--a)}
-.sbody p{margin:0;font-size:15px}
-.cw span,.gd b,.bd b{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
- display:block;margin-bottom:3px;font-weight:500;color:var(--ash)}
-.gd b{color:var(--brass)} .bd b{color:var(--rust)}
-.cw{color:var(--bone);font-weight:600}
-.mxwrap{overflow-x:auto;border:1px solid var(--edge);background:var(--stone)}
-table.mx{border-collapse:collapse;width:100%;font-family:var(--mono);font-size:11.5px}
-table.mx th,table.mx td{padding:11px 10px;border-bottom:1px solid var(--edge);border-right:1px solid var(--edge);text-align:center;white-space:nowrap}
-table.mx thead th{background:var(--stone-2);color:var(--ash);font-weight:500;font-size:10px;letter-spacing:.1em;text-transform:uppercase}
-table.mx tbody th{text-align:left;color:var(--bone);font-weight:500;background:var(--stone-2)}
-table.mx .corner{text-align:left;color:var(--bone-dim)}
-table.mx td span{display:block;font-size:15px;line-height:1.1}
-td.win{color:var(--brass)} td.loss{color:var(--rust)} td.both{color:var(--slate)}
-td.self{color:var(--edge-2)} td.none{color:var(--edge-2)}
-.dec{border:1px solid var(--edge);background:var(--stone);padding:22px 24px;display:grid;gap:14px;margin-bottom:16px}
-.dec h3{font-family:var(--display);font-weight:600;text-transform:uppercase;font-size:26px;line-height:1;margin:0;color:var(--bone)}
-.q{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--brass);margin:0}
-.opts{display:grid;gap:10px}
-@media(min-width:820px){.opts{grid-template-columns:1fr 1fr}}
-.o{border-left:2px solid var(--edge-2);padding-left:14px}
-.o.rec{border-left-color:var(--brass)}
-.o p{margin:0;font-size:14.5px}
-.o .on{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--bone);margin-bottom:5px}
-.o.rec .on{color:var(--brass)}
-.note{font-family:var(--mono);font-size:11.5px;line-height:1.7;color:var(--ash);border-left:2px solid var(--edge);padding-left:14px}
-footer{margin-top:46px;border-top:1px solid var(--edge);padding-top:22px;font-family:var(--mono);
- font-size:11.5px;line-height:1.75;color:var(--ash)}
+
+section{margin-bottom:34px}
+.seck{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--brass);margin:0 0 14px}
+
+figure{margin:0 0 26px;background:var(--stone-2);border:1px solid var(--edge);padding:18px 16px 12px}
+figure svg{display:block;width:100%;height:auto}
+figcaption{font-family:var(--mono);font-size:10.5px;line-height:1.6;color:var(--ash);margin-top:12px;padding-top:10px;border-top:1px solid var(--edge)}
+
+/* ---- the five school cards ---- */
+.schools{display:grid;gap:18px;grid-template-columns:1fr}
+@media(min-width:880px){.schools{grid-template-columns:1fr 1fr}}
+.school{border:1px solid var(--edge);background:var(--stone);padding:22px 24px 24px;display:flex;flex-direction:column;gap:13px}
+.school.odd{grid-column:1/-1}
+.castk{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--brass);margin:0}
+.school h2{font-family:var(--display);font-weight:600;text-transform:uppercase;font-size:34px;line-height:1;margin:0;color:var(--bone)}
+.look{margin:0;font-size:15.5px}
+.look b{color:var(--bone);font-weight:600}
+.look em{font-style:italic;color:var(--bone)}
+.beats{display:grid;gap:14px;grid-template-columns:1fr;margin-top:2px}
+@media(min-width:600px){.beats{grid-template-columns:1fr 1fr;gap:20px}}
+.beat{border-top:1px solid var(--edge);padding-top:11px}
+.beat p{margin:0;font-size:14.5px;line-height:1.6}
+.beat b{color:var(--bone);font-weight:600}
+.beatk{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:6px}
+.beat.good .beatk{color:var(--brass)}
+.beat.bad .beatk{color:var(--heat)}
+.beat.bad{border-top-color:var(--heat)}
+
+.pull{border-left:2px solid var(--brass);padding:4px 0 4px 15px;margin:0;font-size:15px;color:var(--bone)}
+.mono-note{font-family:var(--mono);font-size:11.5px;line-height:1.65;color:var(--ash);margin:0}
+
+/* ---- counter graph edge list ---- */
+.edges{display:grid;gap:1px;background:var(--edge);border:1px solid var(--edge);margin-top:4px}
+.edge{background:var(--stone);padding:14px 18px;display:grid;gap:6px}
+@media(min-width:760px){.edge{grid-template-columns:minmax(0,.62fr) minmax(0,1fr);gap:22px;align-items:baseline}}
+.matchup{font-family:var(--display);font-weight:600;text-transform:uppercase;font-size:22px;line-height:1.05;color:var(--bone);margin:0}
+.matchup i{font-style:normal;color:var(--brass);font-size:15px;padding:0 5px}
+.why{margin:0;font-size:14.5px;color:var(--bone-dim)}
+
+/* ---- the open questions ---- */
+.ask{margin-top:48px;border-top:1px solid var(--edge);padding-top:30px}
+.ask h2{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:clamp(30px,5vw,52px);line-height:.95;margin:0 0 10px;color:var(--bone)}
+.ask .lede{max-width:64ch;margin:0 0 26px}
+.qs{display:grid;gap:1px;background:var(--edge);border:1px solid var(--edge)}
+.q{background:var(--stone);padding:18px 20px;display:grid;gap:9px}
+@media(min-width:860px){.q{grid-template-columns:minmax(0,.85fr) minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}}
+.q p{margin:0}
+.q .qq{color:var(--bone);font-weight:600;font-size:15.5px}
+.q .rec{font-size:14.5px;color:var(--bone-dim)}
+.q .cost{font-size:14.5px;color:var(--bone-dim)}
+.q span.lbl{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:5px;font-weight:400}
+.q .qq span.lbl{color:var(--ash)}
+.q .rec span.lbl{color:var(--brass)}
+.q .cost span.lbl{color:var(--heat)}
+
+footer{margin-top:44px;border-top:1px solid var(--edge);padding-top:22px;
+  font-family:var(--mono);font-size:11.5px;line-height:1.75;color:var(--ash)}
 footer b{color:var(--bone-dim);font-weight:500}
 </style>
 <div class="wrap">
+
 <header>
-  <p class="eyebrow">Project Chimera · Gate 2 · rebuilt on the right axis</p>
+  <p class="eyebrow">Project Chimera · Gate 2 · attempt four · the five schools in five minutes</p>
   <h1>The Five Schools</h1>
-  <p class="thesis">A school is not a spell list and not a faction. It is the answer to one question: <b>what do you cast with.</b> Everyone obeys the same two strokes — but the substance a working eats has to come from somewhere, and there are only so many places to get it: <b>what you brought, what you’re holding, what you are, what you remember, or what’s under your feet.</b></p>
+  <p class="thesis">A school is <b>what you cast with</b>. Not a faction, not a culture, not a nation — those are Gate 5. This is the class system: what's in your hands, what it looks like across a room, and what beats you. <b>None of the five is a tier.</b></p>
 </header>
 
 <section>
-  <h2>The five</h2>
-  <p class="lede">How a person <em>reads</em> — cutting a chip, sounding through a bar, walking ground the night before — is now personal style <b>inside</b> a school, never the thing that defines it. Two casters of the same school can work completely differently and both be orthodox.</p>
-  <article class="sch" style="--a:var(--brass)">
-    <figure class="sil"><svg viewBox="0 0 200 222" role="img" aria-label="Silhouette of a Pinch hand."><circle cx="98" cy="40" r="14" fill="#E6E1D4"/>
-   <polygon points="76,58 120,58 128,142 70,142" fill="#E6E1D4"/>
-   <rect x="76" y="66" width="46" height="54" fill="#211E19" stroke="#D8B25C" stroke-width="1.4"/>
-   <g stroke="#D8B25C" stroke-width="1.2">
-     <path d="M76 84 h46 M76 102 h46 M91 66 v54 M106 66 v54"/></g>
-   <g fill="#D8B25C"><rect x="78" y="104" width="11" height="14"/><rect x="108" y="86" width="11" height="14"/></g>
-   <path d="M120 96 L156 124" stroke="#E6E1D4" stroke-width="8" stroke-linecap="round"/>
-   <path d="M74 92 L46 116" stroke="#E6E1D4" stroke-width="8" stroke-linecap="round"/>
-   <g stroke="#E6E1D4" stroke-width="7" stroke-linecap="round"><path d="M86 142 v48 M110 142 v48"/></g>
-   <g fill="#D8B25C" opacity=".55"><ellipse cx="150" cy="176" rx="26" ry="5"/><ellipse cx="52" cy="184" rx="20" ry="4"/></g>
-   <text x="100" y="212" font-family="IBM Plex Mono, monospace" font-size="8.5" fill="#D8B25C" text-anchor="middle" letter-spacing=".8">CHIN DOWN OVER HER OWN CHEST</text></svg></figure>
-    <div class="sbody">
-      <h3>Pinch hand</h3>
-      <p class="cw"><span>Casts with</span>Stock she milled and packed herself</p>
-      <p class="doc">She never asks a wall what it is, because a wall can lie and her own sieve cannot. Everything she does <b>subtracts</b> — and when the board runs out she works the room at a novice’s speed with no fast tier at all.</p>
-      <p class="gd"><b>Why you would pick it</b>Bring everything. Never be wrong.</p>
-      <p class="bd"><b>What kills it</b>Cannot pour with her hands full. The pour <em>is</em> the tempo, one per exchange, and she is defenceless through it.</p>
-    </div>
-  </article>
-  <article class="sch" style="--a:var(--slate)">
-    <figure class="sil"><svg viewBox="0 0 200 222" role="img" aria-label="Silhouette of a Hafter."><circle cx="88" cy="40" r="14" fill="#E6E1D4"/>
-   <polygon points="68,58 108,58 112,142 64,142" fill="#E6E1D4"/>
-   <rect x="66" y="72" width="20" height="11" rx="5" fill="#6FA0B0"/>
-   <path d="M78 66 q10 -14 22 -8" stroke="#6FA0B0" stroke-width="1.2" fill="none" opacity=".8"/>
-   <path d="M84 60 q12 -16 26 -10" stroke="#6FA0B0" stroke-width="1" fill="none" opacity=".5"/>
-   <path d="M106 80 L134 100" stroke="#E6E1D4" stroke-width="8" stroke-linecap="round"/>
-   <path d="M138 92 L168 186" stroke="#8A8173" stroke-width="5" stroke-linecap="round"/>
-   <circle cx="168" cy="186" r="6" fill="#6FA0B0"/>
-   <circle cx="168" cy="186" r="14" fill="none" stroke="#6FA0B0" stroke-width="1" opacity=".5"/>
-   <g stroke="#E6E1D4" stroke-width="7" stroke-linecap="round"><path d="M78 142 v48 M100 142 v48"/></g>
-   <text x="100" y="212" font-family="IBM Plex Mono, monospace" font-size="8.5" fill="#6FA0B0" text-anchor="middle" letter-spacing=".8">SLEEVES BUTTONED. STEAM AT THE CUFF</text></svg></figure>
-    <div class="sbody">
-      <h3>Hafter</h3>
-      <p class="cw"><span>Casts with</span>The instrument, and the arm that is one</p>
-      <p class="doc">The man who touches nothing. He works at the far end of a rod, with a boundary scored permanently into it, and <b>no count and no line</b> — for as long as the seat holds.</p>
-      <p class="gd"><b>Why you would pick it</b>Duellist tempo. Nobody counting swallows.</p>
-      <p class="bd"><b>What kills it</b>He works what he never touches, so he is <b>state-blind</b> — and half-set eats instruments, then travels up the shaft into the port at his wrist.</p>
-    </div>
-  </article>
-  <article class="sch" style="--a:var(--rust)">
-    <figure class="sil"><svg viewBox="0 0 200 222" role="img" aria-label="Silhouette of a Carrier."><circle cx="100" cy="40" r="14" fill="#E6E1D4"/>
-   <polygon points="80,58 120,58 124,142 76,142" fill="#E6E1D4"/>
-   <path d="M80 74 L38 116" stroke="#E6E1D4" stroke-width="9" stroke-linecap="round"/>
-   <path d="M120 74 L162 112" stroke="#E6E1D4" stroke-width="9" stroke-linecap="round"/>
-   <path d="M80 74 L54 100" stroke="#9A9184" stroke-width="9" stroke-linecap="round"/>
-   <path d="M120 74 L146 98" stroke="#9A9184" stroke-width="9" stroke-linecap="round"/>
-   <g stroke="#C05A32" stroke-width="1.8" fill="none">
-     <circle cx="36" cy="118" r="7"/><circle cx="164" cy="114" r="7"/>
-     <path d="M74 80 L44 110 M126 80 L156 108"/>
-     <path d="M68 88 L48 106 M132 88 L152 104"/></g>
-   <g stroke="#E6E1D4" stroke-width="7" stroke-linecap="round"><path d="M90 142 v48 M112 142 v48"/></g>
-   <text x="100" y="212" font-family="IBM Plex Mono, monospace" font-size="8.5" fill="#C05A32" text-anchor="middle" letter-spacing=".8">BARE MARKED ARMS. THE BLOOM CREEPS</text></svg></figure>
-    <div class="sbody">
-      <h3>Carrier</h3>
-      <p class="cw"><span>Casts with</span>Herself. The boundary is cut into her skin</p>
-      <p class="doc">She never draws a line because she <b>is</b> one. Nothing in her hands, nobody with her, works the instant she can touch the thing — and the sap crosses her flesh to get there.</p>
-      <p class="gd"><b>Why you would pick it</b>Do it now, with nothing.</p>
-      <p class="bd"><b>What kills it</b>The cost never resets. Every other caster’s bill clears and hers does not.</p>
-    </div>
-  </article>
-  <article class="sch" style="--a:var(--brass)">
-    <figure class="sil"><svg viewBox="0 0 200 222" role="img" aria-label="Silhouette of a Bookhand."><circle cx="86" cy="40" r="14" fill="#E6E1D4"/>
-   <polygon points="66,58 106,58 110,142 62,142" fill="#E6E1D4"/>
-   <path d="M104 78 L128 128" stroke="#E6E1D4" stroke-width="8" stroke-linecap="round"/>
-   <path d="M68 78 L44 122" stroke="#E6E1D4" stroke-width="8" stroke-linecap="round"/>
-   <g stroke="#E6E1D4" stroke-width="7" stroke-linecap="round"><path d="M74 142 v48 M100 142 v48"/></g>
-   <path d="M98 26 q20 -6 28 3" stroke="#D8B25C" stroke-width="1.4" fill="none"/>
-   <text x="128" y="24" font-family="IBM Plex Mono, monospace" font-size="8" fill="#D8B25C">7 to 3</text>
-   <rect x="164" y="46" width="30" height="146" fill="#2A2620"/>
-   <path d="M164 118 h30" stroke="#D8B25C" stroke-width="2"/>
-   <text x="150" y="112" font-family="IBM Plex Mono, monospace" font-size="8" fill="#D8B25C" text-anchor="end">snaps</text>
-   <text x="150" y="124" font-family="IBM Plex Mono, monospace" font-size="8" fill="#8A8173" text-anchor="end">behind her</text>
-   <text x="100" y="212" font-family="IBM Plex Mono, monospace" font-size="8.5" fill="#D8B25C" text-anchor="middle" letter-spacing=".8">HANDS EMPTY. ALREADY FOUR PACES ON</text></svg></figure>
-    <div class="sbody">
-      <h3>Bookhand</h3>
-      <p class="cw"><span>Casts with</span>The made world, known by class and vintage</p>
-      <p class="doc">Walks through a building at an ordinary pace touching <b>nothing</b>, talking to herself in proportions. She knew what was in the wall before she arrived.</p>
-      <p class="gd"><b>Why you would pick it</b>Know the building before you get there.</p>
-      <p class="bd"><b>What kills it</b>Nothing natural, worked or weathered. And she <b>cannot check</b> — doubt costs her half a minute and returns families.</p>
-    </div>
-  </article>
-  <article class="sch" style="--a:var(--slate)">
-    <figure class="sil"><svg viewBox="0 0 200 222" role="img" aria-label="Silhouette of a Ground-walker."><ellipse cx="112" cy="168" rx="96" ry="30" fill="#6FA0B0" opacity=".2"/>
-   <ellipse cx="96" cy="170" rx="58" ry="20" fill="#6FA0B0" opacity=".28"/>
-   <circle cx="66" cy="66" r="13" fill="#E6E1D4"/>
-   <polygon points="48,82 84,82 90,140 44,140" fill="#E6E1D4"/>
-   <path d="M84 96 L104 142" stroke="#E6E1D4" stroke-width="8" stroke-linecap="round"/>
-   <path d="M48 98 L34 138" stroke="#E6E1D4" stroke-width="8" stroke-linecap="round"/>
-   <path d="M52 140 L44 168 M80 140 L96 158 L128 160" stroke="#E6E1D4" stroke-width="8" stroke-linecap="round" fill="none"/>
-   <path d="M110 162 H192" stroke="#8A8173" stroke-width="1.5" stroke-dasharray="6 4"/>
-   <circle cx="192" cy="162" r="3.5" fill="#8A8173"/>
-   <g opacity=".8"><rect x="150" y="106" width="7" height="46" fill="#8A8173"/><circle cx="153" cy="98" r="7" fill="#8A8173"/></g>
-   <path d="M146 152 q8 8 16 0" stroke="#6FA0B0" stroke-width="1.6" fill="none"/>
-   <text x="100" y="212" font-family="IBM Plex Mono, monospace" font-size="8.5" fill="#6FA0B0" text-anchor="middle" letter-spacing=".8">IT HAPPENS UNDER THEM, NOT UNDER HER</text></svg></figure>
-    <div class="sbody">
-      <h3>Ground-walker</h3>
-      <p class="cw"><span>Casts with</span>The ground, and pools nobody surveyed</p>
-      <p class="doc">Works from underneath, on ground she has covered on her own knees until it is in library, drawing off pools she found herself — <b>no gate, no basin, no permission.</b></p>
-      <p class="gd"><b>Why you would pick it</b>Own the floor everyone is standing on.</p>
-      <p class="bd"><b>What kills it</b>She can make no thing whatsoever. No brass, no wire, no patched armour — she takes things apart and builds nothing.</p>
-    </div>
-  </article>
-</section>
+  <p class="seck">The whole gate in one picture</p>
+  <figure><svg viewBox="0 0 660 244" role="img" aria-label="The five schools in one row. Two group headers bracket them: you can take it off her covers the bag and the instrument; nothing to take off her covers the body, the scholar and the attuned. Each school shows what it casts with and what kills it. The bag casts with carried reagents and dies when you run her dry. The instrument casts with an object he has read through and dies when you swap what's loaded. The body casts with her own skin and dies as the mark climbs. The scholar casts with what she remembers and dies when you swap the fittings. The attuned casts with whatever is under her palm and dies with no library, no chaining.">
 
-<section>
-  <h2>The carrier’s two clocks</h2>
-  <p class="lede">The one you asked for, and it came back better than specified. Her cost runs on <b>two separate gauges</b>, and knowing which is which is the whole of the school’s arithmetic.</p>
-  <figure>
-    <svg viewBox="0 0 700 300" role="img" aria-label="A standing figure showing the four scribing sites a carrier uses in a lifetime: first forearm, second forearm, thigh, back. A hard line at the collarbone marks the limit nobody crosses. Beside it, a scale showing how far each stroke advances the mark: a set is small, a solve is large, a chain is large and a quarter.">
-      <circle cx="150" cy="44" r="20" fill="#E6E1D4"/>
-      <polygon points="122,70 178,70 186,186 114,186" fill="#E6E1D4"/>
-      <path d="M122 84 L74 168" stroke="#E6E1D4" stroke-width="13" stroke-linecap="round"/>
-      <path d="M178 84 L226 168" stroke="#E6E1D4" stroke-width="13" stroke-linecap="round"/>
-      <g stroke="#E6E1D4" stroke-width="12" stroke-linecap="round"><path d="M134 186 v96 M166 186 v96"/></g>
-      <path d="M122 84 L96 130" stroke="#9A9184" stroke-width="13" stroke-linecap="round"/>
-      <g stroke="#C05A32" stroke-width="2" fill="none">
-        <circle cx="72" cy="170" r="9"/><circle cx="228" cy="170" r="9"/>
-        <path d="M116 92 L80 158 M178 92 L220 158"/></g>
-      <path d="M108 70 H192" stroke="#C05A32" stroke-width="2.5" stroke-dasharray="6 4"/>
-      <text x="200" y="66" font-family="IBM Plex Mono, monospace" font-size="10" fill="#C05A32" letter-spacing=".8">THE COLLARBONE — NOBODY GOES PAST IT</text>
-      <text x="200" y="80" font-family="IBM Plex Mono, monospace" font-size="9" fill="#8A8173">past the collarbone is the throat</text>
-      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#BDB6A7">
-        <text x="30" y="200">1 forearm</text><text x="238" y="200">2 the other</text>
-        <text x="118" y="252" fill="#8A8173">3 thigh</text><text x="182" y="300" fill="#8A8173">4 the back — greys slowest, and you cannot see it</text>
-      </g>
-      <line x1="330" y1="24" x2="330" y2="276" stroke="#3A342B"/>
-      <text x="360" y="40" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8A8173" letter-spacing="1.6">CLOCK ONE — THE CREEP</text>
-      <text x="360" y="58" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#BDB6A7">deterministic. every passage advances the mark,</text>
-      <text x="360" y="72" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#BDB6A7">and it moves while you watch.</text>
-      <g font-family="IBM Plex Mono, monospace" font-size="9.5">
-        <text x="360" y="98" fill="#BDB6A7">a set</text>
-        <rect x="440" y="88" width="24" height="11" fill="#C05A32" opacity=".55"/>
-        <text x="360" y="120" fill="#BDB6A7">a solve</text>
-        <rect x="440" y="110" width="120" height="11" fill="#C05A32" opacity=".8"/>
-        <text x="360" y="142" fill="#BDB6A7">a chain</text>
-        <rect x="440" y="132" width="150" height="11" fill="#C05A32"/>
-        <text x="600" y="142" fill="#C05A32">+ a quarter</text>
-      </g>
-      <text x="360" y="176" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8A8173">hardened tissue will not carry, so her working</text>
-      <text x="360" y="190" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8A8173">skin is a map that only ever shrinks.</text>
-      <line x1="360" y1="206" x2="680" y2="206" stroke="#3A342B"/>
-      <text x="360" y="228" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8A8173" letter-spacing="1.6">CLOCK TWO — ORDINARY OVERDRAW</text>
-      <text x="360" y="248" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#BDB6A7">slack · thinning · hardening · failure — jumped a</text>
-      <text x="360" y="262" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#BDB6A7">whole stage by asking one working for too much.</text>
-      <text x="360" y="282" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#E6E1D4">The creep is what the last nine jobs cost.</text>
-    </svg>
-    <figcaption>Moving the channel costs three things: weeks of cutting before a new run closes reliably, months of being clumsy — the one thing she was never allowed to be — and geometry, because the forearm is the best site there is and everything after it is worse. A thigh means putting a knee on the work. Ribs mean turning your body into the thing you press against a wall. <b>Four sites in a working life is a great many.</b></figcaption>
+  <g font-family="IBM Plex Mono, monospace" font-size="10.5" letter-spacing="1.4" fill="#BDB6A7" text-anchor="middle">
+    <text x="188" y="14">YOU CAN TAKE IT OFF HER</text>
+    <text x="486" y="14">NOTHING TO TAKE OFF HER</text>
+  </g>
+  <path d="M76 35 L76 25 L300 25 L300 35" fill="none" stroke="#3A342B"/>
+  <path d="M316 35 L316 25 L656 25 L656 35" fill="none" stroke="#3A342B"/>
+
+  <line x1="0" y1="46" x2="660" y2="46" stroke="#3A342B"/>
+  <line x1="0" y1="134" x2="660" y2="134" stroke="#3A342B"/>
+  <line x1="0" y1="186" x2="660" y2="186" stroke="#3A342B"/>
+  <g stroke="#3A342B">
+    <line x1="72.5" y1="46" x2="72.5" y2="236"/>
+    <line x1="190.5" y1="46" x2="190.5" y2="236"/>
+    <line x1="307.5" y1="46" x2="307.5" y2="236"/>
+    <line x1="424.5" y1="46" x2="424.5" y2="236"/>
+    <line x1="541.5" y1="46" x2="541.5" y2="236"/>
+  </g>
+
+  <polygon points="78,94 84,72 96,72 102,94" fill="#D8B25C"/>
+  <rect x="84" y="65" width="12" height="7" fill="#D8B25C"/>
+  <line x1="82" y1="69" x2="98" y2="69" stroke="#2A2620" stroke-width="2"/>
+
+  <polygon points="194.2,89.6 226.2,65.6 229.8,70.4 197.8,94.4" fill="#D8B25C"/>
+  <line x1="215.4" y1="71.2" x2="221.4" y2="79.2" stroke="#2A2620" stroke-width="2.5"/>
+
+  <rect x="318" y="62" width="13" height="26" fill="#D8B25C"/>
+  <rect x="319.5" y="88" width="10" height="3" fill="#D8B25C"/>
+  <path d="M315 91 L334 91 L334 99 L318 99 Z" fill="#D8B25C"/>
+  <path d="M315 92 L311 95 L313 99 L318 99 Z" fill="#D8B25C"/>
+  <rect x="318" y="69" width="13" height="3.5" fill="#C05A32"/>
+  <rect x="318" y="76" width="13" height="2.5" fill="#C05A32" opacity="0.5"/>
+
+  <rect x="429" y="68" width="34" height="24" fill="none" stroke="#D8B25C" stroke-width="2"/>
+  <rect x="429" y="68" width="7" height="24" fill="#D8B25C"/>
+  <line x1="442" y1="76" x2="458" y2="76" stroke="#D8B25C"/>
+  <line x1="442" y1="84" x2="458" y2="84" stroke="#D8B25C"/>
+
+  <polygon points="548,74 554,70 562,84 556,88" fill="#D8B25C"/>
+  <rect x="554" y="86" width="28" height="6" fill="#D8B25C"/>
+  <line x1="546" y1="93.5" x2="590" y2="93.5" stroke="#8A8173" stroke-width="1.5"/>
+
+  <g font-family="IBM Plex Mono, monospace" font-size="11.5" fill="#E6E1D4">
+    <text x="76" y="120">the bag</text>
+    <text x="193" y="120">the instrument</text>
+    <text x="310" y="120">the body</text>
+    <text x="427" y="120">the scholar</text>
+    <text x="544" y="120">the attuned</text>
+  </g>
+
+  <text x="0" y="157" font-family="IBM Plex Mono, monospace" font-size="9.5" letter-spacing="1.4" fill="#8A8173">CASTS WITH</text>
+  <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#BDB6A7">
+    <text x="76" y="157">carried reagents</text>
+    <text x="193" y="157">an object he has</text>
+    <text x="193" y="171">read through</text>
+    <text x="310" y="157">her own skin</text>
+    <text x="427" y="157">what she remembers</text>
+    <text x="544" y="157">whatever is under</text>
+    <text x="544" y="171">her palm</text>
+  </g>
+
+  <text x="0" y="209" font-family="IBM Plex Mono, monospace" font-size="9.5" letter-spacing="1.4" fill="#C05A32">KILLS IT</text>
+  <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#C05A32">
+    <text x="76" y="209">run her dry</text>
+    <text x="193" y="209">swap what's loaded</text>
+    <text x="310" y="209">the mark climbs</text>
+    <text x="427" y="209">swap the fittings</text>
+    <text x="544" y="209">no library,</text>
+    <text x="544" y="223">no chaining</text>
+  </g>
+</svg>
+    <figcaption>One question: what does she cast with? Five answers, all dangerous.<br>This is the substance half. Every school still has to pay sap, and how she carries it — pool, flask or implant — is a second question with its own three ways of being cut. Nobody is undeniable.</figcaption>
   </figure>
 </section>
 
 <section>
-  <h2>Who beats whom</h2>
-  <p class="lede">Twelve edges over five schools — which makes it a <b>complete</b> graph: every pair fights, nobody is unbeaten, nobody is a designated victim. Two pairs run <b>both ways</b> and flip on terrain: pinch↔carrier turns on who prepared the room, pinch↔walker on whose ground it is.</p>
-  <figure>
-    <div class="mxwrap"><table class="mx"><thead><tr><th class="corner">beats ↓ / vs →</th><th>Pinch hand</th><th>Hafter</th><th>Carrier</th><th>Bookhand</th><th>Ground-walker</th></tr></thead><tbody><tr><th>Pinch hand</th><td class="self">—</td><td class="loss"><span>▼</span>loses</td><td class="both"><span>⇄</span>both</td><td class="win"><span>▲</span>beats</td><td class="both"><span>⇄</span>both</td></tr><tr><th>Hafter</th><td class="win"><span>▲</span>beats</td><td class="self">—</td><td class="loss"><span>▼</span>loses</td><td class="loss"><span>▼</span>loses</td><td class="win"><span>▲</span>beats</td></tr><tr><th>Carrier</th><td class="both"><span>⇄</span>both</td><td class="win"><span>▲</span>beats</td><td class="self">—</td><td class="win"><span>▲</span>beats</td><td class="loss"><span>▼</span>loses</td></tr><tr><th>Bookhand</th><td class="loss"><span>▼</span>loses</td><td class="win"><span>▲</span>beats</td><td class="loss"><span>▼</span>loses</td><td class="self">—</td><td class="win"><span>▲</span>beats</td></tr><tr><th>Ground-walker</th><td class="both"><span>⇄</span>both</td><td class="loss"><span>▼</span>loses</td><td class="win"><span>▲</span>beats</td><td class="loss"><span>▼</span>loses</td><td class="self">—</td></tr></tbody></table></div>
-    <figcaption>Read along a row: <b>▲ beats</b> · <b>▼ loses to</b> · <b>⇄ both, depending on the room</b>. Every state carries a glyph and a word, so nothing here is colour-alone. Palette checked with the colour validator — CVD separation, normal-vision separation and contrast all pass comfortably.</figcaption>
-  </figure>
-  <p class="note">A few edges worth knowing, because they are the ones that teach the system: <b>the walker beats the pinch hand</b> because she aims the reach, and the most out-of-rest matter in the room is the powder on the pinch hand’s chest. <b>The carrier beats the hafter</b> because steel is deep in her library and she closes the ring on the rod itself. <b>The bookhand beats the walker</b> without ever approaching — she has the district’s gate-work in the record and shuts a gate two streets away.</p>
+  <p class="seck">The five</p>
+  <div class="schools">
+
+    <div class="school">
+      <p class="castk">Casts with · carried reagents</p>
+      <h2>The bag</h2>
+      <p class="look">Flint, carbon, salts, filings — a grab bag she put together herself and grinds fresh out of whatever she can scavenge. <em>Pouches, a working apron, and a scale: she weighs before she names.</em> On a march she walks where nobody wants to walk near her.</p>
+      <div class="beats">
+        <div class="beat good"><p><span class="beatk">Great at</span>Everything in her pouches is stock she has <b>already read</b>, so it comes up FAST — and she bought the proportion, so she is never short <em>by accident</em>.</p></div>
+        <div class="beat bad"><p><span class="beatk">What kills it</span>Somebody else's hand in her stores. Run her dry and she's a <b>novice in her own room</b> — she knows her pouches by heart and has never had to learn a wall. And the accelerant on her hip is the nearest source in the room: four metres on a fast stroke, twelve on a heavy one.</p></div>
+      </div>
+    </div>
+
+    <div class="school">
+      <p class="castk">Casts with · objects</p>
+      <h2>The instrument</h2>
+      <p class="look">A rod, a gauntlet, armour — and at the far end, metal that replaced a limb. Only ever a thing <b>he has already read through</b>. <em>Gloved hands, and the habit of working at arm's length:</em> the tool touches the material so he doesn't have to.</p>
+      <div class="beats">
+        <div class="beat good"><p><span class="beatk">Great at</span>A line that <b>cannot be scuffed out</b> — scored into the metal, so nobody smudges it from six feet. And he packs the rod in his own time, so he opens a fight already holding the stuff for it.</p></div>
+        <div class="beat bad"><p><span class="beatk">What kills it</span>A <b>swapped capsule</b>. He sets what he thinks he packed. He can buy a line that never smudges; he can never buy acuity.</p></div>
+      </div>
+    </div>
+
+    <div class="school">
+      <p class="castk">Casts with · herself</p>
+      <h2>The body</h2>
+      <p class="look">The line is cut into her own skin, so she is <b>always inside her own boundary</b> — and anything inside the line is a source. <em>Every caster's line shows dust-fine when the stroke fires; hers is the only one you can read with no stroke thrown.</em> Scored, healed, and sitting on her arm.</p>
+      <div class="beats">
+        <div class="beat good"><p><span class="beatk">Great at</span>Nothing to drop and nothing to take off her — she walks into a room <b>already armed</b>. What she's armed with is two things: water and lime, and they are always there.</p></div>
+        <div class="beat bad"><p><span class="beatk">What kills it</span>She is inside every line she draws, so every working she throws short takes <b>her own water and lime</b> first — cramps, then teeth, then bone, and it never comes back. And a scored line is permanent: a new one crossing an old one breaks the run before it closes, so she can never write on the same skin twice. Her map only shrinks — forearm, other forearm, thigh, back. <b>Nobody lets it past the collarbone.</b></p></div>
+      </div>
+    </div>
+
+    <div class="school">
+      <p class="castk">Casts with · memory</p>
+      <h2>The scholar</h2>
+      <p class="look">What she has already read and retained. <b>Paper is only an index</b> — it tells her which of the things she has touched this is. <em>Empty hands and a sample case,</em> and she has already touched the wall on her way in.</p>
+      <div class="beats">
+        <div class="beat good"><p><span class="beatk">Great at</span>Recognising. Library drops a working from HEAVY to FAST, and <b>nobody's list is longer</b> — so more of any room is FAST for her than for anyone else standing in it.</p></div>
+        <div class="beat bad"><p><span class="beatk">What kills it</span><b>Substitution.</b> Swap the fittings and she works at full speed, confidently, on a material that isn't there. Then she finds out — and now she has to read the thing <em>and disprove herself</em>, which is slower than a novice.</p></div>
+      </div>
+    </div>
+
+    <div class="school odd">
+      <p class="castk">Casts with · instinct</p>
+      <h2>The attuned</h2>
+      <p class="look">Not a trade; <b>a people</b>. She has been reading by touch since she could walk. No pouch, no rod, nothing anyone taught her. <em>Hands on the ground, and she stays down longer than anyone thinks she needs to.</em></p>
+      <div class="beats">
+        <div class="beat good"><p><span class="beatk">Great at</span><b>State.</b> A palm tells her whether a thing is at rest, forced out of rest, or already worked. On ground she has knelt on for twenty years she feels the surplus coming up slower than it did — which is how a stolen basin upstream gets noticed a season before anyone's well drops.</p></div>
+        <div class="beat bad"><p><span class="beatk">What kills it</span><b>No library.</b> Recognising is the whole of the FAST tier, and large means chained, and chained means from memory — so everything she takes has to fit inside one working.</p></div>
+      </div>
+    </div>
+
+  </div>
 </section>
 
 <section>
+  <p class="seck">Why the scholar and the attuned are the same argument twice</p>
+  <figure><svg viewBox="0 0 660 400" role="img" aria-label="The five schools plotted on two axes. Library, earned with no ceiling, runs left to right; acuity, largely natal with a real ceiling, runs bottom to top. The attuned sits top left, feeling without knowing. The scholar sits bottom right, knowing without needing to feel again. The bag sits low left with a short library bought instead of walked. The body sits in the middle, ordinary on both. The instrument sits low middle: he can buy a line, he can never buy acuity. Disguise beats acuity, worth about two seconds. Substitution beats library, and a veteran in a substituted room is worse off than a novice.">
+  <line x1="100" y1="296" x2="614" y2="296" stroke="#3A342B"/>
+  <line x1="100" y1="296" x2="100" y2="38" stroke="#3A342B"/>
+  <path d="M94 46 l6 -8 6 8" fill="none" stroke="#3A342B"/>
+  <path d="M606 290 l8 6 -8 6" fill="none" stroke="#3A342B"/>
+
+  <circle cx="152" cy="100" r="4.5" fill="#D8B25C"/>
+  <circle cx="520" cy="262" r="4.5" fill="#D8B25C"/>
+  <circle cx="140" cy="242" r="3.5" fill="#BDB6A7"/>
+  <circle cx="322" cy="166" r="3.5" fill="#BDB6A7"/>
+  <circle cx="300" cy="222" r="3.5" fill="#BDB6A7"/>
+
+  <g font-family="IBM Plex Mono, monospace" font-size="11.5" letter-spacing=".5">
+    <text x="166" y="96" fill="#D8B25C">the attuned</text>
+    <text x="506" y="258" fill="#D8B25C" text-anchor="end">the scholar</text>
+    <text x="154" y="238" fill="#BDB6A7">the bag</text>
+    <text x="336" y="162" fill="#BDB6A7">the body</text>
+    <text x="314" y="218" fill="#BDB6A7">the instrument</text>
+  </g>
+
+  <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#8A8173">
+    <text x="166" y="111">feels without knowing</text>
+    <text x="506" y="273" text-anchor="end">knows without needing to feel again</text>
+    <text x="154" y="253">a short library, bought instead of walked</text>
+    <text x="336" y="177">ordinary on both — her edge is not</text>
+    <text x="336" y="191">the read</text>
+    <text x="314" y="233">he can buy a line; he can never buy acuity</text>
+  </g>
+
+  <path d="M176 66 L104 66 M112 60 l-8 6 8 6" fill="none" stroke="#C05A32" stroke-width="1.5"/>
+  <text x="184" y="70" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#C05A32" letter-spacing=".5">DISGUISE BEATS ACUITY — ABOUT TWO SECONDS</text>
+
+  <text x="100" y="318" font-family="IBM Plex Mono, monospace" font-size="11" fill="#E6E1D4" letter-spacing="1.4">LIBRARY — EARNED, NO CEILING</text>
+  <g transform="translate(22,300) rotate(-90)">
+    <text x="0" y="0" font-family="IBM Plex Mono, monospace" font-size="11" fill="#E6E1D4" letter-spacing="1.4">ACUITY — LARGELY NATAL, REAL CEILING</text>
+  </g>
+
+  <path d="M362 338 L362 302 M356 310 l6 -8 6 8" fill="none" stroke="#C05A32" stroke-width="1.5"/>
+  <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#C05A32" letter-spacing=".5">
+    <text x="356" y="350">SUBSTITUTION BEATS LIBRARY — A VETERAN IN A</text>
+    <text x="356" y="363">SUBSTITUTED ROOM IS WORSE OFF THAN A NOVICE</text>
+  </g>
+</svg>
+    <figcaption>Gate 1's two locked axes. Acuity is largely natal and has a real ceiling; library is purely earned and has none.<br>Two casters can be equally dangerous by opposite routes — which is why acuity never becomes a power stat.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <p class="seck">The body pays twice, and Gate 1 already wrote both bills</p>
+  <figure><svg viewBox="0 0 660 300" role="img" aria-label="The body school runs two clocks. Clock one is the map: a scored line is permanent, so she can never write on the same skin twice, and her working skin only shrinks — forearm, other forearm, thigh, back — up to a hard line at the collarbone marked past here is the throat. Clock two is what she spends: every shortfall takes her own water and lime before it takes the room, staged as cramps, then teeth, then bone, and this one does not harden.">
+  <line x1="330" y1="8" x2="330" y2="292" stroke="#3A342B"/>
+
+  <text x="0" y="16" font-family="IBM Plex Mono, monospace" font-size="10.5" letter-spacing="1.4" fill="#E6E1D4">CLOCK ONE — THE MAP</text>
+  <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8A8173">
+    <text x="0" y="32">a scored line is permanent — she can never</text>
+    <text x="0" y="45">write on the same skin twice</text>
+  </g>
+  <line x1="0" y1="56" x2="310" y2="56" stroke="#3A342B"/>
+
+  <circle cx="80" cy="78" r="11" fill="#4C443A"/>
+  <path d="M74 87 L74 103 M86 87 L86 103" stroke="#4C443A" stroke-width="4"/>
+  <path d="M58 102 L102 102 L94 168 L66 168 Z" fill="#4C443A"/>
+  <path d="M102 104 L118 152 L122 204" fill="none" stroke="#4C443A" stroke-width="6" stroke-linecap="square" stroke-linejoin="miter"/>
+  <path d="M58 104 L42 152 L38 204" fill="none" stroke="#4C443A" stroke-width="6" stroke-linecap="square" stroke-linejoin="miter"/>
+  <path d="M72 168 L74 248" stroke="#4C443A" stroke-width="6" stroke-linecap="square"/>
+  <path d="M88 168 L86 248" stroke="#4C443A" stroke-width="6" stroke-linecap="square"/>
+
+  <path d="M122 204 L119.7 174" stroke="#8A8173" stroke-width="7" stroke-linecap="butt"/>
+  <path d="M122 204 L119.7 174" stroke="#C05A32" stroke-width="2.5" stroke-linecap="butt"/>
+  <line x1="112" y1="174" x2="128" y2="174" stroke="#C05A32" stroke-width="1.5"/>
+
+  <circle cx="131" cy="190" r="2.5" fill="#D8B25C"/>
+  <circle cx="29" cy="190" r="2.5" fill="#D8B25C"/>
+  <circle cx="63" cy="196" r="2.5" fill="#D8B25C"/>
+  <circle cx="80" cy="132" r="2.5" fill="#D8B25C"/>
+
+  <line x1="44" y1="98" x2="140" y2="98" stroke="#D8B25C" stroke-width="2"/>
+  <text x="146" y="101.5" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#D8B25C">PAST HERE IS THE THROAT</text>
+
+  <line x1="126" y1="158" x2="142" y2="158" stroke="#3A342B"/>
+  <text x="146" y="161.5" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#BDB6A7">GOOD SKIN</text>
+
+  <line x1="128" y1="200" x2="142" y2="200" stroke="#3A342B"/>
+  <text x="146" y="203.5" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#C05A32">ALREADY WRITTEN ON</text>
+
+  <line x1="0" y1="268" x2="310" y2="268" stroke="#3A342B"/>
+  <text x="0" y="286" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8A8173">forearm, other forearm, thigh, back — it only shrinks</text>
+
+  <text x="350" y="16" font-family="IBM Plex Mono, monospace" font-size="10.5" letter-spacing="1.4" fill="#E6E1D4">CLOCK TWO — WHAT SHE SPENDS</text>
+  <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8A8173">
+    <text x="350" y="32">every shortfall takes her own</text>
+    <text x="350" y="45">water and lime, before the room</text>
+  </g>
+  <line x1="350" y1="56" x2="660" y2="56" stroke="#3A342B"/>
+
+  <line x1="410" y1="94" x2="410" y2="232" stroke="#3A342B"/>
+  <rect x="418" y="100" width="58" height="22" fill="#6FA0B0"/>
+  <rect x="418" y="152" width="128" height="22" fill="#6FA0B0"/>
+  <rect x="418" y="204" width="224" height="22" fill="#6FA0B0"/>
+  <g font-family="IBM Plex Mono, monospace" font-size="11" fill="#BDB6A7">
+    <text x="350" y="115">CRAMPS</text>
+    <text x="350" y="167">TEETH</text>
+    <text x="350" y="219">BONE</text>
+  </g>
+
+  <line x1="350" y1="268" x2="660" y2="268" stroke="#3A342B"/>
+  <text x="350" y="286" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8A8173">this one does not harden</text>
+</svg>
+    <figcaption>Two clocks, and neither of them is overdraw. The map is geometry — a line she has already used is a line she can't close across.<br>What she spends is substance: her own water and lime, staged and cumulative. It does not harden, and it does not come back.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <p class="seck">Who beats whom</p>
+  <figure><svg viewBox="0 0 660 440" role="img" aria-label="The counter graph for the five schools. The bag and the body eat each other, and so do the scholar and the attuned. The bag beats the scholar by changing the room first. The instrument beats the attuned because everything on him is tinned, painted and greased. The instrument beats the bag because his supply is in his hand. The body beats the instrument because everything he has can be taken. Four pairs have no edge at all.">
+  <defs>
+    <marker id="cgB" viewBox="0 0 9 9" refX="8" refY="4.5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#D8B25C"/></marker>
+    <marker id="cgHe" viewBox="0 0 9 9" refX="8" refY="4.5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#C05A32"/></marker>
+    <marker id="cgHs" viewBox="0 0 9 9" refX="1" refY="4.5" markerWidth="7" markerHeight="7" orient="auto"><path d="M9 0 L0 4.5 L9 9 z" fill="#C05A32"/></marker>
+  </defs>
+
+  <path d="M400 62 L540 156" stroke="#D8B25C" stroke-width="1.5" fill="none" marker-end="url(#cgB)"/>
+  <path d="M490 175 L170 175" stroke="#D8B25C" stroke-width="1.5" fill="none" marker-end="url(#cgB)"/>
+  <path d="M100 194 L100 319" stroke="#D8B25C" stroke-width="1.5" fill="none" marker-end="url(#cgB)"/>
+  <path d="M560 194 L560 319" stroke="#D8B25C" stroke-width="1.5" fill="none" marker-end="url(#cgB)"/>
+
+  <path d="M150 156 L280 66" stroke="#C05A32" stroke-width="1.5" fill="none" marker-end="url(#cgHe)" marker-start="url(#cgHs)"/>
+  <path d="M172 340 L488 340" stroke="#C05A32" stroke-width="1.5" fill="none" marker-end="url(#cgHe)" marker-start="url(#cgHs)"/>
+
+  <rect x="264" y="30"  width="132" height="34" fill="#2A2620" stroke="#3A342B"/>
+  <rect x="34"  y="158" width="132" height="34" fill="#2A2620" stroke="#3A342B"/>
+  <rect x="494" y="158" width="132" height="34" fill="#2A2620" stroke="#3A342B"/>
+  <rect x="34"  y="323" width="132" height="34" fill="#2A2620" stroke="#3A342B"/>
+  <rect x="494" y="323" width="132" height="34" fill="#2A2620" stroke="#3A342B"/>
+
+  <g font-family="IBM Plex Mono, monospace" font-size="11.5" fill="#E6E1D4" text-anchor="middle">
+    <text x="330" y="51">the body</text>
+    <text x="100" y="179">the bag</text>
+    <text x="560" y="179">the instrument</text>
+    <text x="100" y="344">the scholar</text>
+    <text x="560" y="344">the attuned</text>
+  </g>
+
+  <g font-family="IBM Plex Mono, monospace" font-size="9.5" letter-spacing="1" fill="#8A8173">
+    <text x="650" y="76" text-anchor="end">EVERYTHING HE HAS CAN BE TAKEN</text>
+    <text x="330" y="166" text-anchor="middle">HIS IS IN HIS HAND</text>
+    <text x="118" y="262">CHANGE THE ROOM FIRST</text>
+    <text x="542" y="262" text-anchor="end">TINNED, PAINTED, GREASED</text>
+  </g>
+
+  <g font-family="IBM Plex Mono, monospace" font-size="9.5" letter-spacing="1" fill="#C05A32">
+    <text x="20" y="100">THESE TWO EAT EACH OTHER</text>
+    <text x="330" y="332" text-anchor="middle">THESE TWO EAT EACH OTHER</text>
+  </g>
+
+  <line x1="0" y1="395" x2="660" y2="395" stroke="#3A342B"/>
+  <text x="0" y="418" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8A8173">Four pairs have no edge. Nobody padded this.</text>
+</svg>
+    <figcaption>Each arrow points at the loser. Two pairs eat each other and are drawn double-headed.<br>This is not a five-way ring. The instrument takes two and loses one; the body and the bag are each other&rsquo;s whole problem.</figcaption>
+  </figure>
+  <div class="edges">
+    <div class="edge"><p class="matchup">The bag <i>⇄</i> the body</p><p class="why">The bag can start a working and walk off it, and a floor of half-set matter is the safest room the body will ever stand in — every shortfall she throws feeds on the mass instead of on her. Right up to the moment she has to put a palm down. And the body works short on purpose standing next to the pouch, so the working takes the powder off the nearest hip.</p></div>
+    <div class="edge"><p class="matchup">The scholar <i>⇄</i> the attuned</p><p class="why">A door is only takeable by someone who has already touched what it's made of — and off her own parish the attuned has touched almost nothing, while the scholar's list runs to every fitting in the county. But the attuned picks the fight on her own ground, where twenty years of kneeling is her whole library and the scholar's list is no longer than anyone else's.</p></div>
+    <div class="edge"><p class="matchup">The bag <i>→</i> the scholar</p><p class="why">The bag has the stock to change a room before anyone fights in it — a thin plate glued over the door fittings, a tenth part of something else mixed through the stores. A long list is worse than no list once it's wrong.</p></div>
+    <div class="edge"><p class="matchup">The instrument <i>→</i> the attuned</p><p class="why">Everything on him is tinned, painted and greased, so her read stops at the first seam and she has to take a second look. That's two seconds — and two seconds is her standing still in front of a man with a loaded rod.</p></div>
+    <div class="edge"><p class="matchup">The instrument <i>→</i> the bag</p><p class="why">His supply is already inside the thing in his hand; hers is in pouches on a strap. Cut the strap and she's grinding scavenge while he's still firing what he packed.</p></div>
+    <div class="edge"><p class="matchup">The body <i>→</i> the instrument</p><p class="why">Everything he casts with can be swapped, fouled or pulled off him. She has nothing on her to take.</p></div>
+  </div>
+</section>
+
+<section class="ask">
   <h2>Your call</h2>
-  <div class="dec">
-    <p class="q">Decision 1</p>
-    <h3>Which are playable</h3>
-    <div class="opts">
-      <div class="o rec"><p class="on">Recommended — four playable</p><p>Pinch hand, carrier, hafter, bookhand. Each has a genuinely different hand: thumb-counting a pocket board · walking into contact · pure tempo with no count · recon as a mechanic.</p></div>
-      <div class="o"><p class="on">Caveat on the bookhand</p><p>She is playable <em>only</em> if levels reward pre-study. If the game is procedural or arrival-driven, she is a promise you cannot keep and should drop to enemy-only.</p></div>
+  <p class="lede">Five open questions. The names, the axis and the four-slot card are settled — these are the ones I'd rather you decided than have me quietly decide by writing the long document a particular way.</p>
+  <div class="qs">
+
+    <div class="q">
+      <p class="qq"><span class="lbl">The question</span>Which are playable, and which are enemy-only?</p>
+      <p class="rec"><span class="lbl">What I'd do</span>All five playable. None of them is a tier, and the counter graph works because every school is somebody's answer</p>
+      <p class="cost"><span class="lbl">What it costs</span>The attuned is the hardest to build a kit for, because she has no fast tier and no chaining. If she's playable, she needs a reason to be picked</p>
     </div>
-  </div>
-  <div class="dec">
-    <p class="q">Decision 2</p>
-    <h3>Ground-walker enemy-only?</h3>
-    <div class="opts">
-      <div class="o rec"><p class="on">Recommended — enemy-only</p><p>Her power is twenty years on forty acres, which a travelling protagonist can never accumulate. As an enemy she buys a <b>fortress</b> (unbeatable where she lives, irrelevant a mile away — so the boss fight becomes a decision about whether to go there), a <b>weather event</b> (the only silhouette that makes the floor itself hostile), and the <b>aimed reach</b> — which should be done <em>to</em> the player long before it is ever a tool.</p></div>
-      <div class="o"><p class="on">Keep hire-walkers hireable</p><p>The trade’s other half goes ground to ground for money. Hire them as NPCs and players borrow the fantasy without owning it.</p></div>
+
+    <div class="q">
+      <p class="qq"><span class="lbl">The question</span>Where does the protagonist start?</p>
+      <p class="rec"><span class="lbl">What I'd do</span>The bag. It's the school that teaches the system — inventory, proportion, a resource that visibly deletes, and a restock loop between fights</p>
+      <p class="cost"><span class="lbl">What it costs</span>It's also the school carrying the nearest source in the room on her hip, so the first time the Law bites, it bites her. That may be exactly right, or it may be too early</p>
     </div>
-  </div>
-  <div class="dec">
-    <p class="q">Decision 3</p>
-    <h3>Where the protagonist starts</h3>
-    <div class="opts">
-      <div class="o rec"><p class="on">Recommended — the carrier</p><p>You have nothing and you can do it <em>right now</em>. The first ten hours are the most powerful the player will ever feel — catch a blade bare-handed, hand it back hollow — and the mark moves a thumb’s width every time, on screen, at the moment you spend. <b>The arc is the shrinking map.</b> It is the only school where the game’s own thesis is the health bar.</p></div>
-      <div class="o"><p class="on">Alternative — the pinch hand</p><p>Pockets, weight, a pre-fight repack, a world you learn by milling it. High systems teaching, low emotional cost, travels anywhere. The safe start and the weaker story — and the perfect <em>second</em> school, the thing you pick up when you finally understand why nobody should have to be the channel.</p></div>
+
+    <div class="q">
+      <p class="qq"><span class="lbl">The question</span>Is the attuned currently the weakest design?</p>
+      <p class="rec"><span class="lbl">What I'd do</span>She takes the two hardest caps in the system — no fast tier, no large working ever — for a sense Gate 1 says is just the top of the ordinary acuity scale. The proposed fix: stop paying her in perception, pay her in <em>the reach</em>. She's the only caster who can work short on purpose and be certain what the working will take; everyone else's reach is a gamble</p>
+      <p class="cost"><span class="lbl">What it costs</span>That's a new mechanic, which is why it isn't in the cards above. It needs no bloodline, no second sense and no extra sap — but it is still a Gate 2 addition and it's yours to approve, not mine to slip in</p>
     </div>
-  </div>
-  <div class="dec">
-    <p class="q">Decision 4 — expensive to reverse</p>
-    <h3>Four rulings made for you</h3>
-    <div class="opts">
-      <div class="o"><p class="on">Irreversibility is a promise</p><p>If hardening can ever be healed — a relic, a surgeon, a late-game item — the carrier has no arc and the whole overdraw vocabulary goes soft. Decide now, not at Gate 6.</p></div>
-      <div class="o"><p class="on">Paper is an index, not a library</p><p>A record tells you <em>which</em> of the things you have already touched this is. If a later gate lets the record enter library directly, the bookhand stops being a class.</p></div>
-      <div class="o"><p class="on">A chain contains a solve</p><p>There is no cheap fast tier. Every school’s FAST costs a full solve and a quarter, so the fast tier is the <em>expensive</em> tier for everybody, and most work is done on the plain set.</p></div>
-      <div class="o"><p class="on">The aimed reach belongs to one school</p><p>It is the walker’s. If a second school gets it, the crack in the Law is spent before Gate 3 opens.</p></div>
+
+    <div class="q">
+      <p class="qq"><span class="lbl">The question</span>How much of the attuned belongs to Gate 5?</p>
+      <p class="rec"><span class="lbl">What I'd do</span>Her mechanics stay here; her <em>people</em> goes to Gate 5. The card says "a people" and then stops</p>
+      <p class="cost"><span class="lbl">What it costs</span>It leaves the most interesting thing about her unwritten for now. The alternative — explaining her here — is exactly how attempt three turned into ethnography</p>
     </div>
+
+    <div class="q">
+      <p class="qq"><span class="lbl">The question</span>Does the counter graph hold?</p>
+      <p class="rec"><span class="lbl">What I'd do</span>Ship it. It's asymmetric on purpose: two mutual pairs, four pairs with no edge, and the instrument sitting off to one side with two wins and one loss</p>
+      <p class="cost"><span class="lbl">What it costs</span>Push on <b>the bag against the body</b> if you push anywhere. It's the closest thing to a designed matchup rather than a derived one, and if you don't buy it, the honest fix is to give the body her loss somewhere else rather than pretend she has one</p>
+    </div>
+
   </div>
 </section>
 
 <footer>
-  <b>Full Gate 2 document:</b> 9,650 words — five schools with three speeds, social standing, magnifying techniques, internal splits, what a lifetime does to the body, and a scene each. <b>Coinages spent: zero of ten.</b><br>
-  <b>One thing I changed and you should check:</b> the ground-walker came back as a <em>trade</em> — survey lads at fourteen on a wage, forty acres learned the way anybody learns a stair in the dark — rather than the culture you described. That was my anti-stereotype brief over-correcting. The craft is right; a <em>people</em> who produce many of them is a Gate 5 decision, and I have left it open there rather than guessing.<br>
-  <b>Still unbuilt:</b> the loophole and the small atrocity (Gate 3) · the antagonist (Gate 4) · the nation and its apparatus (Gate 5) · the seven lieutenants and the endgame (Gate 6).
+  <b>Gate 1 is closed and nothing above amends it.</b> Every mechanic here traces to the approved spec — the four sources of substance, the two-axis read, disguise against acuity and substitution against library, and the body's own substance ladder.<br>
+  <b>Coinages spent: zero of ten.</b> Every term is ordinary English doing new work.<br>
+  <b>Still unbuilt:</b> the loophole and the small atrocity (Gate 3) · the antagonist (Gate 4) · the nation and its apparatus (Gate 5) · the lieutenants and the endgame (Gate 6).
 </footer>
+
 </div>
