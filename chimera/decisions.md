@@ -198,7 +198,7 @@ Nothing at Gate 1.
 
 ---
 
-## GATE 2 — REFRAMED. THE AXIS IS NOW DECIDED.
+## GATE 2 — CLOSED AND APPROVED. (Summary approved; long document written.)
 
 ### DECIDED — a school is a TRADITION, not a class
 
@@ -282,7 +282,7 @@ labour, done by people with no gift at all, and there are vastly more of them. C
 industry is not. This is consistent with Gate 1, which makes the extractor a machine — *"a mill that
 fatigues rock"* — not a working.
 
-### OPEN — is the gift a slope, or a wall?
+### DECIDED — the gift is a slope, and it is that steep
 
 The human used the word **"the gift"** and said most people *can't* work sap. Gate 1 §3 ruled the
 opposite shape deliberately: *"everybody has some. It is not hereditary, no bloodline owns it, nobody
@@ -290,19 +290,25 @@ is tested for it and shut out at twelve. The extremes are genuinely far apart, b
 slope, not a wall."* — and the log priced that choice: the world must explain why most people don't
 cast **by cost and ceiling, never by permission**.
 
-**Proposed reconciliation, not yet ratified:** keep the slope, and let *"the gift"* be the folk word
-for the top of it. The village says she has the gift; the academy says she has unusual acuity and
-started young. Same girl, two vocabularies — and the gift stays a **lottery, not a lineage**, turning
-up in any family, which is why the trade recruits from everywhere.
+**RATIFIED.** Gate 1 stands unamended. The slope is kept, and it is *so steep at the low end that
+most people will never cast a single thing in their lives* — which is the felt reality the human
+wanted, arrived at by cost and ceiling rather than by permission, exactly as Gate 1 required.
 
-**If the human wants a true threshold instead, that is an amendment to a closed gate and only they can
-make it.** Do not assume it.
+*"The gift"* is the **folk word for the top of the slope**, not a trade term and not a mechanic. The
+village says she has the gift; the academy says she has unusual acuity and started young. Same girl,
+two vocabularies. That gap between how ordinary people talk about this and how the trade talks about
+it is now a register rule for all later gates.
+
+The gift is therefore a **lottery, not a lineage.** It turns up in any family, no house can hold it,
+nobody has ever bred for it, and the trade recruits from everywhere because it has to.
 
 ### Still open at Gate 2 — put to the human on the sheet
 
-Only one: whether the gift is a slope or a wall, above. Everything else on the sheet is answered.
+**Nothing. Gate 2's summary is APPROVED** — the human approved the sheet on the round that ratified
+the gift. The long document may now be written.
+
 The Table's *contents* stay deliberately unfixed — Gate 1 requires that, or comprehension collapses
-into memorisation.
+into memorisation. That is not an open question; it is a standing constraint.
 
 ---
 

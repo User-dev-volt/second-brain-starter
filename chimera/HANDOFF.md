@@ -12,8 +12,9 @@ in `User-dev-volt/second-brain-starter`, under `chimera/`.
 | Gate | Status |
 |---|---|
 | **Gate 1 — the system** | **CLOSED AND APPROVED.** Do not reopen. |
-| **Gate 2 — the schools** | **AXIS DECIDED — a tradition, not a class.** Sheet rebuilt: `gate-2-glance.html`. Five world questions open. |
-| Gates 3–6 | Untouched. |
+| **Gate 2 — the traditions** | **CLOSED AND APPROVED.** Sheet: `gate-2-glance.html`. Long document: `gate-2-traditions.md`. |
+| **Gate 3 — the loophole and the atrocity** | **OPEN. Next.** |
+| Gates 4–6 | Untouched. |
 
 ---
 
@@ -28,9 +29,11 @@ in `User-dev-volt/second-brain-starter`, under `chimera/`.
 | `bedrock.html` | Gate 1 summarised with diagrams. The format the human likes. |
 | `gate-1-brief.md` | The round-3 options brief that produced the Gate 1 decisions. |
 | `three-ways-to-cast.html` | The Gate 1 decision board. Historical. |
-| `gate-2-schools.md` | **REJECTED.** Attempt 3. Mine for mechanics, not for names or prose. |
+| `gate-2-traditions.md` | **THE APPROVED GATE 2.** 4,449 words, ten sections. |
+| `gate-2-traditions.html` | Reading edition of the above. |
+| `gate-2-schools.md` | **REJECTED.** Attempt 3, historical. Mine for mechanics, never for names or prose. |
 | `gate-2-decision.md` | **REJECTED.** Attempt 3's decision brief. |
-| `gate-2-glance.html` | **REJECTED.** Attempt 3 visual sheet. |
+| `gate-2-glance.html` | **APPROVED.** The Gate 2 summary sheet, five diagrams. |
 | `build_md_html.py`, `shell_template.html` | Turns a Gate markdown file into a styled reading edition. |
 
 ---
@@ -222,3 +225,35 @@ them, who employs them, who looks down on them, and what it costs them over a li
 The four beats of a school are now: **casts with · how you come to it · how you live · what it costs
 you.** Everything mechanical from attempt 4 survives underneath as substrate — it was audited hard
 against Gate 1 and it holds — but it is no longer the point.
+
+
+---
+
+## GATE 2 IS CLOSED. START AT GATE 3.
+
+The summary sheet was approved and the long document is written. Both are published:
+- sheet — https://claude.ai/code/artifact/df238764-9ff1-460a-92a6-f8055331ea17
+- long document — https://claude.ai/code/artifact/4ab9a9e0-0431-45f3-b3d8-3122ec6cbfe1
+
+**The one thing Gate 2 added that later gates must not break:** *the gift* is a **folk word**, not a
+mechanic. Gate 1's slope stands unamended — everybody has some acuity, it is not hereditary, and it is
+simply so steep at the low end that most people never cast anything. Ordinary people say *she has the
+gift*; the trade says *she reads well and started young*. **Keep both vocabularies.** Which one a
+character uses tells the reader whose head they are in.
+
+**And the class fact:** the sap economy is not a casters' economy. Extractor men, mill hands, channel
+gangs, sinkers, gate crews, hauliers, drawing floors and layers-out are all ordinary labour done by
+people with no gift, and there are vastly more of them. Casting is rare; the industry is not.
+
+**Gate 3 is next** — the loophole, and the atrocity built on it. Gate 1 describes the Law's crack and
+deliberately does not walk through it: *"Name your source, or it'll name one for you"* commands you to
+name where it is coming from and never says what a source may be. Correct procedure and atrocity are
+the same act.
+
+Work it the way Gate 2 was worked, because it is the method that finally succeeded:
+1. **Short message first.** Put the shape in front of the human before spending a build.
+2. **Visual TL;DR with SVG diagrams, always.** Approve the summary before writing a word of the document.
+3. **Write the prose yourself.** Sub-agents invented the jargon that killed three attempts. Use them to
+   mine `gate-1-system.md` for facts and to audit the draft adversarially — never to write.
+4. **Render and look at it** before showing the human. Chromium is available; screenshot the page and
+   read your own diagrams.
