@@ -243,11 +243,66 @@ basin upstream). **The body rests on nobody, and nobody can shut her off — whi
 of her own water and lime instead.** Four of the five can be stopped by someone who never enters the
 room.
 
+### DECIDED — no licence, but a lineage
+
+Casting is **not licensed by anyone**. There is no register, no seal, no inspector. A field surgeon
+setting a fracture in forty seconds cannot wait on paperwork, and the state has never found a way to
+stand between a person and her own two hands.
+
+**The credential is a name.** Schooled if there was a school, then apprenticed to a master, and it is
+the master's name that travels. *Who taught you* is the whole of a caster's standing, asked inside the
+first minute, and worth more than any certificate because vouching for someone means putting your own
+name behind the claim that she says her source out loud, every time.
+
+The consequence, and it is why this matters: **the body caster has no name to give.** She taught
+herself because nobody would take her, and the answer she does not have is written up her arm.
+
+### DECIDED — the body is the tradition the world looks down on
+
+Human's words: *"those people are hurting themselves and it's a bit taboo."* Not feared — the world
+is uncomfortable around her. People are polite and do not invite her back. The most self-reliant
+caster alive is the lowest-status one, and the reason is visible where nobody can pretend not to see it.
+
+### DECIDED — the attuned's ground was already taken
+
+It happened. It is held as **a turn, not a premise** — something a character carries into the story
+and does not lead with, available for a reveal and for back-story. The land itself is Gate 5; what it
+did to a family is Gate 2's to keep.
+
+### DECIDED — five is right, and the door stays open
+
+More traditions may be added later. **Rejected: the layers-out and the extractor men.** Human's
+words: *"Workers pulling sap or burying bodies is just manual labor and most people in the world
+can't control sap (or don't have the gift to work the sap)."*
+
+That correction is worth more than the schools would have been, because it establishes the class
+structure of the whole setting: **the sap economy is not a casters' economy.** Extractor men, mill
+hands, channel gangs, sinkers, gate crews, hauliers, drawing floors and layers-out are all ordinary
+labour, done by people with no gift at all, and there are vastly more of them. Casting is rare; the
+industry is not. This is consistent with Gate 1, which makes the extractor a machine — *"a mill that
+fatigues rock"* — not a working.
+
+### OPEN — is the gift a slope, or a wall?
+
+The human used the word **"the gift"** and said most people *can't* work sap. Gate 1 §3 ruled the
+opposite shape deliberately: *"everybody has some. It is not hereditary, no bloodline owns it, nobody
+is tested for it and shut out at twelve. The extremes are genuinely far apart, but the low end is a
+slope, not a wall."* — and the log priced that choice: the world must explain why most people don't
+cast **by cost and ceiling, never by permission**.
+
+**Proposed reconciliation, not yet ratified:** keep the slope, and let *"the gift"* be the folk word
+for the top of it. The village says she has the gift; the academy says she has unusual acuity and
+started young. Same girl, two vocabularies — and the gift stays a **lottery, not a lineage**, turning
+up in any family, which is why the trade recruits from everywhere.
+
+**If the human wants a true threshold instead, that is an amendment to a closed gate and only they can
+make it.** Do not assume it.
+
 ### Still open at Gate 2 — put to the human on the sheet
 
-Whether casting is licensed · which tradition the world looks down on · who owns the Table · whether
-the attuned's ground has already been taken · and whether the layers-out and the extractor men belong
-in the long document.
+Only one: whether the gift is a slope or a wall, above. Everything else on the sheet is answered.
+The Table's *contents* stay deliberately unfixed — Gate 1 requires that, or comprehension collapses
+into memorisation.
 
 ---
 
