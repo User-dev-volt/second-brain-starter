@@ -33,7 +33,7 @@ in `User-dev-volt/second-brain-starter`, under `chimera/`.
 | `gate-2-traditions.html` | Reading edition of the above. |
 | `gate-2-schools.md` | **REJECTED.** Attempt 3, historical. Mine for mechanics, never for names or prose. |
 | `gate-2-decision.md` | **REJECTED.** Attempt 3's decision brief. |
-| `gate-2-glance.html` | **APPROVED.** The Gate 2 summary sheet, five diagrams. |
+| `gate-2-glance.html` | **APPROVED.** The Gate 2 summary sheet — six diagrams, and it covers all ten sections of the long document. |
 | `build_md_html.py`, `shell_template.html` | Turns a Gate markdown file into a styled reading edition. |
 
 ---
