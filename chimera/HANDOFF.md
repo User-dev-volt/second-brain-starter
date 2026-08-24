@@ -1,9 +1,24 @@
 # PROJECT CHIMERA — HANDOFF
 
-**Read this first. Then `decisions.md`. Then `gate-1-system.md`.**
+**Read this, then `decisions.md`. Then the gate you are working on.**
 
-Everything is committed and pushed to branch **`claude/greatest-story-narrative-xx8w8o`**
-in `User-dev-volt/second-brain-starter`, under `chimera/`.
+Everything is committed and pushed to **`claude/greatest-story-narrative-xx8w8o`** in
+`User-dev-volt/second-brain-starter`, under `chimera/`.
+
+---
+
+## THIS IS A STORY FIRST
+
+Standing instruction from the human, and the single most important line in this file:
+
+> *"While this story is for a game, the important part is that it is a story ultimately. The game can
+> be built around the story later... So the world is of utmost importance, how it works, how
+> individuals have lived in this world, traditions passed on in the world and what it has culminated
+> to. All of it."*
+
+Build the **world**. A campaign gets built from it afterwards, the way one could be built from *Full
+Metal Alchemist*. Anything that reads as balance, kits, playability, classes or matchups is the wrong
+altitude and will be rejected — this already happened once and cost three attempts at Gate 2.
 
 ---
 
@@ -12,248 +27,161 @@ in `User-dev-volt/second-brain-starter`, under `chimera/`.
 | Gate | Status |
 |---|---|
 | **Gate 1 — the system** | **CLOSED AND APPROVED.** Do not reopen. |
-| **Gate 2 — the traditions** | **CLOSED AND APPROVED.** Sheet: `gate-2-glance.html`. Long document: `gate-2-traditions.md`. |
-| **Gate 3 — the loophole and the atrocity** | **OPEN. Next.** |
+| **Gate 2 — the traditions** | **CLOSED AND APPROVED.** |
+| **Gate 3 — the loophole and the atrocity** | **OPEN. START HERE.** |
 | Gates 4–6 | Untouched. |
-
----
 
 ## The files
 
 | File | What it is |
 |---|---|
-| `chimera-prompt-v3.md` | The human's original brief. The gate protocol lives in §0. |
-| `decisions.md` | **Every decision the human has made, and why.** The source of truth. |
-| `gate-1-system.md` | The approved system, 16,205 words, 13 sections. |
-| `gate-1-system.html` | Reading edition of the above. |
-| `bedrock.html` | Gate 1 summarised with diagrams. The format the human likes. |
-| `gate-1-brief.md` | The round-3 options brief that produced the Gate 1 decisions. |
+| `chimera-prompt-v3.md` | The human's original brief. The gate protocol is §0. |
+| `decisions.md` | **Every decision the human has made, and why. The source of truth.** |
+| `gate-1-system.md` | The approved system. 16,051 words, 13 sections. |
+| `gate-1-system.html` · `bedrock.html` | Reading edition, and the Gate 1 visual summary. |
+| `gate-2-traditions.md` | The approved Gate 2. 4,449 words, ten sections. |
+| `gate-2-traditions.html` · `gate-2-glance.html` | Reading edition, and the Gate 2 visual summary. |
+| `build_md_html.py`, `shell_template.html` | Turns a gate markdown file into a styled reading edition. |
+| `gate-2-schools.md/.html`, `gate-2-decision.md` | **REJECTED attempt 3, historical.** Never quote its names or prose. |
 | `three-ways-to-cast.html` | The Gate 1 decision board. Historical. |
-| `gate-2-traditions.md` | **THE APPROVED GATE 2.** 4,449 words, ten sections. |
-| `gate-2-traditions.html` | Reading edition of the above. |
-| `gate-2-schools.md` | **REJECTED.** Attempt 3, historical. Mine for mechanics, never for names or prose. |
-| `gate-2-decision.md` | **REJECTED.** Attempt 3's decision brief. |
-| `gate-2-glance.html` | **APPROVED.** The Gate 2 summary sheet — six diagrams, and it covers all ten sections of the long document. |
-| `build_md_html.py`, `shell_template.html` | Turns a Gate markdown file into a styled reading edition. |
 
 ---
 
 ## HOW TO WORK WITH THIS HUMAN — read before writing anything
 
-These were all learned the hard way in session one. Violating them is what caused three
-rejected attempts at Gate 2.
+Learned the hard way across two gates. Violating these is what caused three rejected attempts.
 
-**1. Plain names. Always.** The names that worked were agreed in conversation and are ordinary
-English a person understands instantly: *the bag, the instrument, the body, the scholar, the
-attuned.* The names that got rejected were trade jargon invented by sub-agents: *pinch hand,
-hafter, bookhand, ground-walker, carrier.* If a name needs explaining, it is wrong.
+**1. Plain names. Always.** Every term must be ordinary English a reader parses on first contact.
+Rejected sub-agent inventions: *pinch hand, hafter, bookhand, ground-walker, carrier.* The human's
+verbatim response: *"the names are terrible... No one will understand the hafter."* **If a name needs
+explaining, it is wrong.** Ten coinages for the entire world. Spent so far: **zero**. Keep it that way.
 
-**2. Less granularity, not more.** Rejected feedback, verbatim: *"they are too granular and
-abstract."* Sub-agents produce beautiful, exhaustively specified prose that buries the idea.
-A school needs: what you cast with, what it looks like, what's great about it, what kills it.
-Four things. Not a 2,000-word trade ethnography.
+**2. Less granularity, not more.** Verbatim rejection: *"they are too granular and abstract."* A
+rejected draft ran 9,526 words of trade ethnography. Brevity is the deliverable, not a constraint on it.
 
-**3. The human reads summaries, not documents.** They asked twice for a visual TL;DR with SVG
-diagrams. `bedrock.html` is the format that works: short cards, a diagram where a picture beats a
-paragraph, decisions at the bottom with recommendations marked. **Build the summary first, and
-only write the long document once the summary is approved.**
+**3. Visual TL;DR first, always.** Standing instruction: *"when you make the gate, always make a TL DR
+for me with SVGs that help me picture what we're going with so I can be certain that I like the
+direction we're heading."* `bedrock.html` and `gate-2-glance.html` are the format. **Build the summary,
+get it approved, and only then write the long document.** Make the summary cover every section of the
+document it summarises.
 
-**4. Check direction early and cheaply.** Every time this session went wrong, it went wrong for
-40 minutes of workflow before anyone noticed. Put the shape in front of them in a short message
-*before* spending a build.
+**4. Check direction early and cheaply.** Put the shape in a short message *before* spending a build.
+Every time this project went wrong it went wrong for a long time before anyone noticed.
 
-**5. They are right about direction, consistently.** When they say "we might be going the wrong
-way," stop and ask rather than defend. Every single course correction they made improved the work.
+**5. They are right about direction, consistently.** When they say it feels wrong, stop and ask rather
+than defend. Every course correction they have made improved the work — including the one that threw
+out a finished Gate 2 and got a better one.
 
-**6. Keep the gates.** §0 of the prompt: present options, stop, let them decide. Nothing gets
-built on an unapproved foundation.
+**6. Keep the gates.** §0 of the prompt: present options, stop, let them decide. Nothing is built on an
+unapproved foundation.
 
----
+### The method that actually worked
 
-## GATE 2 — where to resume
+Sub-agents wrote **none** of the prose and none of the names. They were used to mine
+`gate-1-system.md` for facts, to propose structures, to draw SVGs from label text supplied verbatim,
+and — most valuable by far — to **audit the draft adversarially**, one agent per rejection reason.
+That audit caught eleven fatal contradictions across two rounds, six of them in copy that read
+perfectly well. **Write the prose yourself. Use agents to check it and to draw.**
 
-### The axis is decided and correct
-
-**A school is what you cast with.** This is the locked bedrock's own answer — §2.2 lists the four
-substance sources and ends *"they are different answers with different risks, **and they are how
-casters differ from each other.**"*
-
-A school is the **class system** — playstyle, silhouette, what beats you. Not a faction, not a
-culture, not a nation. Those are Gate 5.
-
-How a caster *reads* is personal style inside a school, never the thing that defines it.
-
-### The five schools — USE THESE NAMES
-
-| Name | Casts with | Core idea, in one line |
-|---|---|---|
-| **The bag** | Carried reagents | A grab bag she assembled — flint, carbon, salts, filings. **It spends down and deletes**, and she restocks by crafting from what she scavenges. Inventory-and-crafting school. |
-| **The instrument** | Objects | A rod, a gauntlet, armour — and at the far end, metal that has replaced a limb. Casts through the thing, not the hands. |
-| **The body** | Herself | The boundary is **scribed into her skin** (reference: Scar, FMA), and sap crosses her flesh to reach the work. The channel path hardens, and **the mark creeps** — slowly, visibly, permanently. Every use is a choice. |
-| **The scholar** | Memory | Knows the substances and sequences by heart. Disciplined and vast — and the possibilities are infinite, so she can never know them all. That gap is the weakness. |
-| **The attuned** | Instinct | A **people**, not a trade. In tune with sap the way someone is in tune with country. High acuity, almost no library: **she feels without knowing.** Feels sap itself — rich ground, thin ground, a basin upstream quietly taking what used to come here. |
-
-### What survived the rejected attempt and is worth keeping
-
-Mechanics only — rewrite all of it in plain language, much shorter.
-
-- **The body's two clocks.** The *creep* is a measurable distance up the limb, advanced by every
-  passage (a set is small, a solve is large, a chain is largest) and it moves while you watch.
-  Ordinary *overdraw* is the second, separate clock. Hardened tissue will not carry, so her working
-  skin is a map that only shrinks: forearm, other forearm, thigh, back. **Nobody lets it past the
-  collarbone, because past the collarbone is the throat.** This landed well — keep it, shorten it.
-- **A chain contains a solve.** There is no cheap fast tier; every school's FAST costs a full solve
-  and a quarter. Most work is done on the plain set.
-- **Paper is an index, not a library.** A record tells you *which* of the things you have already
-  touched this is. It cannot enter library on its own.
-- **No instrument reads.** An implant is a sap topology; a rod is a boundary and a magazine.
-  Acuity is not for sale.
-
-### Still to decide with the human at Gate 2
-
-- Which schools are playable, which are enemy-only, which one the protagonist starts in.
-- Whether the attuned are a school, a culture, or both — and how much of them belongs to Gate 5.
-  *(An earlier draft de-mystified them into a trade of well-siters. The human asked for a people.
-  Do not make them mystics, but do not flatten them into a job either.)*
-- The counter graph: who beats whom and why, in plain mechanical terms.
+And **render the page and look at it** before showing the human. Chromium is at
+`/opt/pw-browsers/chromium-1194/chrome-linux/chrome`; `pip install playwright`, screenshot the page,
+and read your own diagrams. Three real layout bugs were caught this way that no amount of reasoning
+about coordinates would have found.
 
 ---
 
-## The one-paragraph version of the world, for a cold start
+## The world in one paragraph, for a cold start
 
-Matter is **grain** — fine particles in **families** that never become one another. Every working is
-two motions: **SOLVE** parts the hold that keeps an arrangement together, **SET** re-ties it. The
-charge you spend is the hold itself, and it is called **sap**. Sap comes from the unrest of living
-matter, released at death into the ground, which refines it over about nine days and gathers it into
-**pools** — so the politics are hydraulic, and a battlefield is the best ground in the country.
-You perceive what things are made of **by touch**, and that sense is a scale everyone sits somewhere
-on. A working takes what is inside the boundary you laid; if that is not enough, it finishes out of
-whatever is nearest, and **there is always something nearest**.
+Matter is **grain** — fine particles in **families** that never become one another, listed on **the
+Table**, which is published, disputed and incomplete. Every working is two motions: **SOLVE** parts the
+hold that keeps an arrangement together, **SET** re-ties it. The charge you spend is the hold itself,
+and it is called **sap**. Sap comes from the unrest of living matter, released at death into the
+ground, which refines it over about nine days and gathers it into **pools** — so the politics are
+hydraulic, and a battlefield is the best ground in the country. You perceive what things are made of
+**by touch**, on a two-axis scale: **acuity**, largely natal and ceilinged, and **library**, purely
+earned and uncapped. A working takes what is inside the boundary you laid; if that is not enough, it
+finishes out of whatever is nearest, and **there is always something nearest.**
 
 > **"Name your source, or it'll name one for you."**
 
-The Law commands you to name where it is coming from. It never says what a source may be. Correct
-procedure and atrocity are the same act.
+**Who can do this at all:** almost nobody. Everybody has some acuity, it is not hereditary and no
+bloodline owns it, but the low end is a slope so steep that most people never cast anything. Ordinary
+people call the top of that slope **the gift**; the trade says *she reads well and started young*.
+**Keep both vocabularies** — which one a character uses tells the reader whose head they are in.
 
-**Coinages spent: zero of ten.** Every term above is ordinary English doing new work. Keep it that way.
-
-
----
-
-## ATTEMPT 4 — SUPERSEDED BY THE REFRAME. ATTEMPT 5 IS LIVE.
-
-The glance sheet is rebuilt: `gate-2-glance.html`, also published at
-https://claude.ai/code/artifact/df238764-9ff1-460a-92a6-f8055331ea17
-
-**Nothing here is decided.** The long document has NOT been written, and must not be until the
-human approves the sheet. That ordering is rule 3 above and it is the whole reason attempt 4 exists.
-
-What changed from attempt 3: the five locked names are used as written, each school is four beats
-(casts with / looks like / great at / what kills it), and the sheet carries four SVGs — the five at a
-glance, the acuity/library plot, the body's two clocks, and the counter graph.
-
-**Five questions are open on the sheet** and are the human's to answer: which schools are playable;
-where the protagonist starts; whether the attuned is the weakest design (and whether to pay her in
-*the reach* instead of in perception, which would be a new mechanic); how much of the attuned belongs
-to Gate 5; and whether the counter graph holds.
-
-### GATE 1 READINGS THAT KILLED SIX DRAFT SENTENCES — do not re-make these
-
-These are not new decisions. They are what `gate-1-system.md` already says, found by auditing a draft
-against it. Every one of them was written wrong first.
-
-- **There is no sap-through-flesh conduit.** Sap lives in a pool, a flask or an implant, and nowhere
-  else. The body caster is not a channel. She is simply always *inside her own boundary*, and §2's
-  rule is that anything inside the line is a source.
-- **The body's cost is NOT overdraw.** §3's own row for spending her own body is a substance ladder —
-  cramps, then teeth, then bone — and it says outright *"This is not overdraw — overdraw is a sap
-  failure and it hardens; this does not."* A creeping mark that advances on every ordinary stroke also
-  deletes §7's central line: *"The third is a decision. It is always a decision."*
-- **Her map shrinks for a geometric reason.** A scored line is permanent, and a new line crossing an
-  old one breaks the run before it closes (§2 — a boundary must be a closed run). Not because
-  "hardened tissue won't carry", which is conduit thinking and has no Gate 1 basis.
-- **An instrument never buys sap.** It buys a line that cannot be smudged (§2 PREPARED) and a
-  pre-loaded charge of *substance* (§3). The flask is the sap magazine and anyone may carry one.
-  Welding a sap topology to a school is §1's named "classic apprentice error".
-- **Frost and heat at the seam is the IMPLANT's tell**, not the instrument school's — the implant is a
-  sap topology (§4), so that silhouette belongs to how a caster carries charge, not to what she casts with.
-- **The bag is FAST because carried stock is pre-read stock** — it is already in library. Having the
-  right family buys *certainty*, not seconds. And run dry she is *"a novice in her own room"* (§3's
-  exact words), never a civilian: her library cannot be taken from her.
-- **The attuned can name what she is holding.** That is what high acuity does — it is her strength,
-  never her weakness. Her cap is no library, therefore no chaining, therefore no large working.
-- **Nobody senses a pool or a basin at range.** The read is contact-only; *"a read run into open air
-  returns nothing at all."* Pools are found with sinking-rods. And §11 publishes the rich/thin ground
-  tells for anyone with eyes, so "nobody else sees it" is false.
-
-### The method that worked, for whoever picks this up next
-
-Sub-agents wrote none of the prose and none of the names. They mined `gate-1-system.md` for facts,
-proposed the counter graph, drew the SVGs from label text supplied verbatim, and — most valuable —
-audited the draft adversarially, one agent per rejection reason. That audit caught eleven fatal
-contradictions across two rounds, six of which were in copy that already read perfectly well.
-**Write the copy yourself; use the agents to check it against the bedrock and to draw.**
-
+**And the class fact:** the sap economy is **not** a casters' economy. Extractor men, mill hands,
+channel gangs, sinkers, gate crews, hauliers, drawing floors and the layers-out who handle the dead are
+all ordinary labour done by people with no gift, and there are vastly more of them.
 
 ---
 
-## THE REFRAME — READ THIS BEFORE TOUCHING GATE 2 AGAIN
+## GATE 3 — START HERE
 
-Attempt 4 was built as a **class system** — playable schools, protagonist start, a who-beats-whom
-counter graph. The human stopped it, and was right, and the record backs them:
+**The loophole, and the atrocity built on it.** Gate 1 §9 describes the Law's crack and deliberately
+does not walk through it. Gate 1's own leave-open list: *"The loophole, and the atrocity built on it —
+the Law's crack is described and left standing open; nothing in this document walks through it."*
 
-> Gate 1, *What Gate 1 Deliberately Leaves Open*: "**Schools, doctrines and traditions of casting** —
-> how the trade organises its **teaching**, and what different **traditions** do differently with the
-> same two strokes. **Gate 2.**"
+### The crack, in Gate 1's exact words
 
-Teaching and tradition. Gate 1 never asked for a class list. The "class system" line in the old
-decisions log was drift from a later session and has been struck.
+> The Law commands you to name your source. **It does not say what a source may be.** A caster who
+> names a person and lays the boundary on them has followed it exactly, and the working proceeds
+> correctly. **Correct procedure and atrocity are the same act, performed with the same hands, in the
+> same order.**
 
-**The human's framing, verbatim, and it is the thesis of the whole gate:**
-*"these people in this world are just utilizing sap in the way they are taught or how they've found it
-in their own way."*
+### What Gate 1 already hands you, so do not re-invent it
 
-**And the standing instruction that produced the correction:**
-*"While this story is for a game, the important part is that it is a story ultimately. The game can be
-built around the story later... So the world is of utmost importance, how it works, how individuals
-have lived in this world, traditions passed on in the world and what it has culminated to."*
+- **A reach takes water and lime** — the two things a body holds in bulk. A body holds about one nail's
+  worth of iron; the arithmetic must survive a reader checking it.
+- **The selection is dumb; the consequence is personal.** Same physics every time — but take water and
+  lime from a young labourer and he is sick for a month; from an old woman and her hip goes and never
+  comes back; from a reader and her acuity drops, because the read runs through tissue.
+- **Reaching is aimable.** A caster can deliberately lay a bad boundary so the shortfall is taken from
+  a source of her choosing. It is a *method*, not only an accident — while still happening by accident
+  to people who did not intend it. **Whose method it is, is Gate 4, not Gate 3.**
+- **The aimed reach is readable in advance** — the line laid slack, laid past the material, laid
+  *behind* the caster, and she is looking at a person instead of at her work. Two full seconds to act.
+- **A fresh body is the densest thing in most rooms** for water and lime, for the first two days. This
+  is why nothing is worked in a house with a body in it. And *"soldiers who have been in one bad fight
+  work beside their own dead on purpose, and everyone understands why, and the men who arrange it
+  deliberately are a different kind of person and are known to be."*
+- **The surrounding speech already exists:** *"Who's downstream?"* · *"Nothing goes short."* ·
+  *"That's a nail's worth."* · *"Set it or shift it."*
+- **The dead do not come back.** No astral layer, no spirits, nothing reads or moves **the difference**.
+  Gate 3 must not open that door.
 
-So: **world first, campaign later.** Anything that reads as balance, kits, playability or matchups is
-the wrong altitude and will be rejected. The right questions are about how people live — who taught
-them, who employs them, who looks down on them, and what it costs them over a life.
+### What Gate 3 is for
 
-The four beats of a school are now: **casts with · how you come to it · how you live · what it costs
-you.** Everything mechanical from attempt 4 survives underneath as substrate — it was audited hard
-against Gate 1 and it holds — but it is no longer the point.
+Not *what is the atrocity* in the abstract — Gate 1 already states the mechanism. Gate 3 is **how a
+world that knows this lives with it**: what is done about it, what is said about it, what is never said,
+what the trade's own discipline is, who has walked through the crack and what happened to them, and what
+it costs to be the person standing next to somebody who might.
 
+**Do not name the antagonist.** That is Gate 4.
 
 ---
 
-## GATE 2 IS CLOSED. START AT GATE 3.
+## Standing rules later gates must not break
 
-The summary sheet was approved and the long document is written. Both are published:
-- sheet — https://claude.ai/code/artifact/df238764-9ff1-460a-92a6-f8055331ea17
-- long document — https://claude.ai/code/artifact/4ab9a9e0-0431-45f3-b3d8-3122ec6cbfe1
+- **Gate 1 and Gate 2 are closed.** If an idea requires amending either, the idea is wrong. Check
+  against `gate-1-system.md` before writing, not after.
+- **No astral layer.** The physical layer is the only one. *The difference* is an observed absence with
+  no mechanism, and nothing ever gets one.
+- **The gift is a folk word, not a mechanic.** The read is a scale, not a door, and never hereditary.
+- **The credential is a name.** Casting is unlicensed; *who taught you* is the whole of a caster's
+  standing, and it is why the self-taught body caster is excluded.
+- **Coinages: zero of ten spent.** Every term in two closed gates is ordinary English doing new work.
 
-**The one thing Gate 2 added that later gates must not break:** *the gift* is a **folk word**, not a
-mechanic. Gate 1's slope stands unamended — everybody has some acuity, it is not hereditary, and it is
-simply so steep at the low end that most people never cast anything. Ordinary people say *she has the
-gift*; the trade says *she reads well and started young*. **Keep both vocabularies.** Which one a
-character uses tells the reader whose head they are in.
+---
 
-**And the class fact:** the sap economy is not a casters' economy. Extractor men, mill hands, channel
-gangs, sinkers, gate crews, hauliers, drawing floors and layers-out are all ordinary labour done by
-people with no gift, and there are vastly more of them. Casting is rare; the industry is not.
+## Historical — the three rejected Gate 2 attempts
 
-**Gate 3 is next** — the loophole, and the atrocity built on it. Gate 1 describes the Law's crack and
-deliberately does not walk through it: *"Name your source, or it'll name one for you"* commands you to
-name where it is coming from and never says what a source may be. Correct procedure and atrocity are
-the same act.
+Kept only so the mistakes are not repeated. Attempts 1 and 2 pinned schools to reading doctrine and were
+rejected as too abstract to feel: *"Nobody picks a class because of their filing method."* Attempt 3
+re-pinned to *what you cast with*, which was right, but sub-agents replaced the agreed plain names with
+invented jargon and buried each school in thousands of words of ethnography.
 
-Work it the way Gate 2 was worked, because it is the method that finally succeeded:
-1. **Short message first.** Put the shape in front of the human before spending a build.
-2. **Visual TL;DR with SVG diagrams, always.** Approve the summary before writing a word of the document.
-3. **Write the prose yourself.** Sub-agents invented the jargon that killed three attempts. Use them to
-   mine `gate-1-system.md` for facts and to audit the draft adversarially — never to write.
-4. **Render and look at it** before showing the human. Chromium is available; screenshot the page and
-   read your own diagrams.
+Attempt 4 was audited before the human saw it and was rebuilt as a **class system** — playable schools,
+protagonist start, a who-beats-whom counter graph. The human stopped it, and the record backed them:
+Gate 1 scopes Gate 2 as *"how the trade organises its teaching, and what different traditions do
+differently with the same two strokes."* Teaching and tradition. The class framing was drift and is
+struck. What shipped is the fifth attempt.
