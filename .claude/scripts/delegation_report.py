@@ -14,7 +14,9 @@ window before that date against one after.
 """
 
 import argparse
+import os
 import sqlite3
+from datetime import datetime
 from pathlib import Path
 
 DB_PATH = Path.home() / ".claude" / "token-dashboard.db"
@@ -67,6 +69,11 @@ def main():
     ap.add_argument("--days", type=int, default=30)
     ap.add_argument("--since", help="YYYY-MM-DD; overrides --days")
     ap.add_argument("--project", help="project_slug filter, e.g. D--second-brain-starter")
+    ap.add_argument(
+        "--out", nargs="?", const="DEFAULT", default=None,
+        help="also write a dated markdown report; bare flag uses "
+             "$BRAIN_ROOT/Reports/Token Usage/",
+    )
     args = ap.parse_args()
 
     if not DB_PATH.exists():
@@ -105,36 +112,72 @@ def main():
 
     window = args.since or f"last {args.days} days"
     proj = args.project or "all projects"
-    print(f"\nDelegation report — {window}, {proj}\n")
+
+    out = []
+    def emit(line=""):
+        out.append(line)
+
+    emit(f"Delegation report — {window}, {proj}")
+    emit(f"generated {datetime.now():%Y-%m-%d %H:%M}")
+    emit()
 
     totals = {0: 0.0, 1: 0.0}
+    mix = {0: {}, 1: {}}
     unpriced = set()
 
     for side_label, side in (("MAIN LOOP", 0), ("SUBAGENTS", 1)):
         subset = [r for r in rows if r[0] == side]
         if not subset:
             continue
-        print(f"  {side_label}")
-        print(f"    {'model':<22}{'msgs':>7}{'in':>9}{'out':>9}{'cache rd':>10}{'cost':>10}")
-        for _, model, msgs, inp, out, crd, c5, c1 in subset:
-            c = cost(model, inp, out, crd, c5, c1)
+        emit(f"  {side_label}")
+        emit(f"    {'model':<22}{'msgs':>7}{'in':>9}{'out':>9}{'cache rd':>10}{'cost':>10}")
+        for _, model, msgs, inp, o, crd, c5, c1 in subset:
+            c = cost(model, inp, o, crd, c5, c1)
             if c is None:
                 unpriced.add(model)
                 cstr = "    n/a"
             else:
                 totals[side] += c
+                mix[side][model] = mix[side].get(model, 0.0) + c
                 cstr = f"${c:,.2f}"
-            print(f"    {model:<22}{msgs:>7}{fmt(inp):>9}{fmt(out):>9}{fmt(crd):>10}{cstr:>10}")
-        print(f"    {'':<22}{'':>7}{'':>9}{'':>9}{'subtotal':>10}{f'${totals[side]:,.2f}':>10}\n")
+            emit(f"    {model:<22}{msgs:>7}{fmt(inp):>9}{fmt(o):>9}{fmt(crd):>10}{cstr:>10}")
+        emit(f"    {'':<22}{'':>7}{'':>9}{'':>9}{'subtotal':>10}{f'${totals[side]:,.2f}':>10}")
+        emit()
 
     grand = totals[0] + totals[1]
     if grand > 0:
         share = 100 * totals[1] / grand
-        print(f"  TOTAL ${grand:,.2f}   —   subagents {share:.1f}% of spend\n")
-        print("  Read it as: subagent share rising while quality holds = routing is working.")
-        print("  Subagent share rising with rework = boundary drawn wrong, not a model problem.")
+        emit(f"  TOTAL ${grand:,.2f}   —   subagents {share:.1f}% of spend")
+        emit()
+        # the headline: what share of SUBAGENT spend is on cheap models
+        cheap = sum(v for k, v in mix[1].items()
+                    if k.startswith(("claude-sonnet", "claude-haiku")))
+        if totals[1] > 0:
+            emit(f"  Subagent spend on sonnet/haiku: ${cheap:,.2f} "
+                 f"({100*cheap/totals[1]:.1f}% of subagent spend)")
+            emit("    baseline 2026-09-15 was 0.0% — routing pinned scout=haiku,")
+            emit("    implementer/reviewer=sonnet, CLAUDE_CODE_SUBAGENT_MODEL=sonnet")
+        emit()
+        emit("  Working:     cheap-model share up, TOTAL down, no rework.")
+        emit("  Not working: subagent share up but TOTAL flat/up = rework;")
+        emit("               move the delegation boundary, don't blame the model.")
     if unpriced:
-        print(f"\n  (unpriced models, excluded from cost: {', '.join(sorted(unpriced))})")
+        emit()
+        emit(f"  (unpriced models, excluded from cost: {', '.join(sorted(unpriced))})")
+
+    text = "\n".join(out)
+    print("\n" + text)
+
+    if args.out is not None:
+        if args.out == "DEFAULT":
+            root = Path(os.environ.get("BRAIN_ROOT", r"D:\Brain"))
+            dest_dir = root / "Reports" / "Token Usage"
+        else:
+            dest_dir = Path(args.out)
+        dest_dir.mkdir(parents=True, exist_ok=True)
+        dest = dest_dir / f"delegation-{datetime.now():%Y-%m-%d}.md"
+        dest.write_text(f"# Delegation report\n\n```\n{text}\n```\n", encoding="utf-8")
+        print(f"\nwrote {dest}")
 
 
 if __name__ == "__main__":
