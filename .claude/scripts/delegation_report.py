@@ -1,0 +1,141 @@
+"""
+delegation_report.py — is the subagent routing actually working?
+
+Reads the token-dashboard SQLite DB and reports spend split by main-loop vs
+subagent (is_sidechain) and by model, so the effect of pinning subagents to
+cheaper models is visible as a number rather than a feeling.
+
+Usage:
+    python delegation_report.py [--days N] [--project SLUG] [--since YYYY-MM-DD]
+
+Baseline note: subagent model routing was changed 2026-09-15 (scout=haiku,
+implementer/reviewer=sonnet, CLAUDE_CODE_SUBAGENT_MODEL=sonnet). Compare a
+window before that date against one after.
+"""
+
+import argparse
+import sqlite3
+from pathlib import Path
+
+DB_PATH = Path.home() / ".claude" / "token-dashboard.db"
+
+# $ per 1M tokens: (input, output). Cache reads bill at ~0.1x input,
+# 5m cache writes at ~1.25x input.
+PRICING = {
+    "claude-opus-5": (5.00, 25.00),
+    "claude-opus-4-8": (5.00, 25.00),
+    "claude-fable-5-1": (10.00, 50.00),
+    "claude-fable-5": (10.00, 50.00),
+    "claude-sonnet-5": (2.00, 10.00),
+    "claude-sonnet-4-6": (3.00, 15.00),
+    "claude-haiku-4-5": (1.00, 5.00),
+}
+
+
+def price(model: str):
+    if not model:
+        return None
+    for key, rates in PRICING.items():
+        if model.startswith(key):
+            return rates
+    return None
+
+
+def cost(model, inp, out, cache_read, cache_5m, cache_1h):
+    rates = price(model)
+    if rates is None:
+        return None
+    pin, pout = rates
+    return (
+        inp * pin
+        + out * pout
+        + cache_read * pin * 0.10
+        + (cache_5m * 1.25 + cache_1h * 2.00) * pin
+    ) / 1_000_000
+
+
+def fmt(n):
+    if n >= 1_000_000:
+        return f"{n/1_000_000:.1f}M"
+    if n >= 1_000:
+        return f"{n/1_000:.0f}k"
+    return str(int(n))
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--days", type=int, default=30)
+    ap.add_argument("--since", help="YYYY-MM-DD; overrides --days")
+    ap.add_argument("--project", help="project_slug filter, e.g. D--second-brain-starter")
+    args = ap.parse_args()
+
+    if not DB_PATH.exists():
+        raise SystemExit(f"token-dashboard DB not found at {DB_PATH}")
+
+    where = ["model IS NOT NULL", "model != ''"]
+    params = []
+    if args.since:
+        where.append("timestamp >= ?")
+        params.append(args.since)
+    else:
+        where.append("timestamp >= datetime('now', ?)")
+        params.append(f"-{args.days} days")
+    if args.project:
+        where.append("project_slug = ?")
+        params.append(args.project)
+
+    sql = f"""
+        SELECT COALESCE(is_sidechain, 0) AS side, model,
+               COUNT(*) AS msgs,
+               SUM(COALESCE(input_tokens,0)),
+               SUM(COALESCE(output_tokens,0)),
+               SUM(COALESCE(cache_read_tokens,0)),
+               SUM(COALESCE(cache_create_5m_tokens,0)),
+               SUM(COALESCE(cache_create_1h_tokens,0))
+        FROM messages
+        WHERE {' AND '.join(where)}
+        GROUP BY side, model
+        ORDER BY side, 4 DESC
+    """
+
+    db = sqlite3.connect(str(DB_PATH))
+    rows = db.execute(sql, params).fetchall()
+    if not rows:
+        raise SystemExit("no rows in that window")
+
+    window = args.since or f"last {args.days} days"
+    proj = args.project or "all projects"
+    print(f"\nDelegation report — {window}, {proj}\n")
+
+    totals = {0: 0.0, 1: 0.0}
+    unpriced = set()
+
+    for side_label, side in (("MAIN LOOP", 0), ("SUBAGENTS", 1)):
+        subset = [r for r in rows if r[0] == side]
+        if not subset:
+            continue
+        print(f"  {side_label}")
+        print(f"    {'model':<22}{'msgs':>7}{'in':>9}{'out':>9}{'cache rd':>10}{'cost':>10}")
+        for _, model, msgs, inp, out, crd, c5, c1 in subset:
+            c = cost(model, inp, out, crd, c5, c1)
+            if c is None:
+                unpriced.add(model)
+                cstr = "    n/a"
+            else:
+                totals[side] += c
+                cstr = f"${c:,.2f}"
+            print(f"    {model:<22}{msgs:>7}{fmt(inp):>9}{fmt(out):>9}{fmt(crd):>10}{cstr:>10}")
+        print(f"    {'':<22}{'':>7}{'':>9}{'':>9}{'subtotal':>10}{f'${totals[side]:,.2f}':>10}\n")
+
+    grand = totals[0] + totals[1]
+    if grand > 0:
+        share = 100 * totals[1] / grand
+        print(f"  TOTAL ${grand:,.2f}   —   subagents {share:.1f}% of spend\n")
+        print("  Read it as: subagent share rising while quality holds = routing is working.")
+        print("  Subagent share rising with rework = boundary drawn wrong, not a model problem.")
+    if unpriced:
+        print(f"\n  (unpriced models, excluded from cost: {', '.join(sorted(unpriced))})")
+
+
+if __name__ == "__main__":
+    main()
