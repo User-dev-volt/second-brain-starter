@@ -24,6 +24,7 @@ DB_PATH = Path.home() / ".claude" / "token-dashboard.db"
 # $ per 1M tokens: (input, output). Cache reads bill at ~0.1x input,
 # 5m cache writes at ~1.25x input.
 PRICING = {
+    "claude-opus-5-5": (4.00, 20.00),
     "claude-opus-5": (5.00, 25.00),
     "claude-opus-4-8": (5.00, 25.00),
     "claude-fable-5-1": (10.00, 50.00),
