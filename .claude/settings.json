@@ -1,3 +1,6 @@
 {
-  "hooks": {}
+  "hooks": {},
+  "enabledPlugins": {
+    "databricks@claude-plugins-official": true
+  }
 }
